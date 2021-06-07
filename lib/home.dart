@@ -28,6 +28,7 @@ class _HomeState extends State<Home> {
 
   _loadData() async {
     binance_price = await fetchBinancePairData();
+
     setState(() {});
   }
 
@@ -95,42 +96,7 @@ class _HomeState extends State<Home> {
               ]),
         ),
         preferredSize: Size(MediaQuery.of(context).size.width, 54.0),
-      )
-      /*AppBar(
-        title: Text(
-          "BitMe",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontFamily: 'Arial Rounded MT Bold',
-            fontSize: 24,
-            shadows: <Shadow>[
-              Shadow(
-                offset: Offset(1.0, 1.0),
-                blurRadius: 10,
-                color: Color.fromARGB(10, 0, 0, 0),
-              )
-            ],
-          ),
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.account_circle_rounded),
-          onPressed: () {},
-        ),
-        actions: [
-          IconButton(
-              icon: Icon(Icons.settings),
-              onPressed: () {
-                showDialog(
-                  barrierDismissible: false,
-                  context: context,
-                  builder: (BuildContext context) {
-                    return DialogConfig();
-                  },
-                );
-              })
-        ],
-      )*/
-      ,
+      ),
       backgroundColor: Color(0xffF9F8FD),
       //backgroundColor: Colors.grey,
       body: SafeArea(
@@ -139,11 +105,8 @@ class _HomeState extends State<Home> {
           future: AuthService().currentUser(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              // Get Current User Email
-              String userEmail = snapshot.data.email;
               // Get Current User UID
               String userUid = snapshot.data.uid;
-
               return StreamBuilder<QuerySnapshot>(
                 stream: Firestore.instance
                     .collection("users")
@@ -154,8 +117,9 @@ class _HomeState extends State<Home> {
                 builder: (context, querySnapshot) {
                   Map<String, double> totalBuying = Map();
                   Map<String, double> totalExpending = Map();
-                  if (querySnapshot.hasData) {
-                    if(querySnapshot.data.documents.length>0 && this.base_coin==null) {
+                  if (querySnapshot.hasData && binance_price != null) {
+                    if (querySnapshot.data.documents.length > 0 &&
+                        this.base_coin == null) {
                       base_coin = querySnapshot.data.documents[0].data["pair"]
                           .toString()
                           .split("/")[1];
@@ -214,6 +178,16 @@ class _HomeState extends State<Home> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.max,
                       children: [
+                        Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                          color: Colors.red,
+                          child: Text(
+                            "You are not connected with Binance.\nInsert your API Keys.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
                         ChartWidget(data, totalExpending[base_coin], base_coin,
                             (value) {
                           setState(() {
@@ -230,19 +204,22 @@ class _HomeState extends State<Home> {
                           });
                           print(this.base_coin);
                         }, userUid),
-                        Container(),
-                        HistoryWidget(querySnapshot.data,widget.userUid)
+                        HistoryWidget(querySnapshot.data, widget.userUid)
                       ],
                     ));
                   } else if (querySnapshot.hasError) {
                     return Text(querySnapshot.error.toString());
                   } else {
-                    return CircularProgressIndicator();
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
                   }
                 },
               );
             } else {
-              return CircularProgressIndicator();
+              return Center(
+                child: CircularProgressIndicator(),
+              );
             }
           },
         ),

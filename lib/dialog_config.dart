@@ -1,3 +1,4 @@
+import 'package:bitbybit/binance_api.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,8 @@ class DialogConfig extends StatefulWidget {
 }
 
 class DialogConfigState extends State<DialogConfig> {
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
@@ -27,15 +30,14 @@ class DialogConfigState extends State<DialogConfig> {
           builder: (BuildContext context, snapshot) {
             if (snapshot.hasData) {
               DocumentSnapshot userSnapshot = snapshot.data;
-
               TextEditingController privatekey_controller =
                   TextEditingController();
               TextEditingController publickey_controller =
                   TextEditingController();
-              if(userSnapshot.data!=null) {
+              if (userSnapshot.data != null) {
                 publickey_controller.text = userSnapshot.data["public_key"];
               }
-              if(userSnapshot.data!=null) {
+              if (userSnapshot.data != null) {
                 privatekey_controller.text = userSnapshot.data["private_key"];
               }
               return Form(
@@ -131,18 +133,27 @@ class DialogConfigState extends State<DialogConfig> {
                           width: 16,
                         ),
                         ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (_formKey.currentState.validate()) {
-                                Firestore.instance
-                                    .collection("users")
-                                    .document(widget.userUid)
-                                    .updateData({
-                                  "private_key": privatekey_controller.text,
-                                  "public_key": publickey_controller.text,
-                                  "lastUpdatedTimestamp": Timestamp.now()
-                                }).then((value) {
-                                  Navigator.pop(context);
-                                });
+                                var response = await getBinanceBalance(
+                                    widget.userUid,
+                                    publickey_controller.text,
+                                    privatekey_controller.text);
+
+                                if (response != null) {
+                                  Firestore.instance
+                                      .collection("users")
+                                      .document(widget.userUid)
+                                      .updateData({
+                                    "private_key": privatekey_controller.text,
+                                    "public_key": publickey_controller.text,
+                                    "lastUpdatedTimestamp": Timestamp.now()
+                                  }).then((value) {
+                                    Navigator.pop(context);
+                                  });
+                                } else {
+                                  print("verify your private keys");
+                                }
                               }
                             },
                             child: Text("UPDATE"))

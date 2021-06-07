@@ -56,7 +56,7 @@ class _OrderListItemState extends State<OrderListItem> {
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 20,
-                          fontWeight: FontWeight.bold),
+                          fontWeight: FontWeight.w400),
                     ),
                     success
                         ? Column(
@@ -156,73 +156,6 @@ class _OrderListItemState extends State<OrderListItem> {
           ),
         ],
       ),
-      /*actions: <Widget>[
-          IconSlideAction(
-            caption: 'Archive',
-            color: Colors.blue,
-            icon: Icons.archive,
-            onTap: () {},
-          ),
-          IconSlideAction(
-            caption: 'Share',
-            color: Colors.indigo,
-            icon: Icons.share,
-            onTap: () {},
-          ),
-        ],*/
-      /*secondaryActions: <Widget>[
-          */ /*IconSlideAction(
-            caption: 'Edit',
-            color: Colors.black45,
-            icon: Icons.edit_outlined,
-            onTap: () {
-
-            },
-          ),*/ /*
-          IconSlideAction(
-            caption: 'Delete',
-            color: Colors.red,
-            icon: Icons.delete,
-            onTap: () {
-              showDialog<void>(
-                context: context,
-                barrierDismissible: false, // user must tap button!
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('Deleting order'),
-                    content: SingleChildScrollView(
-                      child: Column(
-                        children: <Widget>[
-                          Text('Are you sure you want to delete this order?'),
-                        ],
-                      ),
-                    ),
-                    actions: <Widget>[
-                      TextButton(
-                        child: Text('Confirm'),
-                        onPressed: () {
-                          Firestore.instance
-                              .collection("users")
-                              .document(widget.userUid)
-                              .collection("orders")
-                              .document(widget.querySnapshotData.documentID)
-                              .delete();
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      TextButton(
-                        child: Text('Cancel'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
-          ),
-        ],*/
     );
   }
 }
