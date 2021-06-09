@@ -1,8 +1,10 @@
 import 'package:bitbybit/external/binance_api.dart';
 import 'package:bitbybit/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
   User user;
@@ -121,6 +123,16 @@ class _SettingsPageState extends State<SettingsPage> {
                   Container(
                     height: 16,
                   ),
+                  GestureDetector(
+                    child: Text(
+                      'Get your API keys.',
+                      style: TextStyle(color: Colors.deepPurple,decoration: TextDecoration.underline,fontSize: 16),
+                    ),
+                    onTap: () {
+                      launch(
+                          'https://www.binance.com/en/my/settings/api-management');
+                    },
+                  ),
                   Expanded(
                     child: Container(),
                   ),
@@ -156,13 +168,15 @@ class _SettingsPageState extends State<SettingsPage> {
                                       height: 32,
                                       width: 32,
                                       child: CircularProgressIndicator(
-                                        strokeWidth:4,
+                                        strokeWidth: 4,
                                         valueColor:
                                             AlwaysStoppedAnimation<Color>(
                                                 Colors.grey),
                                       ),
                                     ),
-                                    Container(width: 16,)
+                                    Container(
+                                      width: 16,
+                                    )
                                   ],
                                 )
                               : Row(
@@ -170,7 +184,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   children: [
                                     Padding(
                                       padding: EdgeInsets.only(
-                                          left:32,
+                                          left: 32,
                                           bottom: 24,
                                           top: 24,
                                           right: 16),
@@ -186,7 +200,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                         size: 32,
                                       ),
                                     ),
-                                    Container(width: 8,)
+                                    Container(
+                                      width: 8,
+                                    )
                                   ],
                                 ),
                     ),

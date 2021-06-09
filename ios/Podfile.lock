@@ -348,6 +348,8 @@ PODS:
   - PromisesObjC (1.2.12)
   - searchable_dropdown (1.1.1):
     - Flutter
+  - url_launcher (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
@@ -356,6 +358,7 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
   - searchable_dropdown (from `.symlinks/plugins/searchable_dropdown/ios`)
+  - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
 
 SPEC REPOS:
   trunk:
@@ -391,6 +394,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   searchable_dropdown:
     :path: ".symlinks/plugins/searchable_dropdown/ios"
+  url_launcher:
+    :path: ".symlinks/plugins/url_launcher/ios"
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
@@ -417,6 +422,7 @@ SPEC CHECKSUMS:
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   searchable_dropdown: 5058be32fdc5e0481d300ff2087129072e71bd62
+  url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
 PODFILE CHECKSUM: 9c61c154375d7486282a0ab15347459953bebcbb
 

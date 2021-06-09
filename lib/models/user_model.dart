@@ -50,7 +50,6 @@ class User {
     print("-01");
     getBinanceBalance(this).then((Balance balance) {
       this.balance = balance;
-      print("bal: ${balance}");
       this.onUserDataUpdate(this);
     });
 
