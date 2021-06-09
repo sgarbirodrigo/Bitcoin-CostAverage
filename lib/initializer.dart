@@ -1,4 +1,4 @@
-import 'package:bitbybit/authService.dart';
+import 'package:bitbybit/external/authService.dart';
 import 'package:bitbybit/authentication.dart';
 import 'package:bitbybit/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,7 +14,7 @@ class Initializer extends StatelessWidget {
         if (snapshot.hasData) {
           // isLoggedIn
           FirebaseUser user = snapshot.data;
-          return Home(userUid: user.uid);
+          return Home(firebaseUser: user);
         } else if (snapshot.hasData == false &&
             snapshot.connectionState == ConnectionState.active) {
           // isLoggedOut

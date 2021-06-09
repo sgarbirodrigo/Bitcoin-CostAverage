@@ -76,7 +76,7 @@ class _AuthenticationState extends State<Authentication> {
                         //color: Colors.grey,
                       ),
                       child: Center(
-                          child: Image.asset('assets/images/playstore.png')),
+                          child: Image.asset('assets/images/logo.png')),
                     ),
                     SizedBox(
                       height: 30,

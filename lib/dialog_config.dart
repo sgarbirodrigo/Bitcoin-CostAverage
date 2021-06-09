@@ -1,11 +1,14 @@
-import 'package:bitbybit/binance_api.dart';
+import 'package:bitbybit/external/binance_api.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class DialogConfig extends StatefulWidget {
-  DialogConfig(this.userUid);
+import 'models/binance_balance_model.dart';
+import 'models/user_model.dart';
 
-  String userUid;
+class DialogConfig extends StatefulWidget {
+  DialogConfig(this.user);
+
+  User user;
 
   @override
   State<StatefulWidget> createState() {
@@ -25,7 +28,7 @@ class DialogConfigState extends State<DialogConfig> {
         child: FutureBuilder(
           future: Firestore.instance
               .collection("users")
-              .document(widget.userUid)
+              .document(widget.user.firebasUser.uid)
               .get(),
           builder: (BuildContext context, snapshot) {
             if (snapshot.hasData) {
@@ -133,17 +136,12 @@ class DialogConfigState extends State<DialogConfig> {
                           width: 16,
                         ),
                         ElevatedButton(
-                            onPressed: () async {
+                            onPressed: () async{
                               if (_formKey.currentState.validate()) {
-                                var response = await getBinanceBalance(
-                                    widget.userUid,
-                                    publickey_controller.text,
-                                    privatekey_controller.text);
-
-                                if (response != null) {
+                                if(await areUserKeysNewCorrect(privatekey_controller.text, publickey_controller.text)){
                                   Firestore.instance
                                       .collection("users")
-                                      .document(widget.userUid)
+                                      .document(widget.user.firebasUser.uid)
                                       .updateData({
                                     "private_key": privatekey_controller.text,
                                     "public_key": publickey_controller.text,
@@ -151,8 +149,16 @@ class DialogConfigState extends State<DialogConfig> {
                                   }).then((value) {
                                     Navigator.pop(context);
                                   });
-                                } else {
-                                  print("verify your private keys");
+                                }else{
+                                  ScaffoldMessenger.of(context).showSnackBar(new SnackBar(backgroundColor: Colors.red,content:Text("API keys invalid!",textAlign: TextAlign.left,),duration: Duration(seconds:4),behavior: SnackBarBehavior.fixed,
+                                   /* action: SnackBarAction(
+                                      label: 'OK',
+                                      textColor: Colors.yellow,
+                                      onPressed: () {
+                                        //  Navigator.of(context).pop();
+                                      },
+
+                                    )*/));
                                 }
                               }
                             },

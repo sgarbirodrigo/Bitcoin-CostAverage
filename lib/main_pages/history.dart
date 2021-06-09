@@ -1,27 +1,25 @@
+import 'package:bitbybit/models/user_model.dart';
 import 'package:bitbybit/order_list_item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class HistoryWidget extends StatefulWidget {
-  QuerySnapshot querySnapshotData;
-  String documentId;
+class HistoryPage extends StatefulWidget {
+  HistoryPage(this.user);
 
-  HistoryWidget(this.querySnapshotData, this.userUid);
-
-  String userUid;
+  User user;
 
   @override
   State<StatefulWidget> createState() {
-    return _HistoryWidgetState();
+    return _HistoryPageState();
   }
 }
 
-class _HistoryWidgetState extends State<HistoryWidget> {
+class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height*0.7,
+      //height: MediaQuery.of(context).size.height*0.7,
       child: Column(
         //mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,7 +53,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
             child: FutureBuilder<QuerySnapshot>(
               future: Firestore.instance
                   .collection("users")
-                  .document(widget.userUid)
+                  .document(widget.user.firebasUser.uid)
                   .collection("history")
                   .getDocuments(),
               builder: (context, snapshot) {
@@ -66,11 +64,11 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                       itemBuilder: (context, index) {
                         return OrderListItem(
                           querySnapshotData: snapshot.data.documents[index],
-                          userUid: widget.userUid,
+                          userUid: widget.user.firebasUser.uid,
                         );
                       });
                 } else {
-                  return CircularProgressIndicator();
+                  return Center(child: CircularProgressIndicator(),);
                 }
               },
             ),

@@ -1,4 +1,4 @@
-import 'package:bitbybit/authService.dart';
+import 'package:bitbybit/external/authService.dart';
 import 'package:flutter/material.dart';
 
 class SignIn extends StatefulWidget {

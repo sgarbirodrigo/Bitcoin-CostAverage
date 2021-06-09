@@ -1,4 +1,5 @@
 import 'package:bitbybit/BinanceSymbolModel.dart';
+import 'package:bitbybit/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,10 +9,13 @@ import 'dart:convert';
 
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 
+import 'models/order_model.dart';
+
 class EditOrderDialog extends StatefulWidget {
-  DocumentSnapshot documentSnapshot;
+  OrderItem  orderItem;
+
   String userUid;
-  EditOrderDialog(DocumentSnapshot this.documentSnapshot,this.userUid);
+  EditOrderDialog(this.orderItem,this.userUid);
 
   @override
   State<StatefulWidget> createState() {
@@ -52,10 +56,9 @@ class EditOrderDialogState extends State<EditOrderDialog> {
 
   @override
   void initState() {
-    _selectedText = widget.documentSnapshot.data["pair"];
-    _selectedAmount =
-        double.parse(widget.documentSnapshot.data["amount"].toString());
-    _state = widget.documentSnapshot.data["active"];
+    _selectedText =  widget.orderItem.pair;
+    _selectedAmount =widget.orderItem.amount;
+    _state =widget.orderItem.active;
   }
 
   @override
@@ -270,7 +273,7 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                                             .collection("users")
                                             .document(widget.userUid)
                                             .collection("orders")
-                                            .document(widget.documentSnapshot.documentID)
+                                            .document(widget.orderItem.documentId)
                                             .delete();
                                         Navigator.of(context).pop("deleted");
                                       },
@@ -304,7 +307,7 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                                   .collection("users")
                                   .document(widget.userUid)
                                   .collection("orders")
-                                  .document(widget.documentSnapshot.documentID)
+                                  .document(widget.orderItem.documentId)
                                   .updateData({
                                 "active": _state,
                                 "amount": _selectedAmount,

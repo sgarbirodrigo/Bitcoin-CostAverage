@@ -6,16 +6,14 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 import 'EditOrderDialog.dart';
 import 'contants.dart';
+import 'models/settings_model.dart';
+import 'models/user_model.dart';
 
 class OrdersWidget extends StatefulWidget {
-  QuerySnapshot querySnapshot;
-  Map<String, double> totalExpending;
-  String base_unit;
-  Function basecoin_onChange;
-  final String userUid;
+  Settings settings;
+  User user;
 
-  OrdersWidget(this.querySnapshot, this.totalExpending, this.base_unit,
-      this.basecoin_onChange, this.userUid);
+  OrdersWidget(this.user,this.settings);
 
   @override
   State<StatefulWidget> createState() {
@@ -124,7 +122,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return CreateOrderDialog(widget.userUid);
+                          return CreateOrderDialog(widget.user.firebasUser.uid);
                         },
                       );
                     })
@@ -134,7 +132,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
           Expanded(
             child: ListView.builder(
                 scrollDirection: Axis.vertical,
-                itemCount: widget.querySnapshot.documents.length,
+                itemCount: widget.user.orderItems.length,
                 //shrinkWrap: true,
                 itemBuilder: (context, index) {
                   return Slidable(
@@ -171,8 +169,8 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                               Padding(
                                 padding: EdgeInsets.only(top: 0),
                                 child: Text(
-                                  widget.querySnapshot.documents[index]
-                                      .data["pair"],
+                                  widget.user.orderItems[index]
+                                      .pair,
                                   style: TextStyle(
                                       fontFamily: 'Arial',
                                       fontSize: 24,
@@ -193,7 +191,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                                     children: <TextSpan>[
                                       TextSpan(
                                         text:
-                                            '${widget.querySnapshot.documents[index].data["amount"]} ${widget.querySnapshot.documents[index].data["pair"].toString().split("/")[1]}',
+                                            '${widget.user.orderItems[index].amount} ${widget.user.orderItems[index].pair.split("/")[1]}',
                                         style: TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.bold),
@@ -201,7 +199,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                                       TextSpan(text: ' for '),
                                       TextSpan(
                                         text:
-                                            '${widget.querySnapshot.documents[index].data["pair"].toString().split("/")[0]}',
+                                            '${widget.user.orderItems[index].pair.split("/")[0]}',
                                         style: TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.bold),
@@ -228,8 +226,8 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                               context: context,
                               builder: (BuildContext context) {
                                 return EditOrderDialog(
-                                    widget.querySnapshot.documents[index],
-                                    widget.userUid);
+                                    widget.user.orderItems[index],
+                                    widget.user.firebasUser.uid);
                               });
                         },
                       )
