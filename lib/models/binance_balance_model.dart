@@ -40,8 +40,10 @@ class Balance {
       balancesMapped = new Map();
       json['balances'].forEach((v) {
         _Balances _balances= new _Balances.fromJson(v);
-        balances.add(_balances);
-        balancesMapped[_balances.asset] = _balances.free;
+        if(_balances.free>0) {
+          balances.add(_balances);
+          balancesMapped[_balances.asset] = _balances.free;
+        }
       });
     }
     permissions = json['permissions'].cast<String>();

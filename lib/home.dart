@@ -7,7 +7,7 @@ import 'package:bitbybit/main_pages/history.dart';
 import 'package:bitbybit/main_pages/dashboard.dart';
 import 'package:bitbybit/main_pages/orders.dart';
 import 'package:bitbybit/models/settings_model.dart';
-import 'package:bitbybit/orders_widget.dart';
+import 'package:bitbybit/main_pages/dashboard_widget/orders_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

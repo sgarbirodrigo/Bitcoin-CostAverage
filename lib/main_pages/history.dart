@@ -24,30 +24,6 @@ class _HistoryPageState extends State<HistoryPage> {
         //mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding:
-                    EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
-                child: Text(
-                  "Trade\'s History",
-                  style: TextStyle(
-                    fontFamily: 'Arial Rounded MT Bold',
-                    fontSize: 24,
-                    shadows: <Shadow>[
-                      Shadow(
-                        offset: Offset(1.0, 1.0),
-                        blurRadius: 10,
-                        color: Color.fromARGB(10, 0, 0, 0),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(child: Container()),
-            ],
-          ),
           Expanded(
             //height: 130,
             child: FutureBuilder<QuerySnapshot>(

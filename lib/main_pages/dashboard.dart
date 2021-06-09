@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../chart_widget.dart';
-import '../orders_widget.dart';
+import 'dashboard_widget/balance_widget.dart';
+import 'dashboard_widget/orders_widget.dart';
 
 class DashboardBitMe extends StatefulWidget {
   final User user;
@@ -40,8 +41,9 @@ class _DashboardBitMeState extends State<DashboardBitMe> {
               ),
             ),*/
               ChartWidget(widget.user, widget.settings),
+              BalanceWidget(widget.user,widget.settings),
               OrdersWidget(widget.user,widget.settings),
-              //HistoryWidget(querySnapshot.data, widget.user.uid)
+             // HistoryWidget(querySnapshot.data, widget.user.uid)
             ],
           ));
     } else {

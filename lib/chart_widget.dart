@@ -231,6 +231,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                 (data.length / 2).ceil().toDouble() * legendHeight +
                     4,
                 child: GridView.builder(
+                  physics: NeverScrollableScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 0,
