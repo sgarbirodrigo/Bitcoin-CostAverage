@@ -46,7 +46,7 @@ class _AppBarBitMeState extends State<AppBarBitMe> {
               onPressed: () => widget.scaffoldKey.currentState.openDrawer(),
             ),
           ),
-          Positioned(
+          /*Positioned(
             top: 0,
             bottom: 0,
             right: 0,
@@ -62,7 +62,7 @@ class _AppBarBitMeState extends State<AppBarBitMe> {
                     },
                   );
                 }),
-          ),
+          ),*/
         ]),
         decoration: BoxDecoration(
             gradient: RadialGradient(

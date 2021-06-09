@@ -39,7 +39,7 @@ class _DrawerBitMeState extends State<DrawerBitMe> {
       // Add a ListView to the drawer. This ensures the user can scroll
       // through the options in the drawer if there isn't enough vertical
       // space to fit everything.
-      child: Column(
+      child: SafeArea(child: Column(
         // Important: Remove any padding from the ListView.
         //padding: EdgeInsets.zero,
         children: <Widget>[
@@ -52,7 +52,7 @@ class _DrawerBitMeState extends State<DrawerBitMe> {
                 children: [
                   Container(
                     height: 120,
-                    padding: EdgeInsets.only(bottom: 8),
+                    //padding: EdgeInsets.only(bottom: 8),
                     child: Image.asset('assets/images/logo.png'),
                   ),
                   Text(
@@ -103,6 +103,7 @@ class _DrawerBitMeState extends State<DrawerBitMe> {
               Navigator.pop(context);
             },
           ),
+          Expanded(child: Container()),
           Divider(
             height: 1,
             thickness: 1,
@@ -137,7 +138,7 @@ class _DrawerBitMeState extends State<DrawerBitMe> {
             height: 16,
           )
         ],
-      ),
+      ),),
     );
 
   }

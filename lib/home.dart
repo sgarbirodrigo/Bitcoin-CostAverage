@@ -13,6 +13,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'home/appbar.dart';
+import 'main_pages/settings.dart';
 import 'models/user_model.dart';
 
 class Home extends StatefulWidget {
@@ -95,6 +96,7 @@ class _HomeState extends State<Home> {
         break;
       case Section.SETTINGS:
         title = "Settings";
+        body = SettingsPage(this.user);
         // TODO: Handle this case.
         break;
     }
