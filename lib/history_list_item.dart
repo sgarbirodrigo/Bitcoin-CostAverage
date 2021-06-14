@@ -8,25 +8,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-class OrderListItem extends StatefulWidget {
-  OrderListItem({Key key, this.querySnapshotData, this.userUid})
+class HistoryItemList extends StatefulWidget {
+  HistoryItemList({Key key, this.querySnapshotData, this.userUid})
       : super(key: key);
 
   final DocumentSnapshot querySnapshotData;
   final String userUid;
 
   @override
-  _OrderListItemState createState() => _OrderListItemState();
+  _HistoryItemListState createState() => _HistoryItemListState();
 }
 
-class _OrderListItemState extends State<OrderListItem> {
+class _HistoryItemListState extends State<HistoryItemList> {
   @override
   Widget build(BuildContext context) {
     //bool active = widget.querySnapshotData.data["active"];
-    BinanceResponseMakeOrder binanceResponse =
-        BinanceResponseMakeOrder.fromJson(
-            json.decode(widget.querySnapshotData.data["response"]));
     bool success = widget.querySnapshotData.data["result"] == "success";
+    BinanceResponseMakeOrder binanceResponse;
+    if(success) {
+      binanceResponse =
+      BinanceResponseMakeOrder.fromJson(
+          json.decode(widget.querySnapshotData.data["response"]));
+    }
+    String date;
+    if(widget.querySnapshotData.data["timestamp"]  !=null){
+      date = DateTime.fromMillisecondsSinceEpoch((widget.querySnapshotData.data["timestamp"] as Timestamp).millisecondsSinceEpoch).toLocal().toString().substring(0,16).replaceAll("-", "/");
+    }else{
+      date = Timestamp.now().toDate().toLocal().toString().substring(0,16).replaceAll("-", "/");
+    }
+
     return Container(
       decoration: BoxDecoration(
           border: Border(
@@ -36,7 +46,7 @@ class _OrderListItemState extends State<OrderListItem> {
             ),
           )
       ),
-      height: 72,
+      height: 96,
       child: Slidable(
         actionPane: SlidableDrawerActionPane(),
         actionExtentRatio: 0.25,
@@ -92,16 +102,25 @@ class _OrderListItemState extends State<OrderListItem> {
                 child: Container(
                   //width: 110,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.center,crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
+                      /*Text(
                         "${success ? "+" : ""}${binanceResponse.filled} ${binanceResponse.symbol.split("/")[0]}",
                         style: TextStyle(
                             fontSize: 14,
                             color: success ? Colors.green : Colors.black),
+                      ),*/
+                      /*Container(
+                        height: 4,
+                      ),*/
+                      Text(
+                        "${date}",
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black),
                       ),
                       Container(
-                        height: 4,
+                        height: 8,
                       ),
                       Container(
                         decoration: BoxDecoration(
@@ -114,7 +133,10 @@ class _OrderListItemState extends State<OrderListItem> {
                           success ? "Success" : "Failure",
                           style: TextStyle(color: Colors.white),
                         ),
-                      )
+                      ),
+
+
+
                     ],
                   ),
                 ),

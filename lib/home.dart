@@ -1,6 +1,6 @@
 import 'package:bitbybit/external/authService.dart';
 import 'package:bitbybit/external/binance_api.dart';
-import 'package:bitbybit/chart_widget.dart';
+import 'package:bitbybit/main_pages/dashboard_widget/chart_widget.dart';
 import 'package:bitbybit/dialog_config.dart';
 import 'package:bitbybit/home/drawer.dart';
 import 'package:bitbybit/main_pages/history.dart';
@@ -43,8 +43,10 @@ class _HomeState extends State<Home> {
     this.user = User(widget.firebaseUser, (user) async {
       setState(() {
         this.user = user;
-        settings.base_coin =
+        /*settings.base_coin =
             this.user.orderItems[0].pair.toString().split("/")[1];
+        */
+        settings.base_pair = this.user.orderItems[0].pair.toString();
       });
       if (await areUserKeysSavedCorrect(this.user)) {
 

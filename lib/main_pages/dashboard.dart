@@ -1,10 +1,10 @@
-
 import 'package:bitbybit/models/settings_model.dart';
 import 'package:bitbybit/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import '../chart_widget.dart';
+import '../line_chart_mean.dart';
+import 'dashboard_widget/chart_widget.dart';
 import 'dashboard_widget/balance_widget.dart';
 import 'dashboard_widget/orders_widget.dart';
 
@@ -26,11 +26,11 @@ class _DashboardBitMeState extends State<DashboardBitMe> {
     if (widget.user != null) {
       return SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              /* Container(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          /* Container(
               padding:
               EdgeInsets.symmetric(horizontal: 4, vertical: 8),
               color: Colors.red,
@@ -40,17 +40,20 @@ class _DashboardBitMeState extends State<DashboardBitMe> {
                 style: TextStyle(color: Colors.white),
               ),
             ),*/
-              ChartWidget(widget.user, widget.settings),
-              BalanceWidget(widget.user,widget.settings),
-              OrdersWidget(widget.user,widget.settings),
-             // HistoryWidget(querySnapshot.data, widget.user.uid)
-            ],
-          ));
+
+
+          ChartWidget(widget.user, widget.settings),
+          PriceAVGChartLine(widget.user,widget.settings),
+          //BalanceWidget(widget.user, widget.settings),
+          //OrdersWidget(widget.user, widget.settings),
+          //Expanded(child: Container())
+          // HistoryWidget(querySnapshot.data, widget.user.uid)
+        ],
+      ));
     } else {
       return Center(
         child: CircularProgressIndicator(),
       );
     }
-
   }
 }

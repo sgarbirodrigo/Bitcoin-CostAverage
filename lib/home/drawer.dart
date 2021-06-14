@@ -44,8 +44,11 @@ class _DrawerBitMeState extends State<DrawerBitMe> {
         //padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
+            padding: EdgeInsets.all(0),
+            margin: EdgeInsets.all(0),
             decoration: BoxDecoration(
               color: Color(0xffF9F8FD),
+              //color: Colors.red
             ),
             child: Center(
               child: Column(
@@ -54,6 +57,7 @@ class _DrawerBitMeState extends State<DrawerBitMe> {
                     height: 120,
                     //padding: EdgeInsets.only(bottom: 8),
                     child: Image.asset('assets/images/logo.png'),
+                    margin: EdgeInsets.only(bottom: 8),
                   ),
                   Text(
                     widget.user.email,

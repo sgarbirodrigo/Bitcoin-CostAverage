@@ -1,11 +1,11 @@
+import 'dart:convert';
+
 import 'package:bitbybit/external/binance_api.dart';
 import 'package:bitbybit/models/binance_balance_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'history_model.dart';
 import 'order_model.dart';
-
-class HistoryItem {}
 
 class UserData {
   String email;
@@ -26,6 +26,7 @@ class UserData {
 class User {
   final FirebaseUser firebasUser;
   List<OrderItem> orderItems = List();
+  List<HistoryItem> historyItems = List();
   Map<String, double> userTotalBuyingAmount = Map();
   Map<String, double> userTotalExpendingAmount = Map();
   Function(User user) onUserDataUpdate;
@@ -39,6 +40,7 @@ class User {
         .orderBy("active", descending: true)
         .snapshots()
         .listen((QuerySnapshot querySnapshot) {
+      orderItems.clear();
       querySnapshot.documents.forEach((DocumentSnapshot orderDocumentSnapshot) {
         OrderItem orderItem = OrderItem.fromJson(orderDocumentSnapshot.data);
         orderItem.documentId = orderDocumentSnapshot.documentID;
@@ -47,13 +49,37 @@ class User {
       _calculateUserStats();
       this.onUserDataUpdate(this);
     });
-    print("-01");
     getBinanceBalance(this).then((Balance balance) {
       this.balance = balance;
       this.onUserDataUpdate(this);
     });
-
-  }
+    Firestore.instance
+        .collection("users")
+        .document(firebasUser.uid)
+        .collection("history")
+        .orderBy("timestamp", descending: false)
+        //.startAt([Timestamp.fromDate(DateTime.now().add(Duration(days: -30)))])
+        .getDocuments()
+        .then((QuerySnapshot value) {
+      if (value.documents.length > 0) {
+        value.documents.forEach((DocumentSnapshot element) {
+          if (element.data["result"] == "success") {
+            /*BinanceResponseMakeOrder binanceResponse =
+            BinanceResponseMakeOrder.fromJson(
+                json.decode(element.data["response"]));
+            */
+            historyItems.add(HistoryItem.fromJson(element.data));
+            //rint("HIstory: ${historyItem}");
+            /*data.add(FlSpot(binanceResponse.timestamp.toDouble(),
+                double.parse(binanceResponse.info.price)));*/
+          }
+        });
+        print(
+            "loaded:${value.documents.length} / saved:${historyItems.length}");
+        this.onUserDataUpdate(this);
+      }
+    });
+    }
 
   Future<UserData> getDocumentData() async {
     DocumentSnapshot documentSnapshot = await Firestore.instance

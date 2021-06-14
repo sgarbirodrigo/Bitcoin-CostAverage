@@ -77,8 +77,8 @@ class _Balances {
 
   _Balances.fromJson(Map<String, dynamic> json) {
     asset = json['asset'];
-    free = double.parse(json['free']);
-    locked = double.parse(json['locked']);
+    free = double.parse(double.parse(json['free']).toStringAsFixed(6));
+    locked = double.parse(double.parse(json['locked']).toStringAsFixed(6));
   }
 
   Map<String, dynamic> toJson() {

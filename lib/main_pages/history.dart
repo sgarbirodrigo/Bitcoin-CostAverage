@@ -1,5 +1,6 @@
+import 'package:bitbybit/line_chart_mean.dart';
 import 'package:bitbybit/models/user_model.dart';
-import 'package:bitbybit/order_list_item.dart';
+import 'package:bitbybit/history_list_item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -24,6 +25,7 @@ class _HistoryPageState extends State<HistoryPage> {
         //mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          //PriceAVGChartLine(widget.user,),
           Expanded(
             //height: 130,
             child: FutureBuilder<QuerySnapshot>(
@@ -31,6 +33,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   .collection("users")
                   .document(widget.user.firebasUser.uid)
                   .collection("history")
+              .orderBy("timestamp",descending: true)
                   .getDocuments(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
@@ -38,7 +41,7 @@ class _HistoryPageState extends State<HistoryPage> {
                       scrollDirection: Axis.vertical,
                       itemCount: snapshot.data.documents.length,
                       itemBuilder: (context, index) {
-                        return OrderListItem(
+                        return HistoryItemList(
                           querySnapshotData: snapshot.data.documents[index],
                           userUid: widget.user.firebasUser.uid,
                         );
