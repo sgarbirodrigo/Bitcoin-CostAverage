@@ -1,4 +1,3 @@
-
 String doubleToValueString(double amount) {
   int numberOfDecimals = 6;
   int integerPart = amount.toInt();
@@ -12,4 +11,10 @@ String doubleToValueString(double amount) {
       double.parse(floatingPart.toStringAsFixed(numberOfDecimals));
   double formattedNumber = trucatedFloatingPart + integerPart;
   return formattedNumber.toString();
+}
+
+double getValueVariation(double price, double avg) {
+  double result = avg / price;
+  result = 1- result;
+  return (result * 100);
 }

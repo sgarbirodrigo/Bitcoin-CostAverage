@@ -193,7 +193,8 @@ class Fills {
     qty = json['qty'];
     commission = json['commission'];
     commissionAsset = json['commissionAsset'];
-    tradeId = json['tradeId'];
+   // print("price: ${price}*${qty} /tradeId ${json['tradeId']}");
+    //tradeId = json['tradeId']??0;
   }
 
   Map<String, dynamic> toJson() {

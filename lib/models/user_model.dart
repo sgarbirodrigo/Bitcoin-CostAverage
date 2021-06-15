@@ -4,6 +4,8 @@ import 'package:bitbybit/external/binance_api.dart';
 import 'package:bitbybit/models/binance_balance_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fl_chart/fl_chart.dart';
+import '../weekindicator.dart';
 import 'history_model.dart';
 import 'order_model.dart';
 
@@ -23,6 +25,54 @@ class UserData {
   }
 }
 
+class PairData {
+  String pair;
+  double max;
+  double min;
+  List<HistoryItem> historyItems = List();
+  double percentage_variation;
+  double coinAccumulated = 0;
+  double avgPrice = 0;
+  Timestamp firstTimestamp;
+  Timestamp lastTimestamp;
+  double totalExpended = 0;
+  List<FlSpot> price_spots = List();
+  List<FlSpot> avg_price_spots = List();
+  PairData();
+
+  PairData addHistoryItem(HistoryItem historyItem) {
+    this.historyItems.add(historyItem);
+    if (this.pair == null) {
+      this.pair = historyItem.order.pair;
+    }
+    if (historyItem.result == TransactinoResult.SUCCESS) {
+      if (this.max != null) {
+        if (this.max < historyItem.response.price) {
+          this.max = historyItem.response.price;
+        }
+      } else {
+        this.max = historyItem.response.price;
+      }
+      if (this.min != null) {
+        if (this.min > historyItem.response.price) {
+          this.min = historyItem.response.price;
+        }
+      } else {
+        this.min = historyItem.response.price;
+      }
+
+      coinAccumulated += historyItem.response.filled;
+      totalExpended += historyItem.response.filled * historyItem.response.price;
+      avgPrice = totalExpended / coinAccumulated;
+      price_spots.add(FlSpot(
+          (historyItem.timestamp.seconds).toDouble(), historyItem.response.price));
+      avg_price_spots
+          .add(FlSpot((historyItem.timestamp.seconds).toDouble(), avgPrice));
+    }
+    return this;
+  }
+}
+
 class User {
   final FirebaseUser firebasUser;
   List<OrderItem> orderItems = List();
@@ -31,6 +81,7 @@ class User {
   Map<String, double> userTotalExpendingAmount = Map();
   Function(User user) onUserDataUpdate;
   Balance balance;
+  Map<String, PairData> pairDataItems = Map();
 
   User(this.firebasUser, this.onUserDataUpdate) {
     Firestore.instance
@@ -63,23 +114,34 @@ class User {
         .then((QuerySnapshot value) {
       if (value.documents.length > 0) {
         value.documents.forEach((DocumentSnapshot element) {
-          if (element.data["result"] == "success") {
-            /*BinanceResponseMakeOrder binanceResponse =
+          /*if (element.data["result"] == "success") {
+            */ /*BinanceResponseMakeOrder binanceResponse =
             BinanceResponseMakeOrder.fromJson(
                 json.decode(element.data["response"]));
             */
-            historyItems.add(HistoryItem.fromJson(element.data));
-            //rint("HIstory: ${historyItem}");
-            /*data.add(FlSpot(binanceResponse.timestamp.toDouble(),
-                double.parse(binanceResponse.info.price)));*/
+          HistoryItem historyItem = HistoryItem.fromJson(element.data);
+          historyItems.add(historyItem);
+
+          if (pairDataItems[historyItem.order.pair] == null) {
+            pairDataItems[historyItem.order.pair] =
+                PairData().addHistoryItem(historyItem);
+          } else {
+            pairDataItems[historyItem.order.pair] =
+                pairDataItems[historyItem.order.pair]
+                    .addHistoryItem(historyItem);
           }
+
+          //rint("HIstory: ${historyItem}");
+          /*data.add(FlSpot(binanceResponse.timestamp.toDouble(),
+                double.parse(binanceResponse.info.price)));*/
+          /*}*/
         });
         print(
             "loaded:${value.documents.length} / saved:${historyItems.length}");
         this.onUserDataUpdate(this);
       }
     });
-    }
+  }
 
   Future<UserData> getDocumentData() async {
     DocumentSnapshot documentSnapshot = await Firestore.instance

@@ -23,8 +23,11 @@ class HistoryItem {
     this.result = data["result"] == "success"
         ? TransactinoResult.SUCCESS
         : TransactinoResult.FAILURE;
-    this.response =
-        BinanceResponseMakeOrder.fromJson(json.decode(data["response"]));
+
+    if(this.result == TransactinoResult.SUCCESS) {
+      this.response =
+          BinanceResponseMakeOrder.fromJson(json.decode(data["response"]));
+    }
     //print("order: ${data["order"]}");
     OrderItem orderItem = OrderItem(
         active: data["order"]["active"],

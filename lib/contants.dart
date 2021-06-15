@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 List<Color> colorsList = [
-  //Color(0xff845bef),
+  Color(0xff845bef),
   Color(0xffF47A1F),
   Color(0xff0293ee),
   Color(0xff13d38e),

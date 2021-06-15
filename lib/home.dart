@@ -86,7 +86,7 @@ class _HomeState extends State<Home> {
           settings: settings,
           user: user,
         );
-        title = "Dashboard";
+        title = "Bit.Me";
         break;
       case Section.ORDERS:
         body = OrdersPage(this.user);

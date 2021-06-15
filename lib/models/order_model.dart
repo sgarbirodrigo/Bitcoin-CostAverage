@@ -1,4 +1,4 @@
-
+import 'package:bitbybit/weekindicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OrderItem {
@@ -9,14 +9,16 @@ class OrderItem {
   String exchange;
   String pair;
   String documentId;
+  Schedule schedule;
 
   OrderItem(
       {this.active,
-        this.amount,
-        this.createdTimestamp,
-        this.updatedTimestamp,
-        this.exchange,
-        this.pair});
+      this.amount,
+      this.createdTimestamp,
+      this.updatedTimestamp,
+      this.exchange,
+      this.pair,
+      this.schedule});
 
   OrderItem.fromJson(Map<String, dynamic> json) {
     active = json['active'];
@@ -25,6 +27,16 @@ class OrderItem {
     updatedTimestamp = json['updatedTimestamp'];
     exchange = json['exchange'];
     pair = json['pair'];
+    if(json["schedule"]!=null) {
+      schedule = Schedule(
+          monday: json['schedule']['monday'] ?? false,
+          tuesday: json['schedule']['tuesday'] ?? false,
+          wednesday: json['schedule']['wednesday'] ?? false,
+          thursday: json['schedule']['thursday'] ?? false,
+          friday: json['schedule']['friday'] ?? false,
+          saturday: json['schedule']['saturday'] ?? false,
+          sunday: json['schedule']['sunday'] ?? false);
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -35,6 +47,7 @@ class OrderItem {
     data['updatedTimestamp'] = this.updatedTimestamp;
     data['exchange'] = this.exchange;
     data['pair'] = this.pair;
+    data['schedule'] = this.schedule;
     return data;
   }
 }

@@ -1,3 +1,4 @@
+import 'package:bitbybit/main_pages/dashboard_widget/orders_widget_v2.dart';
 import 'package:bitbybit/models/settings_model.dart';
 import 'package:bitbybit/models/user_model.dart';
 import 'package:flutter/material.dart';
@@ -24,11 +25,10 @@ class _DashboardBitMeState extends State<DashboardBitMe> {
   @override
   Widget build(BuildContext context) {
     if (widget.user != null) {
-      return SingleChildScrollView(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
+      return Column(
+        //crossAxisAlignment: CrossAxisAlignment.stretch,
+        //mainAxisAlignment: MainAxisAlignment.start,
+        //mainAxisSize: MainAxisSize.min,
         children: [
           /* Container(
               padding:
@@ -41,15 +41,18 @@ class _DashboardBitMeState extends State<DashboardBitMe> {
               ),
             ),*/
 
-
           ChartWidget(widget.user, widget.settings),
-          PriceAVGChartLine(widget.user,widget.settings),
+          Expanded(
+            child: OrdersWidgetv2(widget.user, widget.settings),
+          ),
+          //PriceAVGChartLine(widget.user,widget.settings),
+
           //BalanceWidget(widget.user, widget.settings),
           //OrdersWidget(widget.user, widget.settings),
           //Expanded(child: Container())
           // HistoryWidget(querySnapshot.data, widget.user.uid)
         ],
-      ));
+      );
     } else {
       return Center(
         child: CircularProgressIndicator(),
