@@ -1,6 +1,7 @@
 String doubleToValueString(double amount) {
   int numberOfDecimals = 6;
   int integerPart = amount.toInt();
+
   if (integerPart.toString().length >= numberOfDecimals) {
     numberOfDecimals = 0;
   } else {
@@ -9,7 +10,8 @@ String doubleToValueString(double amount) {
   double floatingPart = amount - integerPart;
   double trucatedFloatingPart =
       double.parse(floatingPart.toStringAsFixed(numberOfDecimals));
-  double formattedNumber = trucatedFloatingPart + integerPart;
+
+  double formattedNumber = double.parse((trucatedFloatingPart + integerPart).toStringAsFixed(numberOfDecimals));
   return formattedNumber.toString();
 }
 

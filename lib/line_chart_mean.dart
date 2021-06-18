@@ -6,6 +6,7 @@ import 'package:bitbybit/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'models/history_model.dart';
 
 class PriceAVGChartLine extends StatefulWidget {
@@ -14,7 +15,7 @@ class PriceAVGChartLine extends StatefulWidget {
   String pair;
   Color color;
 
-  PriceAVGChartLine(this.user, this.settings, this.pair, this.color);
+  PriceAVGChartLine({this.user, this.settings, this.pair, this.color});
 
   @override
   State<StatefulWidget> createState() => PriceAVGChartLineState();
@@ -33,7 +34,16 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
   @override
   void initState() {
     super.initState();
+    //_pairData = widget.user.pairDataItems[widget.pair];
+    //print("pairItens: ${_pairData.historyItems.length}");
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
     _pairData = widget.user.pairDataItems[widget.pair];
+    price_spots = _pairData.price_spots;
+    avg_price_spots = _pairData.avg_price_spots;
     xmax = DateTime.now().millisecondsSinceEpoch / 1000;
     xmin = DateTime.now().add(Duration(days: -7)).millisecondsSinceEpoch / 1000;
     //interval = (1.0 * (60 * 60 * 24)) - 1;
@@ -59,38 +69,92 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
             1000;
         break;
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    price_spots = _pairData.price_spots;
-    avg_price_spots = _pairData.avg_price_spots;
     return Container(
-      height: 86,
+      height: 92,
       //padding: EdgeInsets.,
       child: LineChart(
         LineChartData(
           lineTouchData: LineTouchData(
             touchTooltipData: LineTouchTooltipData(
                 fitInsideHorizontally: true,
-                tooltipBgColor: Colors.blueGrey.withOpacity(0.8),
+                fitInsideVertically: true,
+                showOnTopOfTheChartBoxArea: true,
+                tooltipBgColor: Colors.grey,
                 getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
+                  DateTime date = Timestamp.fromMillisecondsSinceEpoch(
+                          touchedBarSpots[0].x.toInt() * 1000)
+                      .toDate();
+                  String dateString = DateFormat('MMM d').format(date);
+
+                  LineTooltipItem _priceTooltip = LineTooltipItem(
+                      "${dateString}\n",
+                      TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      children: [
+                        TextSpan(
+                          text:
+                              '${"Price: "} ${doubleToValueString(touchedBarSpots[0].y)}',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                        TextSpan(
+                          text: ' ${_pairData.pair.split("/")[1]}',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ]);
+
+                  LineTooltipItem _avgTooltip = LineTooltipItem(
+                      "AVG: ${doubleToValueString(touchedBarSpots[1].y)}",
+                      TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.normal,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: ' ${_pairData.pair.split("/")[1]}',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        )
+                      ]);
+
+                  return [_priceTooltip, _avgTooltip];
                   return touchedBarSpots.map((barSpot) {
                     final flSpot = barSpot;
                     if (flSpot.x == 0) {
                       return null;
                     }
 
+                    //print("date:${dateString}");
                     return LineTooltipItem(
-                      '${doubleToValueString(flSpot.y)}',
+                      '${barSpot.barIndex == 1 ? "${dateString}\n" : ""}',
                       const TextStyle(
                         color: Colors.white,
+                        fontSize: 10,
                         fontWeight: FontWeight.bold,
                       ),
                       children: [
                         TextSpan(
+                          text:
+                              '${barSpot.barIndex == 0 ? "Price: " : "AVG: "} ${doubleToValueString(flSpot.y)}',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                        TextSpan(
                           text: ' ${_pairData.pair.split("/")[1]}',
                           style: TextStyle(
+                            fontSize: 10,
                             fontWeight: FontWeight.normal,
                           ),
                         ),
@@ -122,8 +186,8 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
                 String xTitle = "${timestamp.toDate().day}";
                 //print(xTitle);
                 //return Timestamp.fromMillisecondsSinceEpoch((value*1000).toInt()).toDate()-1000);
-                *//* print(
-                "value: ${value} - dia: ${Timestamp.fromMillisecondsSinceEpoch(value.toInt()).toDate().day.toString()}");*//*
+                */ /* print(
+                "value: ${value} - dia: ${Timestamp.fromMillisecondsSinceEpoch(value.toInt()).toDate().day.toString()}");*/ /*
                 //return Timestamp.fromMillisecondsSinceEpoch(value.toInt()).toDate().day.toString();
                 return xTitle;
               },*/
@@ -157,13 +221,13 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
           ),
           minX: xmin,
           maxX: xmax,
-          maxY: _pairData.max *1.01,
+          maxY: _pairData.max * 1.01,
           minY: _pairData.min * 0.95,
           lineBarsData: [
             LineChartBarData(
               spots: price_spots,
-              isCurved: false,
-              //curveSmoothness: 0,
+              isCurved: true,
+              curveSmoothness: 0.2,
               colors: [
                 widget.color,
               ],
@@ -175,8 +239,8 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
                     return FlDotCirclePainter(
                       radius: 2,
                       color: widget.color,
-                      //strokeWidth: 1,
-                      //strokeColor: Colors.green
+                      strokeWidth: 0,
+                      //trokeColor: Colors.green
                     );
                   }),
 
@@ -211,8 +275,9 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
                   ),
             )
           ],
-        ),swapAnimationCurve:Curves.linear,
-        swapAnimationDuration: Duration(milliseconds: 1000),
+        ),
+        swapAnimationCurve: Curves.linear,
+        swapAnimationDuration: Duration(milliseconds: 250),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:bitbybit/BinanceSymbolModel.dart';
+import 'package:bitbybit/widgets/weekindicator_editor.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,6 +7,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:searchable_dropdown/searchable_dropdown.dart';
+
+import 'models/schedule_model.dart';
 
 class CreateOrderDialog extends StatefulWidget {
   String userUid;
@@ -22,6 +25,7 @@ class CreateOrderDialogState extends State<CreateOrderDialog> {
   String _selectedText = "BTC/USDT";
   Map<String, BinanceSymbol> listOfSymbols;
   TextEditingController _amountController = TextEditingController();
+  Schedule schedule = Schedule();
 
   Future<List<String>> fetchBinancePairList() async {
     final response =
@@ -127,7 +131,7 @@ class CreateOrderDialogState extends State<CreateOrderDialog> {
                                 color: Theme.of(context).primaryColor),
                           ),
                           //hintText: "Amount",
-                          labelText: "Amount",
+                          labelText: "Amount to invest",
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                                 color: Theme.of(context).primaryColor,
@@ -145,9 +149,10 @@ class CreateOrderDialogState extends State<CreateOrderDialog> {
                       ],
                       onChanged: (value) {
                         _amountController.text = value.replaceAll(",", ".");
-                       
+
                         if (_amountController.text.contains(".")) {
-                          _amountController.text = "${_amountController.text.split(".")[0]}.${_amountController.text.split(".")[1]}";
+                          _amountController.text =
+                              "${_amountController.text.split(".")[0]}.${_amountController.text.split(".")[1]}";
                         }
                         _amountController.selection =
                             TextSelection.fromPosition(TextPosition(
@@ -193,7 +198,26 @@ class CreateOrderDialogState extends State<CreateOrderDialog> {
                     height: 16,
                   ),
                   Container(
-                    padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                    height: 36,
+                    child: WeekIndicatorEditor(this.schedule, (schedule) {
+                      setState(() {
+                        this.schedule = schedule;
+                      });
+
+                    }),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 16,),
+                    child: Text(
+                      double.parse(_amountController.text)>=0
+                          ? "Weekly expense: ${double.parse(_amountController.text)*this.schedule.getMultiplier()} ${_selectedText.split("/")[1]}"
+                          : "Weekly expense: ...",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(
+                        top: 8, left: 16, right: 16, bottom: 16),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [

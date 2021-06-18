@@ -1,5 +1,5 @@
 import 'dart:ui';
-
+/*
 List<Color> colorsList = [
   Color(0xff845bef),
   Color(0xffF47A1F),
@@ -11,4 +11,37 @@ List<Color> colorsList = [
   Color(0xff377B2B),
   Color(0xff7AC142),
   Color(0xff007CC3)
+];*/
+List<Color> colorsList = [
+  Color(0xff3366cc),
+  Color(0xffdc3912),
+  Color(0xffff9900),
+  Color(0xff109618),
+  Color(0xff990099),
+  Color(0xff0099c6),
+  Color(0xffdd4477),
+  Color(0xff66aa00),
+  Color(0xffb82e2e),
+  Color(0xff316395),
+  Color(0xff994499),
+  Color(0xff22aa99),
+  Color(0xffaaaa11),
+  Color(0xff6633cc),
+  Color(0xffe67300),
+  Color(0xff8b0707),
+  Color(0xff651067),
+  Color(0xff329262),
+  Color(0xff5574a6),
+  Color(0xff3b3eac),
+  Color(0xffb77322),
+  Color(0xff16d620),
+  Color(0xffb91383),
+  Color(0xfff4359e),
+  Color(0xff9c5935),
+  Color(0xffa9c413),
+  Color(0xff2a778d),
+  Color(0xff668d1c),
+  Color(0xffbea413),
+  Color(0xff0c5922),
+  Color(0xff743411),
 ];

@@ -1,5 +1,7 @@
 import 'package:bitbybit/BinanceSymbolModel.dart';
 import 'package:bitbybit/models/user_model.dart';
+import 'package:bitbybit/tools.dart';
+import 'package:bitbybit/widgets/weekindicator_editor.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,12 +12,14 @@ import 'dart:convert';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 import 'models/order_model.dart';
+import 'models/schedule_model.dart';
 
 class EditOrderDialog extends StatefulWidget {
-  OrderItem  orderItem;
+  OrderItem orderItem;
 
   String userUid;
-  EditOrderDialog(this.orderItem,this.userUid);
+
+  EditOrderDialog(this.orderItem, this.userUid);
 
   @override
   State<StatefulWidget> createState() {
@@ -26,8 +30,11 @@ class EditOrderDialog extends StatefulWidget {
 class EditOrderDialogState extends State<EditOrderDialog> {
   Map<String, BinanceSymbol> listOfSymbols;
   String _selectedText;
-  double _selectedAmount = 0;
+
+  //double _selectedAmount = 0;
   bool _state;
+  Schedule schedule = Schedule();
+  TextEditingController _amountController = TextEditingController();
 
   Future<List<String>> fetchBinancePairList() async {
     final response =
@@ -56,20 +63,24 @@ class EditOrderDialogState extends State<EditOrderDialog> {
 
   @override
   void initState() {
-    _selectedText =  widget.orderItem.pair;
-    _selectedAmount =widget.orderItem.amount;
-    _state =widget.orderItem.active;
+    _selectedText = widget.orderItem.pair;
+    _amountController.text = widget.orderItem.amount.toString();
+    _amountController.addListener(() {
+      setState(() {});
+    });
+    _state = widget.orderItem.active;
+    this.schedule = widget.orderItem.schedule as Schedule;
   }
 
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
-    TextEditingController _amountController = TextEditingController();
-    _amountController.text = _selectedAmount.toString();
+
+    //_amountController.text = _selectedAmount.toString();
 
     return Dialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: FutureBuilder(
         future: fetchBinancePairList(),
@@ -79,7 +90,7 @@ class EditOrderDialogState extends State<EditOrderDialog> {
               key: _formKey,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+                //crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Container(
                     child: Stack(
@@ -196,7 +207,8 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                             _amountController.text = value.replaceAll(",", ".");
 
                             if (_amountController.text.contains(".")) {
-                              _amountController.text = "${_amountController.text.split(".")[0]}.${_amountController.text.split(".")[1]}";
+                              _amountController.text =
+                                  "${_amountController.text.split(".")[0]}.${_amountController.text.split(".")[1]}";
                             }
                             _amountController.selection =
                                 TextSelection.fromPosition(TextPosition(
@@ -222,7 +234,8 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                                 }
                               }
                             }
-                            _selectedAmount = double.parse(value);
+                            _amountController.text =
+                                double.parse(value).toString();
                             return null;
                           },
                         ),
@@ -246,22 +259,46 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                     height: 16,
                   ),
                   Container(
-                    padding: EdgeInsets.only(left: 12, right: 12, bottom: 8),
+                    height: 36,
+                    width: 256,
+                    child: WeekIndicatorEditor(this.schedule, (schedule) {
+                      setState(() {
+                        this.schedule = schedule;
+                      });
+                    }),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: 16,
+                    ),
+                    child: Text(
+                      double.parse(_amountController.text) >= 0
+                          ? "Weekly expense: ${doubleToValueString(double.parse(_amountController.text) * this.schedule.getMultiplier())} ${_selectedText.split("/")[1]}"
+                          : "Weekly expense: ...",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  Container(
+                    padding:
+                        EdgeInsets.only(left: 12, right: 12, bottom: 8, top: 8),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         ElevatedButton(
-                          onPressed: () async{
-                           String result = await showDialog<String>(
+                          onPressed: () async {
+                            String result = await showDialog<String>(
                               context: context,
-                              barrierDismissible: false, // user must tap button!
+                              barrierDismissible: false,
+                              // user must tap button!
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: Text('Delete order'),
                                   content: SingleChildScrollView(
                                     child: Column(
                                       children: <Widget>[
-                                        Text('Are you sure you want to delete this order?'),
+                                        Text(
+                                            'Are you sure you want to delete this order?'),
                                       ],
                                     ),
                                   ),
@@ -273,7 +310,8 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                                             .collection("users")
                                             .document(widget.userUid)
                                             .collection("orders")
-                                            .document(widget.orderItem.documentId)
+                                            .document(
+                                                widget.orderItem.documentId)
                                             .delete();
                                         Navigator.of(context).pop("deleted");
                                       },
@@ -288,9 +326,9 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                                 );
                               },
                             );
-                           if(result == "deleted"){
-                             Navigator.of(context).pop();
-                           }
+                            if (result == "deleted") {
+                              Navigator.of(context).pop();
+                            }
                           },
                           child: Text("DELETE"),
                           style: ButtonStyle(
@@ -310,10 +348,11 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                                   .document(widget.orderItem.documentId)
                                   .updateData({
                                 "active": _state,
-                                "amount": _selectedAmount,
+                                "amount": double.parse(_amountController.text),
                                 //"exchange": "binance",
                                 //"pair": _selectedText,
                                 //"user": userUid,
+                                "schedule": this.schedule.toJson(),
                                 "updatedTimestamp": Timestamp.now()
                               }).then((value) {
                                 Navigator.pop(context);

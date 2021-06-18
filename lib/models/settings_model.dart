@@ -11,16 +11,20 @@ class Settings {
   ScaleLineChart scaleLineChart;
   final Function(Settings newSettings) updateWidgets;
 
-  Settings(this.updateWidgets);
+  Settings(this.updateWidgets) {
+    scaleLineChart = ScaleLineChart.WEEK1;
+  }
 
   void updateBinancePrice() async {
     this.binanceTicker = await fetchBinancePairData();
     this.updateWidgets(this);
   }
-  void updateScaleLineChart(ScaleLineChart scaleLineChart){
+
+  void updateScaleLineChart(ScaleLineChart scaleLineChart) {
     this.scaleLineChart = scaleLineChart;
     this.updateWidgets(this);
   }
+
   void updateBaseCoin(String coin) {
     this.base_coin = coin;
     this.updateWidgets(this);

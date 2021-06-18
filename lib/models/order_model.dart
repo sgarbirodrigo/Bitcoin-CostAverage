@@ -1,4 +1,5 @@
-import 'package:bitbybit/weekindicator.dart';
+import 'package:bitbybit/models/schedule_model.dart';
+import 'package:bitbybit/widgets/weekindicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OrderItem {
@@ -47,7 +48,7 @@ class OrderItem {
     data['updatedTimestamp'] = this.updatedTimestamp;
     data['exchange'] = this.exchange;
     data['pair'] = this.pair;
-    data['schedule'] = this.schedule;
+    data['schedule'] = this.schedule.toJson();
     return data;
   }
 }

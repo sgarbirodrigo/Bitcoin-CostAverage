@@ -51,7 +51,7 @@ Future<bool> areUserKeysNewCorrect(String private_key,String public_key) async {
 }
 
 
-Future<Balance> getBinanceBalance(User user) async {
+Future<Balance>    getBinanceBalance(User user) async {
   UserData userData = await user.getDocumentData();
   if (userData != null) {
     if (userData.private_key != null && userData.public_key != null) {

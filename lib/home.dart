@@ -2,22 +2,21 @@ import 'package:bitbybit/external/authService.dart';
 import 'package:bitbybit/external/binance_api.dart';
 import 'package:bitbybit/main_pages/dashboard_widget/chart_widget.dart';
 import 'package:bitbybit/dialog_config.dart';
-import 'package:bitbybit/home/drawer.dart';
+import 'package:bitbybit/widgets/appbar.dart';
+import 'package:bitbybit/widgets/drawer.dart';
 import 'package:bitbybit/main_pages/history.dart';
 import 'package:bitbybit/main_pages/dashboard.dart';
 import 'package:bitbybit/main_pages/orders.dart';
 import 'package:bitbybit/models/settings_model.dart';
-import 'package:bitbybit/main_pages/dashboard_widget/orders_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-import 'home/appbar.dart';
 import 'main_pages/settings.dart';
 import 'models/user_model.dart';
 
 class Home extends StatefulWidget {
-  Home({Key key, this.title, this.firebaseUser}) : super(key: key);
+  Home({this.title, this.firebaseUser});
+
   final FirebaseUser firebaseUser;
   final String title;
 
@@ -31,7 +30,10 @@ class _HomeState extends State<Home> {
   Settings settings;
   Section section;
   User user;
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
+  /*
+  final _ordersKey = new GlobalKey<ScaffoldState>();*/
   @override
   void initState() {
     this.settings = Settings((settings) {
@@ -40,18 +42,21 @@ class _HomeState extends State<Home> {
       });
     });
     this.settings.updateBinancePrice();
-    this.user = User(widget.firebaseUser, (user) async {
+    this.user = User(widget.firebaseUser, this.settings, (user) async {
       setState(() {
         this.user = user;
-        /*settings.base_coin =
-            this.user.orderItems[0].pair.toString().split("/")[1];
-        */
-        settings.base_pair = this.user.orderItems[0].pair.toString();
+        settings.updateBasePair(this.user.orderItems[0].pair.toString());
       });
       if (await areUserKeysSavedCorrect(this.user)) {
-
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(new SnackBar(backgroundColor: Colors.red,content:Text("You are not connected with Binance.\nCheck your API keys.",textAlign: TextAlign.left,),duration: Duration(days: 1),behavior: SnackBarBehavior.floating,
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            "You are not connected with Binance.\nCheck your API keys.",
+            textAlign: TextAlign.left,
+          ),
+          duration: Duration(days: 1),
+          behavior: SnackBarBehavior.floating,
           action: SnackBarAction(
             label: 'Settings',
             textColor: Colors.yellow,
@@ -64,8 +69,8 @@ class _HomeState extends State<Home> {
                 },
               );
             },
-
-          ),));
+          ),
+        ));
       }
     });
 
@@ -74,8 +79,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> _scaffoldKey =
-        new GlobalKey<ScaffoldState>();
     Widget body;
     String title = "Bit.Me";
     switch (section) {
@@ -83,6 +86,7 @@ class _HomeState extends State<Home> {
         break;
       case Section.DASHBOARD:
         body = DashboardBitMe(
+          /*key: context.widget.key,*/
           settings: settings,
           user: user,
         );
@@ -103,7 +107,7 @@ class _HomeState extends State<Home> {
         break;
     }
     return Scaffold(
-      key: _scaffoldKey,
+      //key: _scaffoldKey,
       appBar: AppBarBitMe(
         user: this.user,
         title: title,
@@ -111,7 +115,7 @@ class _HomeState extends State<Home> {
       ),
       backgroundColor: Color(0xffF9F8FD),
       //backgroundColor: Colors.grey,
-      drawer: DrawerBitMe(
+      drawer: DrawerBitMe(key: _scaffoldKey,
         onPageChange: (Section section) {
           setState(() {
             this.section = section;

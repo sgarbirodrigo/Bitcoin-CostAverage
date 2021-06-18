@@ -2,10 +2,12 @@ import 'dart:convert';
 
 import 'package:bitbybit/external/binance_api.dart';
 import 'package:bitbybit/models/binance_balance_model.dart';
+import 'package:bitbybit/models/settings_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
-import '../weekindicator.dart';
+import '../line_chart_mean.dart';
+import '../widgets/weekindicator.dart';
 import 'history_model.dart';
 import 'order_model.dart';
 
@@ -38,6 +40,7 @@ class PairData {
   double totalExpended = 0;
   List<FlSpot> price_spots = List();
   List<FlSpot> avg_price_spots = List();
+
   PairData();
 
   PairData addHistoryItem(HistoryItem historyItem) {
@@ -64,8 +67,8 @@ class PairData {
       coinAccumulated += historyItem.response.filled;
       totalExpended += historyItem.response.filled * historyItem.response.price;
       avgPrice = totalExpended / coinAccumulated;
-      price_spots.add(FlSpot(
-          (historyItem.timestamp.seconds).toDouble(), historyItem.response.price));
+      price_spots.add(FlSpot((historyItem.timestamp.seconds).toDouble(),
+          historyItem.response.price));
       avg_price_spots
           .add(FlSpot((historyItem.timestamp.seconds).toDouble(), avgPrice));
     }
@@ -82,8 +85,10 @@ class User {
   Function(User user) onUserDataUpdate;
   Balance balance;
   Map<String, PairData> pairDataItems = Map();
+  Settings settings;
+  bool isUpdatingHistory = false;
 
-  User(this.firebasUser, this.onUserDataUpdate) {
+  User(this.firebasUser, this.settings, this.onUserDataUpdate) {
     Firestore.instance
         .collection("users")
         .document(firebasUser.uid)
@@ -98,27 +103,53 @@ class User {
         orderItems.add(orderItem);
       });
       _calculateUserStats();
+
       this.onUserDataUpdate(this);
     });
     getBinanceBalance(this).then((Balance balance) {
       this.balance = balance;
       this.onUserDataUpdate(this);
     });
+    switch (this.settings.scaleLineChart) {
+      case ScaleLineChart.WEEK1:
+        forceUpdateHistoryData(7);
+        break;
+      case ScaleLineChart.WEEK2:
+        forceUpdateHistoryData(14);
+        break;
+      case ScaleLineChart.MONTH1:
+        forceUpdateHistoryData(30);
+        break;
+      case ScaleLineChart.MONTH6:
+        forceUpdateHistoryData(180);
+        break;
+      case ScaleLineChart.YEAR1:
+        forceUpdateHistoryData(365);
+        break;
+    }
+  }
+
+  void forceUpdateHistoryData(int daysToConsider) {
+    this.isUpdatingHistory = true;
     Firestore.instance
         .collection("users")
         .document(firebasUser.uid)
         .collection("history")
         .orderBy("timestamp", descending: false)
-        //.startAt([Timestamp.fromDate(DateTime.now().add(Duration(days: -30)))])
+        .where(
+          'timestamp',
+          isGreaterThan: Timestamp.fromDate(
+            DateTime.now().add(
+              Duration(days: -daysToConsider),
+            ),
+          ),
+        )
         .getDocuments()
         .then((QuerySnapshot value) {
+      historyItems.clear();
+      pairDataItems.clear();
       if (value.documents.length > 0) {
         value.documents.forEach((DocumentSnapshot element) {
-          /*if (element.data["result"] == "success") {
-            */ /*BinanceResponseMakeOrder binanceResponse =
-            BinanceResponseMakeOrder.fromJson(
-                json.decode(element.data["response"]));
-            */
           HistoryItem historyItem = HistoryItem.fromJson(element.data);
           historyItems.add(historyItem);
 
@@ -130,16 +161,10 @@ class User {
                 pairDataItems[historyItem.order.pair]
                     .addHistoryItem(historyItem);
           }
-
-          //rint("HIstory: ${historyItem}");
-          /*data.add(FlSpot(binanceResponse.timestamp.toDouble(),
-                double.parse(binanceResponse.info.price)));*/
-          /*}*/
         });
-        print(
-            "loaded:${value.documents.length} / saved:${historyItems.length}");
-        this.onUserDataUpdate(this);
       }
+      this.isUpdatingHistory = false;
+      this.onUserDataUpdate(this);
     });
   }
 
@@ -157,21 +182,53 @@ class User {
   }
 
   void _calculateUserStats() {
+    userTotalBuyingAmount.keys.forEach((key) {
+      userTotalBuyingAmount[key] = 0;
+      userTotalExpendingAmount[key.split("/")[1]] = 0;
+    });
+
     orderItems.forEach((OrderItem element) {
       double amount = double.parse(element.amount.toString());
       if (element.active) {
-        if (userTotalBuyingAmount[element.pair] != null) {
-          userTotalBuyingAmount[element.pair] += amount;
+        int multiplier = 0;
+        if (element.schedule != null) {
+          if (element.schedule.monday) {
+            multiplier++;
+          }
+          if (element.schedule.tuesday) {
+            multiplier++;
+          }
+          if (element.schedule.wednesday) {
+            multiplier++;
+          }
+          if (element.schedule.thursday) {
+            multiplier++;
+          }
+          if (element.schedule.friday) {
+            multiplier++;
+          }
+          if (element.schedule.saturday) {
+            multiplier++;
+          }
+          if (element.schedule.sunday) {
+            multiplier++;
+          }
         } else {
-          userTotalBuyingAmount[element.pair] = amount;
+          multiplier = 0;
+        }
+        if (userTotalBuyingAmount[element.pair] != null) {
+          userTotalBuyingAmount[element.pair] += amount * multiplier;
+        } else {
+          userTotalBuyingAmount[element.pair] = amount * multiplier;
         }
         if (userTotalExpendingAmount[element.pair.split("/")[1]] != null) {
           userTotalExpendingAmount[element.pair.split("/")[1]] +=
-              double.parse(amount.toStringAsFixed(6));
+              double.parse((amount * multiplier).toStringAsFixed(6));
         } else {
           userTotalExpendingAmount[element.pair.split("/")[1]] =
-              double.parse(amount.toStringAsFixed(6));
+              double.parse((amount * multiplier).toStringAsFixed(6));
         }
+        //print("totalbuying: ${userTotalBuyingAmount}");
       }
     });
   }

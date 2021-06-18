@@ -50,18 +50,7 @@ class _AppBarBitMeState extends State<AppBarBitMe> {
             top: 0,
             bottom: 0,
             right: 0,
-            child: IconButton(
-                color: Colors.white,
-                icon: Icon(Icons.settings),
-                onPressed: () {
-                  showDialog(
-                    barrierDismissible: false,
-                    context: context,
-                    builder: (BuildContext context) {
-                      return DialogConfig(widget.user);
-                    },
-                  );
-                }),
+            child: GestureDetector(onTap: (){},child: Column(children: [Icon(Icons.add,color: Colors.white,),Text("New Order")],),),
           ),*/
         ]),
         decoration: BoxDecoration(

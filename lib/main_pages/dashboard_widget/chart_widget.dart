@@ -50,11 +50,19 @@ class ChartWidget extends StatefulWidget {
 
 class _ChartWidgetState extends State<ChartWidget> {
   int touchedIndex = -1;
-  int _multiplier = 1;
-  List<int> _multiplierOptions = [1, 7, 30];
-  List<String> _multiplierOptionsTitles = ["daily", "weekly", "monthly"];
-  int _multiplierIndex = 0;
+
+  List<int> _multiplierOptions = [7, 30];
+  int _multiplier;
+  List<String> _multiplierOptionsTitles = ["weekly", "monthly"];
+  int _multiplierIndex;
   List<MyChartSectionData> data;
+  final _animatedKey = new GlobalKey();
+
+  @override
+  void initState() {
+    _multiplier = 7;
+    _multiplierIndex = 0;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,15 +70,17 @@ class _ChartWidgetState extends State<ChartWidget> {
     data = convertUserData(widget.user);
 
     return AnimatedContainer(
+      key: _animatedKey,
       duration: Duration(seconds: 3),
+      //height: 600,
       decoration: BoxDecoration(
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 15.0,
-                offset: Offset(0.0, 0.75)
-            )
-          ],
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 15.0,
+            offset: Offset(0.0, 0.75),
+          )
+        ],
         color: Colors.white,
       ),
       child: Column(
@@ -78,14 +88,58 @@ class _ChartWidgetState extends State<ChartWidget> {
           data != null
               ? Column(
                   children: [
-                    Container(height: 16,),
-                    Text(
-                      "Distribution",
-                      style: TextStyle(
-                          fontSize:36,
-                          fontFamily: 'NotoSerif',
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black),
+                    Padding(
+                      padding: EdgeInsets.only(top: 32),
+                      child: Text("Money Distribution",style: TextStyle(fontSize: 36,fontWeight: FontWeight.w600),),
+                    ),
+                    FittedBox(
+                      fit: BoxFit.fitWidth,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          IconButton(
+                              icon: Icon(
+                                Icons.chevron_left,
+                                size: 20,
+                              ),
+                              onPressed: () {
+                                _multiplierIndex -= 1;
+                                if (_multiplierIndex < 0) {
+                                  _multiplierIndex =
+                                      _multiplierOptions.length - 1;
+                                }
+                                setState(() {
+                                  _multiplier =
+                                      _multiplierOptions[_multiplierIndex];
+                                });
+                              }),
+                          Text(
+                            _multiplierOptionsTitles[_multiplierIndex],
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontFamily: 'Arial',
+                                fontSize: 20,
+                                color: Colors.black.withOpacity(0.7)),
+                          ),
+                          IconButton(
+                              icon: Icon(
+                                Icons.chevron_right,
+                                size: 20,
+                              ),
+                              onPressed: () {
+                                _multiplierIndex += 1;
+                                if (_multiplierIndex >
+                                    _multiplierOptions.length - 1) {
+                                  _multiplierIndex = 0;
+                                }
+                                setState(() {
+                                  _multiplier =
+                                      _multiplierOptions[_multiplierIndex];
+                                });
+                              })
+                        ],
+                      ),
                     ),
                     Container(
                       height: MediaQuery.of(context).size.width * 0.7,
@@ -136,99 +190,55 @@ class _ChartWidgetState extends State<ChartWidget> {
                               })),
 
                           swapAnimationDuration:
-                              Duration(milliseconds: 100), // Optional
+                              Duration(milliseconds: 500), // Optional
                           swapAnimationCurve: Curves.linear, // Optional
                         )),
                         widget.user.userTotalExpendingAmount[
                                     widget.settings.base_coin] !=
                                 null
                             ? Center(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  //mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      height: 32,
-                                    ),
-                                    Text(
-                                      "Trading",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontFamily: 'Arial',
-                                          fontSize: 24,
-                                          color: Colors.black.withOpacity(0.7)),
-                                    ),
-                                    Container(),
-                                    FittedBox(
-                                      fit: BoxFit.fitWidth,
-                                      child: Text(
-                                        "${doubleToValueString(widget.user.userTotalExpendingAmount[widget.settings.base_coin] * _multiplier)} ${widget.settings.base_coin}",
+                                child: Container(
+                                  width: 169,
+                                  height: 169,
+                                  decoration: BoxDecoration(
+                                      boxShadow: <BoxShadow>[
+                                        BoxShadow(
+                                            color:
+                                                Colors.black.withOpacity(0.6),
+                                            blurRadius: 16.0,
+                                            offset: Offset(0.0, 0.0))
+                                      ],
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(128))),
+                                  child: Center(
+                                      child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    //mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Trading",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             fontFamily: 'Arial',
                                             fontSize: 24,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black),
+                                            color:
+                                                Colors.black.withOpacity(0.7)),
                                       ),
-                                    ),
-                                    FittedBox(
-                                      fit: BoxFit.fitWidth,
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          IconButton(
-                                              icon: Icon(
-                                                Icons.chevron_left,
-                                                size: 20,
-                                              ),
-                                              onPressed: () {
-                                                _multiplierIndex -= 1;
-                                                if (_multiplierIndex < 0) {
-                                                  _multiplierIndex =
-                                                      _multiplierOptions
-                                                              .length -
-                                                          1;
-                                                }
-                                                setState(() {
-                                                  _multiplier =
-                                                      _multiplierOptions[
-                                                          _multiplierIndex];
-                                                });
-                                              }),
-                                          Text(
-                                            _multiplierOptionsTitles[
-                                                _multiplierIndex],
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontFamily: 'Arial',
-                                                fontSize: 20,
-                                                color: Colors.black
-                                                    .withOpacity(0.7)),
-                                          ),
-                                          IconButton(
-                                              icon: Icon(
-                                                Icons.chevron_right,
-                                                size: 20,
-                                              ),
-                                              onPressed: () {
-                                                _multiplierIndex += 1;
-                                                if (_multiplierIndex >
-                                                    _multiplierOptions.length -
-                                                        1) {
-                                                  _multiplierIndex = 0;
-                                                }
-                                                setState(() {
-                                                  _multiplier =
-                                                      _multiplierOptions[
-                                                          _multiplierIndex];
-                                                });
-                                              })
-                                        ],
+                                      FittedBox(
+                                        fit: BoxFit.fitWidth,
+                                        child: Text(
+                                          "${doubleToValueString(widget.user.userTotalExpendingAmount[widget.settings.base_coin] * _multiplier)} ${widget.settings.base_coin}",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontFamily: 'Arial',
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black),
+                                        ),
                                       ),
-                                    )
-                                  ],
+                                    ],
+                                  )),
                                 ),
                               )
                             : Center(
@@ -243,10 +253,11 @@ class _ChartWidgetState extends State<ChartWidget> {
                               ),
                       ]),
                     ),
-                    Container(
+                    AnimatedContainer(
                       height:
                           ((data.length / 2).ceil().toDouble() * legendHeight) +
                               16,
+                      duration: Duration(milliseconds: 250),
                       child: GridView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -312,7 +323,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                                           children: <TextSpan>[
                                             TextSpan(
                                               text:
-                                                  '${doubleToValueString(data[index].amount)} ${data[index].pair.split("/")[1]}',
+                                                  '${doubleToValueString(data[index].amount * _multiplier)} ${data[index].pair.split("/")[1]}',
                                               style: TextStyle(
                                                   color: Colors.black,
                                                   fontWeight: FontWeight.bold),
@@ -487,7 +498,7 @@ class _ChartWidgetState extends State<ChartWidget> {
       });
       return data;
     } catch (e) {
-      print("Error: ${e}");
+      //print("Error: ${e}");
       return null;
     }
   }
