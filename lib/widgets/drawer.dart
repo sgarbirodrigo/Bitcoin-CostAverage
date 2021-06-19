@@ -10,8 +10,7 @@ class DrawerBitMe extends StatefulWidget {
   final FirebaseUser user;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final Function(Section section) onPageChange;
-  const DrawerBitMe({Key key, this.user, this.scaffoldKey, this.onPageChange})
-      : super(key: key);
+  const DrawerBitMe({this.user, this.scaffoldKey, this.onPageChange});
 
   @override
   State<StatefulWidget> createState() {
@@ -36,9 +35,6 @@ class _DrawerBitMeState extends State<DrawerBitMe> {
 
 
     return Drawer(
-      // Add a ListView to the drawer. This ensures the user can scroll
-      // through the options in the drawer if there isn't enough vertical
-      // space to fit everything.
       child: SafeArea(child: Column(
         // Important: Remove any padding from the ListView.
         //padding: EdgeInsets.zero,

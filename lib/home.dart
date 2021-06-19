@@ -107,7 +107,7 @@ class _HomeState extends State<Home> {
         break;
     }
     return Scaffold(
-      //key: _scaffoldKey,
+      key: _scaffoldKey,
       appBar: AppBarBitMe(
         user: this.user,
         title: title,
@@ -115,7 +115,7 @@ class _HomeState extends State<Home> {
       ),
       backgroundColor: Color(0xffF9F8FD),
       //backgroundColor: Colors.grey,
-      drawer: DrawerBitMe(key: _scaffoldKey,
+      drawer: DrawerBitMe(
         onPageChange: (Section section) {
           setState(() {
             this.section = section;

@@ -11,7 +11,7 @@ class AppBarBitMe extends StatefulWidget implements PreferredSizeWidget{
   final String title;
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight*0.8);
-  const AppBarBitMe({Key key, this.scaffoldKey, this.user,this.title}) : super(key: key);
+  const AppBarBitMe({this.scaffoldKey, this.user,this.title});
   @override
   State<StatefulWidget> createState() {
     return _AppBarBitMeState();

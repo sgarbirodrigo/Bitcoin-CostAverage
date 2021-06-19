@@ -51,7 +51,7 @@ class ChartWidget extends StatefulWidget {
 class _ChartWidgetState extends State<ChartWidget> {
   int touchedIndex = -1;
 
-  List<int> _multiplierOptions = [7, 30];
+  List<int> _multiplierOptions = [1, 4];
   int _multiplier;
   List<String> _multiplierOptionsTitles = ["weekly", "monthly"];
   int _multiplierIndex;
@@ -60,7 +60,7 @@ class _ChartWidgetState extends State<ChartWidget> {
 
   @override
   void initState() {
-    _multiplier = 7;
+    _multiplier = _multiplierOptions[0];
     _multiplierIndex = 0;
   }
 

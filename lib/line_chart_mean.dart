@@ -61,7 +61,7 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
             1000;
         break;
       case ScaleLineChart.MONTH6:
-        xmin = DateTime.now().add(Duration(days: -365)).millisecondsSinceEpoch /
+        xmin = DateTime.now().add(Duration(days: -180)).millisecondsSinceEpoch /
             1000;
         break;
       case ScaleLineChart.YEAR1:
@@ -70,7 +70,7 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
         break;
     }
     return Container(
-      height: 92,
+      height: 64,
       //padding: EdgeInsets.,
       child: LineChart(
         LineChartData(
@@ -128,39 +128,6 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
                       ]);
 
                   return [_priceTooltip, _avgTooltip];
-                  return touchedBarSpots.map((barSpot) {
-                    final flSpot = barSpot;
-                    if (flSpot.x == 0) {
-                      return null;
-                    }
-
-                    //print("date:${dateString}");
-                    return LineTooltipItem(
-                      '${barSpot.barIndex == 1 ? "${dateString}\n" : ""}',
-                      const TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      children: [
-                        TextSpan(
-                          text:
-                              '${barSpot.barIndex == 0 ? "Price: " : "AVG: "} ${doubleToValueString(flSpot.y)}',
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                        TextSpan(
-                          text: ' ${_pairData.pair.split("/")[1]}',
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ],
-                    );
-                  }).toList();
                 }),
             touchCallback: (LineTouchResponse touchResponse) {},
             handleBuiltInTouches: true,
@@ -172,25 +139,6 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
           titlesData: FlTitlesData(
             bottomTitles: SideTitles(
               showTitles: false,
-              //reservedSize: 10,
-              //interval: interval,
-              /*getTextStyles: (value) => const TextStyle(
-                color: Color(0xff72719b),
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-              ),*/
-              //margin: 10,
-              /*getTitles: (value) {
-                Timestamp timestamp = Timestamp.fromMillisecondsSinceEpoch(
-                    (value * 1000).toInt());
-                String xTitle = "${timestamp.toDate().day}";
-                //print(xTitle);
-                //return Timestamp.fromMillisecondsSinceEpoch((value*1000).toInt()).toDate()-1000);
-                */ /* print(
-                "value: ${value} - dia: ${Timestamp.fromMillisecondsSinceEpoch(value.toInt()).toDate().day.toString()}");*/ /*
-                //return Timestamp.fromMillisecondsSinceEpoch(value.toInt()).toDate().day.toString();
-                return xTitle;
-              },*/
             ),
             leftTitles: SideTitles(
               showTitles: false,
@@ -202,20 +150,20 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
             ),
           ),
           borderData: FlBorderData(
-            show: false,
+            show: true,
             border: const Border(
               bottom: BorderSide(
                 color: Colors.transparent,
                 //width: 1,
               ),
               left: BorderSide(
-                color: Colors.transparent,
+                color:  Colors.transparent,
               ),
               right: BorderSide(
                 color: Colors.transparent,
               ),
               top: BorderSide(
-                color: Colors.transparent,
+                color:  Colors.transparent,
               ),
             ),
           ),
