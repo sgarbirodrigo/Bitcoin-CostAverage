@@ -86,6 +86,8 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
                       .toDate();
                   String dateString = DateFormat('MMM d').format(date);
 
+                  //print("${touchedBarSpots[0].barIndex} - ${touchedBarSpots[0].y}");
+                  //int index = touchedBarSpots[0].barIndex;
                   LineTooltipItem _priceTooltip = LineTooltipItem(
                       "${dateString}\n",
                       TextStyle(
@@ -96,7 +98,7 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
                       children: [
                         TextSpan(
                           text:
-                              '${"Price: "} ${doubleToValueString(touchedBarSpots[0].y)}',
+                              '${"Price: "} ${doubleToValueString(touchedBarSpots[touchedBarSpots[0].barIndex==0?0:1].y)}',
                           style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.normal,
@@ -112,7 +114,7 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
                       ]);
 
                   LineTooltipItem _avgTooltip = LineTooltipItem(
-                      "AVG: ${doubleToValueString(touchedBarSpots[1].y)}",
+                      "AVG: ${doubleToValueString(touchedBarSpots[touchedBarSpots[0].barIndex==0?1:0].y)}",
                       TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.normal,

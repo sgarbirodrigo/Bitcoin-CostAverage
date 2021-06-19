@@ -89,6 +89,7 @@ class User {
   bool isUpdatingHistory = false;
 
   User(this.firebasUser, this.settings, this.onUserDataUpdate) {
+
     Firestore.instance
         .collection("users")
         .document(firebasUser.uid)

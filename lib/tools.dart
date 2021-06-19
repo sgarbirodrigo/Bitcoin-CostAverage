@@ -1,5 +1,5 @@
 String doubleToValueString(double amount) {
-  int numberOfDecimals = 6;
+  int numberOfDecimals = 7;
   int integerPart = amount.toInt();
 
   if (integerPart.toString().length >= numberOfDecimals) {

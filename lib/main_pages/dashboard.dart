@@ -22,7 +22,7 @@ class _DashboardBitMeState extends State<DashboardBitMe> {
   Widget build(BuildContext context) {
     if (widget.user != null && widget.user.orderItems!=null) {
       return SingleChildScrollView(
-        physics: ClampingScrollPhysics(),
+        physics: BouncingScrollPhysics(),
         scrollDirection: Axis.vertical,
         child: Container(child: Column(
           mainAxisSize: MainAxisSize.min,

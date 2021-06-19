@@ -30,13 +30,12 @@ class _OrdersWidgetState extends State<OrdersWidget> {
   @override
   void initState() {
     super.initState();
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: MainAxisSize.max,
       children: [
         Container(
           padding: EdgeInsets.only(top: 16),
@@ -134,159 +133,159 @@ class _OrdersWidgetState extends State<OrdersWidget> {
             color: Colors.white,
           ),
           //height: 300,
-          child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: widget.user.orderItems.length,
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                if (widget.user.pairDataItems.isNotEmpty) {
-                  PairData _pairData = widget
-                      .user.pairDataItems[widget.user.orderItems[index].pair];
-                  double _variation;
-                  if (widget.settings.binanceTicker != null) {
-                    _variation = getValueVariation(
-                        widget.settings
-                            .binanceTicker[_pairData.pair.replaceAll("/", "")],
-                        _pairData.avgPrice);
-                  }
-                  ORDER_STATUS order_status;
-                  bool hasProfit = (_variation ?? 0) > 0;
-                  if (_pairData.historyItems.last.result ==
-                      TransactinoResult.FAILURE) {
-                    order_status = ORDER_STATUS.ERROR;
-                  } else {
-                    if (widget.user.orderItems[index].active) {
-                      order_status = ORDER_STATUS.RUNNING;
-                    } else {
-                      order_status = ORDER_STATUS.PAUSED;
+          child: widget.user.pairDataItems.isNotEmpty
+              ? ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  itemCount: widget.user.orderItems.length,
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    PairData _pairData = widget
+                        .user.pairDataItems[widget.user.orderItems[index].pair];
+                    double _variation;
+                    if (widget.settings.binanceTicker != null) {
+                      _variation = getValueVariation(
+                          widget.settings.binanceTicker[
+                              _pairData.pair.replaceAll("/", "")],
+                          _pairData.avgPrice);
                     }
-                  }
-                  Color _selectedColor;
-                  switch(order_status){
-                    case ORDER_STATUS.RUNNING:
-                      _selectedColor = Color(0xff69A67C);
-                      break;
-                    case ORDER_STATUS.PAUSED:
-                      _selectedColor = Colors.grey.withOpacity(0.8);
-                      break;
-                    case ORDER_STATUS.ERROR:
-                      _selectedColor =  Color(0xffA96B6B);
-                      break;
-                    default:
-                      _selectedColor = Colors.grey.withOpacity(0.8);
-                  }
+                    ORDER_STATUS order_status;
+                    bool hasProfit = (_variation ?? 0) > 0;
+                    if (_pairData.historyItems.last.result ==
+                        TransactinoResult.FAILURE) {
+                      order_status = ORDER_STATUS.ERROR;
+                    } else {
+                      if (widget.user.orderItems[index].active) {
+                        order_status = ORDER_STATUS.RUNNING;
+                      } else {
+                        order_status = ORDER_STATUS.PAUSED;
+                      }
+                    }
+                    Color _selectedColor;
+                    switch (order_status) {
+                      case ORDER_STATUS.RUNNING:
+                        _selectedColor = Color(0xff69A67C);
+                        break;
+                      case ORDER_STATUS.PAUSED:
+                        _selectedColor = Colors.grey.withOpacity(0.8);
+                        break;
+                      case ORDER_STATUS.ERROR:
+                        _selectedColor = Color(0xffA96B6B);
+                        break;
+                      default:
+                        _selectedColor = Colors.grey.withOpacity(0.8);
+                    }
 
-                  return Slidable(
-                    actionPane: SlidableDrawerActionPane(),
-                    actionExtentRatio: 0.3,
-                    child: Container(
-                      //height: 64,
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            width: 0.5,
-                            color: Colors.black.withOpacity(0.2),
-                          ),
-                        ),
-                      ),
-                      padding: EdgeInsets.only(
-                          top: 4, bottom: 4, left: 16, right: 8),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 120,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(top: 0),
-                                  child: Text(
-                                    _pairData.pair,
-                                    style: TextStyle(
-                                        fontFamily: 'Arial',
-                                        fontSize: 20,
-                                        //fontWeight: FontWeight.w400,
-                                        color: Colors.black),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 0, bottom: 4),
-                                  child: Text(
-                                      '- ${doubleToValueString( widget.user.orderItems[index].amount)} ${_pairData.pair.split("/")[1]}',
-                                      style: TextStyle(
-                                          color: _selectedColor,
-                                          fontSize: 16)),
-                                ),
-                                WeekIndicator(
-                                    widget.user.orderItems[index].schedule,
-                                    order_status)
-                              ],
+                    return Slidable(
+                      actionPane: SlidableDrawerActionPane(),
+                      actionExtentRatio: 0.3,
+                      child: Container(
+                        //height: 64,
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              width: 0.5,
+                              color: Colors.black.withOpacity(0.2),
                             ),
                           ),
-                          Container(
-                            width: 16,
-                          ),
-                          Expanded(
-                            child: _pairData.price_spots.length > 0
-                                ? PriceAVGChartLine(
-                                    // key:_chartKey,
-                                    user: widget.user,
-                                    settings: widget.settings,
-                                    pair: widget.user.orderItems[index].pair,
-                                    color: Colors.deepPurple
-                                    /*hasProfit ? Colors.green : Colors.red*/)
-                                : Container(
+                        ),
+                        padding: EdgeInsets.only(
+                            top: 4, bottom: 4, left: 16, right: 8),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 120,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 0),
                                     child: Text(
-                                      "Not enough data to show.",
-                                      textAlign: TextAlign.center,
+                                      _pairData.pair,
+                                      style: TextStyle(
+                                          fontFamily: 'Arial',
+                                          fontSize: 20,
+                                          //fontWeight: FontWeight.w400,
+                                          color: Colors.black),
                                     ),
                                   ),
-                          ),
-                          Container(
-                            width: 128,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(top: 0),
-                                  child: Text(
-                                    widget.settings.binanceTicker != null
-                                        ? "${_variation.toStringAsFixed(2)} % "
-                                        : "...",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontFamily: 'Arial',
-                                        fontSize: 20,
-                                        //fontWeight: FontWeight.w400,
-                                        color: Colors.deepPurple
-                                        /*color: hasProfit
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 0, bottom: 4),
+                                    child: Text(
+                                        '- ${doubleToValueString(widget.user.orderItems[index].amount)} ${_pairData.pair.split("/")[1]}',
+                                        style: TextStyle(
+                                            color: _selectedColor,
+                                            fontSize: 16)),
+                                  ),
+                                  WeekIndicator(
+                                      widget.user.orderItems[index].schedule,
+                                      order_status)
+                                ],
+                              ),
+                            ),
+                            Container(
+                              width: 16,
+                            ),
+                            Expanded(
+                              child: _pairData.price_spots.length > 0
+                                  ? PriceAVGChartLine(
+                                      // key:_chartKey,
+                                      user: widget.user,
+                                      settings: widget.settings,
+                                      pair: widget.user.orderItems[index].pair,
+                                      color: Colors.deepPurple
+                                      /*hasProfit ? Colors.green : Colors.red*/)
+                                  : Container(
+                                      child: Text(
+                                        "Not enough data to show.",
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                            ),
+                            Container(
+                              width: 128,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 0),
+                                    child: Text(
+                                      widget.settings.binanceTicker != null
+                                          ? "${_variation.toStringAsFixed(2)} % "
+                                          : "...",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontFamily: 'Arial',
+                                          fontSize: 20,
+                                          //fontWeight: FontWeight.w400,
+                                          color: Colors.deepPurple
+                                          /*color: hasProfit
                                               ? */ /*Color(0xff69A67C)*/ /*
 
                                               : */ /*Color(0xffA96B6B)*/),
+                                    ),
                                   ),
-                                ),
-                                /*Container(
+                                  /*Container(
                                   height: 4,
                                 ),*/
-                                Padding(
-                                  padding: EdgeInsets.only(top: 0, bottom: 4),
-                                  child: Text(
-                                      '+${doubleToValueString(_pairData.coinAccumulated)} ${_pairData.pair.split("/")[0]}',
-                                      style: TextStyle(
-                                          color: Colors.deepPurple,
-                                          fontSize: 16)),
-                                ),
-                                /*Container(
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 0, bottom: 4),
+                                    child: Text(
+                                        '+${doubleToValueString(_pairData.coinAccumulated)} ${_pairData.pair.split("/")[0]}',
+                                        style: TextStyle(
+                                            color: Colors.deepPurple,
+                                            fontSize: 16)),
+                                  ),
+                                  /*Container(
                                   decoration: BoxDecoration(
                                       color: Colors.deepPurple.withOpacity(0.7),
-                                      *//*color: hasProfit
+                                      */ /*color: hasProfit
                                             ? Color(0xff69A67C)
-                                            : Color(0xffA96B6B),*//*
+                                            : Color(0xffA96B6B),*/ /*
                                       borderRadius:
                                           BorderRadius.all(Radius.circular(4))),
                                   padding: EdgeInsets.symmetric(
@@ -298,84 +297,86 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                                         color: Colors.white, fontSize: 12),
                                   ),
                                 ),*/
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    actions: ORDER_STATUS.ERROR == order_status?[
-                       IconSlideAction(
-                      iconWidget: Container(
-                        color: _selectedColor,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              _pairData.historyItems.last.error,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 12),
-                            )
                           ],
                         ),
                       ),
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return EditOrderDialog(
-                                widget.user.orderItems[index],
-                                widget.user.firebasUser.uid);
-                          },
-                        );
-                      },
-                    )]:[],
-                    secondaryActions: [
-                      IconSlideAction(
-                        iconWidget: Container(
-                          color: Colors.deepPurple,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.edit,
-                                size: 24,
-                                color: Colors.white,
-                              ),
-                              Text(
-                                "Edit",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16),
+                      actions: ORDER_STATUS.ERROR == order_status
+                          ? [
+                              IconSlideAction(
+                                iconWidget: Container(
+                                  color: _selectedColor,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        _pairData.historyItems.last.error,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 12),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return EditOrderDialog(
+                                          widget.user.orderItems[index],
+                                          widget.user.firebasUser.uid);
+                                    },
+                                  );
+                                },
                               )
-                            ],
+                            ]
+                          : [],
+                      secondaryActions: [
+                        IconSlideAction(
+                          iconWidget: Container(
+                            color: Colors.deepPurple,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.edit,
+                                  size: 24,
+                                  color: Colors.white,
+                                ),
+                                Text(
+                                  "Edit",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16),
+                                )
+                              ],
+                            ),
                           ),
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return EditOrderDialog(
+                                    widget.user.orderItems[index],
+                                    widget.user.firebasUser.uid);
+                              },
+                            );
+                          },
                         ),
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return EditOrderDialog(
-                                  widget.user.orderItems[index],
-                                  widget.user.firebasUser.uid);
-                            },
-                          );
-                        },
-                      ),
-                    ],
-                  );
-                } else {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              }),
-        )
+                      ],
+                    );
+                  })
+              : Center(
+                  child: CircularProgressIndicator(),
+                ),
+        ),
       ],
     );
   }
