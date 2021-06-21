@@ -1,12 +1,13 @@
 import 'dart:convert';
 
-import 'package:bitbybit/external/binance_api.dart';
-import 'package:bitbybit/models/binance_balance_model.dart';
-import 'package:bitbybit/models/settings_model.dart';
+import 'package:Bit.Me/external/binance_api.dart';
+import 'package:Bit.Me/models/binance_balance_model.dart';
+import 'package:Bit.Me/models/settings_model.dart';
+import 'package:Bit.Me/tools.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
-import '../line_chart_mean.dart';
+import '../charts/line_chart_mean.dart';
 import '../widgets/weekindicator.dart';
 import 'history_model.dart';
 import 'order_model.dart';
@@ -32,7 +33,7 @@ class PairData {
   double max;
   double min;
   List<HistoryItem> historyItems = List();
-  double percentage_variation;
+  double percentage_variation=0;
   double coinAccumulated = 0;
   double avgPrice = 0;
   Timestamp firstTimestamp;
@@ -71,6 +72,7 @@ class PairData {
           historyItem.response.price));
       avg_price_spots
           .add(FlSpot((historyItem.timestamp.seconds).toDouble(), avgPrice));
+      percentage_variation = getValueVariation(historyItem.response.price, avgPrice);
     }
     return this;
   }
@@ -132,6 +134,7 @@ class User {
 
   void forceUpdateHistoryData(int daysToConsider) {
     this.isUpdatingHistory = true;
+    this.onUserDataUpdate(this);
     Firestore.instance
         .collection("users")
         .document(firebasUser.uid)

@@ -1,18 +1,19 @@
 import 'dart:convert';
-
-import 'package:bitbybit/CreateOrderDialog.dart';
-import 'package:bitbybit/binanceOrderMaker.dart';
+import 'package:Bit.Me/binanceOrderMaker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
+
+import 'models/history_model.dart';
 
 class HistoryItemList extends StatefulWidget {
-  HistoryItemList({Key key, this.querySnapshotData, this.userUid})
+  HistoryItemList({Key key, this.historyItem, this.userUid})
       : super(key: key);
 
-  final DocumentSnapshot querySnapshotData;
+  final HistoryItem historyItem;
   final String userUid;
 
   @override
@@ -23,19 +24,8 @@ class _HistoryItemListState extends State<HistoryItemList> {
   @override
   Widget build(BuildContext context) {
     //bool active = widget.querySnapshotData.data["active"];
-    bool success = widget.querySnapshotData.data["result"] == "success";
-    BinanceResponseMakeOrder binanceResponse;
-    if(success) {
-      binanceResponse =
-      BinanceResponseMakeOrder.fromJson(
-          json.decode(widget.querySnapshotData.data["response"]));
-    }
-    String date;
-    if(widget.querySnapshotData.data["timestamp"]  !=null){
-      date = DateTime.fromMillisecondsSinceEpoch((widget.querySnapshotData.data["timestamp"] as Timestamp).millisecondsSinceEpoch).toLocal().toString().substring(0,16).replaceAll("-", "/");
-    }else{
-      date = Timestamp.now().toDate().toLocal().toString().substring(0,16).replaceAll("-", "/");
-    }
+    bool success = widget.historyItem.result == TransactinoResult.SUCCESS;
+    String date = DateFormat("EEE, MMM d, yyyy h a").format(widget.historyItem.timestamp.toDate());
 
     return Container(
       decoration: BoxDecoration(
@@ -62,7 +52,7 @@ class _HistoryItemListState extends State<HistoryItemList> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.querySnapshotData.data["order"]["pair"],
+                      widget.historyItem.order.pair,
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 20,
@@ -75,13 +65,13 @@ class _HistoryItemListState extends State<HistoryItemList> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                  "Price: ${double.parse(binanceResponse.price.toStringAsFixed(8))} ${binanceResponse.symbol.split("/")[1]}",
+                                  "Price: ${double.parse(widget.historyItem.response.price.toStringAsFixed(8))} ${widget.historyItem.response.symbol.split("/")[1]}",
                                   style: TextStyle(
                                       color: Colors.black.withOpacity(0.6),
                                       fontSize: 16,
                                       fontWeight: FontWeight.w400)),
                               Text(
-                                  "Bought ${binanceResponse.filled} ${binanceResponse.symbol.split("/")[0]}",
+                                  "Bought ${widget.historyItem.response.filled} ${widget.historyItem.response.symbol.split("/")[0]}",
                                   style: TextStyle(
                                       color: Colors.black.withOpacity(0.6),
                                       fontSize: 16,
@@ -124,11 +114,11 @@ class _HistoryItemListState extends State<HistoryItemList> {
                       ),
                       Container(
                         decoration: BoxDecoration(
-                            color: success ? Colors.green : Colors.red,
+                            color: success ? Color(0xff69A67C) : Color(0xffA96B6B),
                             borderRadius:
-                                BorderRadius.all(Radius.circular(20))),
+                                BorderRadius.all(Radius.circular(4))),
                         padding: EdgeInsets.only(
-                            left: 8, right: 8, top: 4, bottom: 4),
+                            left: 8, right: 8, top: 2, bottom: 2),
                         child: Text(
                           success ? "Success" : "Failure",
                           style: TextStyle(color: Colors.white),
@@ -159,7 +149,7 @@ class _HistoryItemListState extends State<HistoryItemList> {
                     content: SingleChildScrollView(
                       child: Column(
                         children: <Widget>[
-                          Text('${widget.querySnapshotData.data["response"]}'),
+                          Text('${widget.historyItem.response}'),
                         ],
                       ),
                     ),

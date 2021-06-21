@@ -1,9 +1,10 @@
-import 'package:bitbybit/line_chart_mean.dart';
-import 'package:bitbybit/models/history_model.dart';
-import 'package:bitbybit/models/settings_model.dart';
-import 'package:bitbybit/models/user_model.dart';
-import 'package:bitbybit/tools.dart';
-import 'package:bitbybit/widgets/weekindicator.dart';
+import 'package:Bit.Me/charts/line_chart_mean.dart';
+import 'package:Bit.Me/models/history_model.dart';
+import 'package:Bit.Me/models/settings_model.dart';
+import 'package:Bit.Me/models/user_model.dart';
+import 'package:Bit.Me/page/pairdetail_page.dart';
+import 'package:Bit.Me/tools.dart';
+import 'package:Bit.Me/widgets/weekindicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -37,6 +38,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
+
         Container(
           padding: EdgeInsets.only(top: 16),
           child: Row(
@@ -121,6 +123,10 @@ class _OrdersWidgetState extends State<OrdersWidget> {
             ],
           ),
         ),
+        AnimatedContainer(
+            height: widget.user.isUpdatingHistory ? 4 : 0,
+            duration: Duration(milliseconds: 250),
+            child: LinearProgressIndicator()),
         Container(
           decoration: BoxDecoration(
             boxShadow: <BoxShadow>[
@@ -140,25 +146,21 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
+                    //print("pair: ${widget.user.orderItems[index].pair}");
                     PairData _pairData = widget
                         .user.pairDataItems[widget.user.orderItems[index].pair];
-                    double _variation;
-                    if (widget.settings.binanceTicker != null) {
-                      _variation = getValueVariation(
-                          widget.settings.binanceTicker[
-                              _pairData.pair.replaceAll("/", "")],
-                          _pairData.avgPrice);
-                    }
+                    //print("_pairData: ${_pairData}");
                     ORDER_STATUS order_status;
-                    bool hasProfit = (_variation ?? 0) > 0;
-                    if (_pairData.historyItems.last.result ==
-                        TransactinoResult.FAILURE) {
-                      order_status = ORDER_STATUS.ERROR;
+                    //bool hasProfit = (_variation ?? 0) > 0;
+                    if (widget.user.orderItems[index].active) {
+                      order_status = ORDER_STATUS.RUNNING;
                     } else {
-                      if (widget.user.orderItems[index].active) {
-                        order_status = ORDER_STATUS.RUNNING;
-                      } else {
-                        order_status = ORDER_STATUS.PAUSED;
+                      order_status = ORDER_STATUS.PAUSED;
+                    }
+                    if (_pairData != null) {
+                      if (_pairData.historyItems.last.result ==
+                          TransactinoResult.FAILURE) {
+                        order_status = ORDER_STATUS.ERROR;
                       }
                     }
                     Color _selectedColor;
@@ -180,7 +182,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                       actionPane: SlidableDrawerActionPane(),
                       actionExtentRatio: 0.3,
                       child: Container(
-                        //height: 64,
+                        height: 72,
                         decoration: BoxDecoration(
                           border: Border(
                             bottom: BorderSide(
@@ -203,7 +205,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                                   Padding(
                                     padding: EdgeInsets.only(top: 0),
                                     child: Text(
-                                      _pairData.pair,
+                                      widget.user.orderItems[index].pair,
                                       style: TextStyle(
                                           fontFamily: 'Arial',
                                           fontSize: 20,
@@ -213,11 +215,24 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                                   ),
                                   Padding(
                                     padding: EdgeInsets.only(top: 0, bottom: 4),
-                                    child: Text(
-                                        '- ${doubleToValueString(widget.user.orderItems[index].amount)} ${_pairData.pair.split("/")[1]}',
-                                        style: TextStyle(
-                                            color: _selectedColor,
-                                            fontSize: 16)),
+                                    /*Text(
+                                      ,
+                                      style: TextStyle(
+                                          color: _selectedColor,
+                                          fontSize: 14))*/
+                                    child: RichText(
+                                      text: TextSpan(
+                                          text:
+                                              '- ${doubleToValueString(widget.user.orderItems[index].amount)} ${widget.user.orderItems[index].pair.split("/")[1]}',
+                                          style: TextStyle(color: _selectedColor, fontSize: 14),
+                                          children: [
+                                            TextSpan(
+                                                text: "/day",
+                                                style: TextStyle(
+                                                    color: _selectedColor,
+                                                    fontSize: 10))
+                                          ]),
+                                    ),
                                   ),
                                   WeekIndicator(
                                       widget.user.orderItems[index].schedule,
@@ -229,14 +244,22 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                               width: 16,
                             ),
                             Expanded(
-                              child: _pairData.price_spots.length > 0
-                                  ? PriceAVGChartLine(
-                                      // key:_chartKey,
-                                      user: widget.user,
-                                      settings: widget.settings,
-                                      pair: widget.user.orderItems[index].pair,
-                                      color: Colors.deepPurple
-                                      /*hasProfit ? Colors.green : Colors.red*/)
+                              child: _pairData != null
+                                  ? (_pairData.price_spots.length > 0)
+                                      ? PriceAVGChartLine(
+                                          // key:_chartKey,
+                                          user: widget.user,
+                                          settings: widget.settings,
+                                          pair: widget
+                                              .user.orderItems[index].pair,
+                                          color: Colors.deepPurple
+                                          /*hasProfit ? Colors.green : Colors.red*/)
+                                      : Container(
+                                          child: Text(
+                                            "Not enough data to show.",
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        )
                                   : Container(
                                       child: Text(
                                         "Not enough data to show.",
@@ -254,8 +277,9 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                                   Padding(
                                     padding: EdgeInsets.only(top: 0),
                                     child: Text(
-                                      widget.settings.binanceTicker != null
-                                          ? "${_variation.toStringAsFixed(2)} % "
+                                      widget.settings.binanceTicker != null &&
+                                              _pairData != null
+                                          ? "${_pairData.percentage_variation.toStringAsFixed(2)} % "
                                           : "...",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
@@ -275,7 +299,9 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                                   Padding(
                                     padding: EdgeInsets.only(top: 0, bottom: 4),
                                     child: Text(
-                                        '+${doubleToValueString(_pairData.coinAccumulated)} ${_pairData.pair.split("/")[0]}',
+                                        _pairData != null
+                                            ? '+${doubleToValueString(_pairData.coinAccumulated)} ${_pairData.pair.split("/")[0]}'
+                                            : "...",
                                         style: TextStyle(
                                             color: Colors.deepPurple,
                                             fontSize: 16)),
@@ -368,6 +394,32 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                                     widget.user.firebasUser.uid);
                               },
                             );
+                          },
+                        ),
+                        IconSlideAction(
+                          iconWidget: Container(
+                            color: Colors.deepPurple.shade300,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.history,
+                                  size: 24,
+                                  color: Colors.white,
+                                ),
+                                Text(
+                                  "History",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16),
+                                )
+                              ],
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => PairDetailPage(widget.user.orderItems[index],widget.user.firebasUser,widget.settings)));
                           },
                         ),
                       ],

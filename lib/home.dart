@@ -1,18 +1,16 @@
-import 'package:bitbybit/external/authService.dart';
-import 'package:bitbybit/external/binance_api.dart';
-import 'package:bitbybit/main_pages/dashboard_widget/chart_widget.dart';
-import 'package:bitbybit/dialog_config.dart';
-import 'package:bitbybit/widgets/appbar.dart';
-import 'package:bitbybit/widgets/drawer.dart';
-import 'package:bitbybit/main_pages/history.dart';
-import 'package:bitbybit/main_pages/dashboard.dart';
-import 'package:bitbybit/main_pages/orders.dart';
-import 'package:bitbybit/models/settings_model.dart';
+import 'package:Bit.Me/external/binance_api.dart';
+import 'package:Bit.Me/main_pages/dashboard.dart';
+import 'package:Bit.Me/main_pages/history.dart';
+import 'package:Bit.Me/main_pages/orders.dart';
+import 'package:Bit.Me/main_pages/settings.dart';
+import 'package:Bit.Me/models/settings_model.dart';
+import 'package:Bit.Me/models/user_model.dart';
+import 'package:Bit.Me/widgets/appbar.dart';
+import 'package:Bit.Me/widgets/drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'main_pages/settings.dart';
-import 'models/user_model.dart';
+import 'dialog_config.dart';
 
 class Home extends StatefulWidget {
   Home({this.title, this.firebaseUser});
@@ -45,7 +43,9 @@ class _HomeState extends State<Home> {
     this.user = User(widget.firebaseUser, this.settings, (user) async {
       setState(() {
         this.user = user;
-        settings.updateBasePair(this.user.orderItems[0].pair.toString());
+        if(this.settings.base_pair==null){
+          settings.updateBasePair(this.user.orderItems[0].pair.toString());
+        }
       });
       if (await areUserKeysSavedCorrect(this.user)) {
       } else {
@@ -80,7 +80,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     Widget body;
-    String title = "Bit.Me";
+    String title = "Bitcoin-Cost Average";
     switch (section) {
       case Section.LOGIN:
         break;
@@ -90,7 +90,7 @@ class _HomeState extends State<Home> {
           settings: settings,
           user: user,
         );
-        title = "Bit.Me";
+        title = "Bitcoin-Cost Average";
         break;
       case Section.ORDERS:
         body = OrdersPage(this.user);
@@ -109,7 +109,6 @@ class _HomeState extends State<Home> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBarBitMe(
-        user: this.user,
         title: title,
         scaffoldKey: _scaffoldKey,
       ),

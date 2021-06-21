@@ -1,13 +1,12 @@
-import 'dart:convert';
-import 'package:bitbybit/models/settings_model.dart';
-import 'package:bitbybit/tools.dart';
-import 'package:quiver/iterables.dart';
-import 'package:bitbybit/models/user_model.dart';
+
+import 'package:Bit.Me/tools.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'models/history_model.dart';
+import '../models/history_model.dart';
+import '../models/settings_model.dart';
+import '../models/user_model.dart';
 
 class PriceAVGChartLine extends StatefulWidget {
   User user;
@@ -25,7 +24,7 @@ enum ScaleLineChart { WEEK1, WEEK2, MONTH1, MONTH6, YEAR1 }
 
 class PriceAVGChartLineState extends State<PriceAVGChartLine> {
   //bool isShowingMainData;
-  double interval = 1; //intervalo de 24 horas
+  //double interval = 1; //intervalo de 24 horas
   PairData _pairData;
   List<FlSpot> price_spots = List();
   List<FlSpot> avg_price_spots = List();
@@ -75,6 +74,7 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
       child: LineChart(
         LineChartData(
           lineTouchData: LineTouchData(
+            enabled: false,
             touchTooltipData: LineTouchTooltipData(
                 fitInsideHorizontally: true,
                 fitInsideVertically: true,

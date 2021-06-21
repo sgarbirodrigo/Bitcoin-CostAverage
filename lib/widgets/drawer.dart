@@ -1,5 +1,4 @@
-import 'package:bitbybit/home.dart';
-import 'package:bitbybit/main_pages/dashboard.dart';
+import 'package:Bit.Me/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -81,7 +80,7 @@ class _DrawerBitMeState extends State<DrawerBitMe> {
               Navigator.pop(context);
             },
           ),
-          ListTile(
+          /*ListTile(
             leading: Icon(
               Icons.star_border_outlined,
               color: Colors.deepPurple,
@@ -102,7 +101,7 @@ class _DrawerBitMeState extends State<DrawerBitMe> {
               widget.onPageChange(Section.HISTORY);
               Navigator.pop(context);
             },
-          ),
+          ),*/
           Expanded(child: Container()),
           Divider(
             height: 1,

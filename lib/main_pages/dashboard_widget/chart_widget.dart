@@ -1,6 +1,6 @@
-import 'package:bitbybit/dialog_config.dart';
-import 'package:bitbybit/models/settings_model.dart';
-import 'package:bitbybit/tools.dart';
+import 'package:Bit.Me/dialog_config.dart';
+import 'package:Bit.Me/models/settings_model.dart';
+import 'package:Bit.Me/tools.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -71,7 +71,7 @@ class _ChartWidgetState extends State<ChartWidget> {
 
     return AnimatedContainer(
       key: _animatedKey,
-      duration: Duration(seconds: 3),
+      duration: Duration(seconds: 2),
       //height: 600,
       decoration: BoxDecoration(
         boxShadow: <BoxShadow>[
@@ -194,7 +194,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                           })),
 
                       swapAnimationDuration:
-                      Duration(milliseconds: 500), // Optional
+                      Duration(milliseconds:250), // Optional
                       swapAnimationCurve: Curves.linear, // Optional
                     ),) : Center(
                     child: Container(width: 169,
@@ -392,9 +392,6 @@ class _ChartWidgetState extends State<ChartWidget> {
                           .forEach((key, value) {
                         openPairs.add("$key/$value");
                       });
-                      print(openPairs);
-                      //print(coins[index]);
-                      //print(widget.base_unit);
                       return GestureDetector(
                           onTap: () {
                             //widget.settings.updateBaseCoin(coins[index]);
@@ -406,11 +403,13 @@ class _ChartWidgetState extends State<ChartWidget> {
                             widget.settings.updateBasePair(initial);
                             widget.settings.base_pair_color = colorsList[0];
                           },
-                          child: Container(
+                          child: AnimatedContainer(
                               width: 128,
                               // padding: EdgeInsets.symmetric(horizontal: 12),
                               decoration: BoxDecoration(
                                 //color: Color(0xffF7F8F9),
+                                color:coins[index] ==widget.settings.base_coin
+                                    ? Colors.deepPurple.shade50:Color(0xffF7F8F9),
                                 border: coins[index] ==
                                     widget.settings.base_coin
                                     ? Border(
@@ -426,6 +425,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                                         width: 0.5))
                                     : null,
                               ),
+                              duration: Duration(milliseconds: 250),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 mainAxisSize: MainAxisSize.min,
@@ -434,7 +434,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                                     padding: EdgeInsets.only(
                                         top: coins[index] ==
                                             widget.settings.base_coin
-                                            ? 0
+                                            ? 4
                                             : 8),
                                     child: Text(
                                       "${coins[index]}",

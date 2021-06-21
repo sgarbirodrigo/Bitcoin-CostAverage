@@ -1,4 +1,4 @@
-import 'package:bitbybit/models/user_model.dart';
+import 'package:Bit.Me/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

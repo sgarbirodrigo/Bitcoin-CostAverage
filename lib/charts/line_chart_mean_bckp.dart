@@ -1,13 +1,13 @@
 import 'dart:convert';
-import 'package:bitbybit/models/settings_model.dart';
 import 'package:quiver/iterables.dart';
-import 'package:bitbybit/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'binanceOrderMaker.dart';
-import 'models/history_model.dart';
+import '../binanceOrderMaker.dart';
+import '../models/history_model.dart';
+import '../models/settings_model.dart';
+import '../models/user_model.dart';
 
 class PriceAVGChartLine extends StatefulWidget {
   User user;

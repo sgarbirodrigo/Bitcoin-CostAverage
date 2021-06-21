@@ -1,6 +1,7 @@
-import 'package:bitbybit/auth_pages/forgotPassword.dart';
-import 'package:bitbybit/auth_pages/signIn.dart';
-import 'package:bitbybit/auth_pages/signUp.dart';
+
+import 'package:Bit.Me/auth_pages/forgotPassword.dart';
+import 'package:Bit.Me/auth_pages/signIn.dart';
+import 'package:Bit.Me/auth_pages/signUp.dart';
 import 'package:flutter/material.dart';
 
 class Authentication extends StatefulWidget {

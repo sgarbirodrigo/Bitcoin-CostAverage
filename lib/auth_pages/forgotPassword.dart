@@ -1,4 +1,5 @@
-import 'package:bitbybit/external/authService.dart';
+
+import 'package:Bit.Me/external/authService.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPassword extends StatefulWidget {

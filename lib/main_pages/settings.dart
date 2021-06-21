@@ -1,8 +1,7 @@
 import 'dart:convert';
-
-import 'package:bitbybit/external/binance_api.dart';
-import 'package:bitbybit/models/user_model.dart';
-import 'package:bitbybit/page/qr_code.dart';
+import 'package:Bit.Me/external/binance_api.dart';
+import 'package:Bit.Me/models/user_model.dart';
+import 'package:Bit.Me/page/qr_code.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

@@ -1,5 +1,4 @@
-import 'package:bitbybit/models/schedule_model.dart';
-import 'package:bitbybit/widgets/weekindicator.dart';
+import 'package:Bit.Me/models/schedule_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OrderItem {
@@ -37,6 +36,8 @@ class OrderItem {
           friday: json['schedule']['friday'] ?? false,
           saturday: json['schedule']['saturday'] ?? false,
           sunday: json['schedule']['sunday'] ?? false);
+    }else{
+      schedule = Schedule();
     }
   }
 

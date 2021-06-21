@@ -1,7 +1,7 @@
-import 'package:bitbybit/external/binance_api.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import 'external/binance_api.dart';
 import 'models/binance_balance_model.dart';
 import 'models/user_model.dart';
 

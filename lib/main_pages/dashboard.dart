@@ -1,6 +1,6 @@
-import 'package:bitbybit/main_pages/dashboard_widget/orders_widget.dart';
-import 'package:bitbybit/models/settings_model.dart';
-import 'package:bitbybit/models/user_model.dart';
+import 'package:Bit.Me/main_pages/dashboard_widget/orders_widget.dart';
+import 'package:Bit.Me/models/settings_model.dart';
+import 'package:Bit.Me/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'dashboard_widget/chart_widget.dart';

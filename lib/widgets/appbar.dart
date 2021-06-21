@@ -1,17 +1,14 @@
-import 'package:bitbybit/models/user_model.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:Bit.Me/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import '../dialog_config.dart';
-
 class AppBarBitMe extends StatefulWidget implements PreferredSizeWidget{
   final GlobalKey<ScaffoldState> scaffoldKey;
-  final User user;
   final String title;
+  final bool returnIcon;
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight*0.8);
-  const AppBarBitMe({this.scaffoldKey, this.user,this.title});
+  const AppBarBitMe({this.scaffoldKey, this.title, this.returnIcon=false});
   @override
   State<StatefulWidget> createState() {
     return _AppBarBitMeState();
@@ -38,7 +35,13 @@ class _AppBarBitMeState extends State<AppBarBitMe> {
             top: 0,
             bottom: 0,
             left: 0,
-            child: IconButton(
+            child: widget.returnIcon?IconButton(
+              icon: Icon(
+                Icons.arrow_back_outlined,
+                color: Colors.white,
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            ): IconButton(
               icon: Icon(
                 Icons.dehaze_rounded,
                 color: Colors.white,

@@ -1,7 +1,9 @@
-import 'package:bitbybit/initializer.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'initializer.dart';
 void main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
       statusBarColor: Colors.deepPurple, // Color for Android
@@ -16,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     //FlutterStatusbarcolor.setStatusBarColor(Colors.white);
     return MaterialApp(
-      title: 'BitMe',
+      title: 'Bit.Cost.Average',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         // This is the theme of your application.

@@ -1,6 +1,6 @@
-import 'package:bitbybit/external/authService.dart';
-import 'package:bitbybit/authentication.dart';
-import 'package:bitbybit/home.dart';
+import 'external/authService.dart';
+import 'authentication.dart';
+import 'home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

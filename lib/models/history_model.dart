@@ -1,9 +1,9 @@
 import 'dart:collection';
 import 'dart:convert';
 
-import 'package:bitbybit/models/order_model.dart';
+import 'package:Bit.Me/binanceOrderMaker.dart';
+import 'package:Bit.Me/models/order_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../binanceOrderMaker.dart';
 
 enum TransactinoResult { SUCCESS, FAILURE }
 

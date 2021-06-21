@@ -1,4 +1,4 @@
-import 'package:bitbybit/line_chart_mean.dart';
+import 'package:Bit.Me/charts/line_chart_mean.dart';
 import 'package:flutter/material.dart';
 
 import '../external/binance_api.dart';

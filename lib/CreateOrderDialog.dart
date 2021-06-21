@@ -1,5 +1,4 @@
-import 'package:bitbybit/BinanceSymbolModel.dart';
-import 'package:bitbybit/widgets/weekindicator_editor.dart';
+import 'package:Bit.Me/widgets/weekindicator_editor.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +7,7 @@ import 'dart:convert';
 
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 
+import 'BinanceSymbolModel.dart';
 import 'models/schedule_model.dart';
 
 class CreateOrderDialog extends StatefulWidget {
@@ -242,6 +242,7 @@ class CreateOrderDialogState extends State<CreateOrderDialog> {
                                   "exchange": "binance",
                                   "pair": _selectedText,
                                   "user": widget.userUid,
+                                  "schedule": this.schedule.toJson(),
                                   "createdTimestamp": Timestamp.now()
                                 }).then((value) {
                                   Navigator.pop(context);

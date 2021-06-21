@@ -1,6 +1,5 @@
-import 'package:bitbybit/line_chart_mean.dart';
-import 'package:bitbybit/models/user_model.dart';
-import 'package:bitbybit/history_list_item.dart';
+import 'package:Bit.Me/models/user_model.dart';
+import 'package:Bit.Me/history_list_item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -41,10 +40,11 @@ class _HistoryPageState extends State<HistoryPage> {
                       scrollDirection: Axis.vertical,
                       itemCount: snapshot.data.documents.length,
                       itemBuilder: (context, index) {
-                        return HistoryItemList(
+                        /*return HistoryItemList(
                           querySnapshotData: snapshot.data.documents[index],
                           userUid: widget.user.firebasUser.uid,
-                        );
+                        );*/
+                        return null;
                       });
                 } else {
                   return Center(child: CircularProgressIndicator(),);

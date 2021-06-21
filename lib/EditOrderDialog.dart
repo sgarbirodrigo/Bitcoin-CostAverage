@@ -1,16 +1,12 @@
-import 'package:bitbybit/BinanceSymbolModel.dart';
-import 'package:bitbybit/models/user_model.dart';
-import 'package:bitbybit/tools.dart';
-import 'package:bitbybit/widgets/weekindicator_editor.dart';
+import 'package:Bit.Me/BinanceSymbolModel.dart';
+import 'package:Bit.Me/tools.dart';
+import 'package:Bit.Me/widgets/weekindicator_editor.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-import 'package:searchable_dropdown/searchable_dropdown.dart';
-
 import 'models/order_model.dart';
 import 'models/schedule_model.dart';
 
@@ -69,7 +65,7 @@ class EditOrderDialogState extends State<EditOrderDialog> {
       setState(() {});
     });
     _state = widget.orderItem.active;
-    this.schedule = widget.orderItem.schedule as Schedule;
+    this.schedule = widget.orderItem.schedule;
   }
 
   @override

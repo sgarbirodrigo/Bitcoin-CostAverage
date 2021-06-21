@@ -1,4 +1,4 @@
-import 'package:bitbybit/CreateOrderDialog.dart';
+import 'package:Bit.Me/CreateOrderDialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

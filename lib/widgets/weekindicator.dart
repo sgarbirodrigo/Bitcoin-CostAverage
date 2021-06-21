@@ -1,4 +1,4 @@
-import 'package:bitbybit/models/schedule_model.dart';
+import 'package:Bit.Me/models/schedule_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
