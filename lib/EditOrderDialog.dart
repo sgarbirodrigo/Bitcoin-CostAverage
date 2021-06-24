@@ -1,4 +1,4 @@
-import 'package:Bit.Me/BinanceSymbolModel.dart';
+import 'package:Bit.Me/external/BinanceSymbolModel.dart';
 import 'package:Bit.Me/tools.dart';
 import 'package:Bit.Me/widgets/weekindicator_editor.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -25,11 +25,9 @@ class EditOrderDialog extends StatefulWidget {
 
 class EditOrderDialogState extends State<EditOrderDialog> {
   Map<String, BinanceSymbol> listOfSymbols;
-  String _selectedText;
 
   //double _selectedAmount = 0;
-  bool _state;
-  Schedule schedule = Schedule();
+  //bool _state;
   TextEditingController _amountController = TextEditingController();
 
   Future<List<String>> fetchBinancePairList() async {
@@ -37,7 +35,7 @@ class EditOrderDialogState extends State<EditOrderDialog> {
         await http.get(Uri.https("api.binance.com", "api/v3/exchangeInfo"));
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
-      // then parse the JSON.
+      // then parse the JSON._state
       //print(response);
       List symbols = jsonDecode(response.body)["symbols"];
       listOfSymbols = Map();
@@ -59,13 +57,10 @@ class EditOrderDialogState extends State<EditOrderDialog> {
 
   @override
   void initState() {
-    _selectedText = widget.orderItem.pair;
     _amountController.text = widget.orderItem.amount.toString();
-    _amountController.addListener(() {
+    /* _amountController.addListener(() {
       setState(() {});
-    });
-    _state = widget.orderItem.active;
-    this.schedule = widget.orderItem.schedule;
+    });*/
   }
 
   @override
@@ -94,7 +89,7 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                         Center(
                           child: Container(
                             padding: EdgeInsets.only(top: 16, bottom: 16),
-                            child: Text(_selectedText,
+                            child: Text(widget.orderItem.pair,
                                 style: TextStyle(fontSize: 24)),
                           )
                           /*SearchableDropdown.single(
@@ -146,10 +141,10 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                             width: 64,
                             child: CupertinoSwitch(
                                 activeColor: Theme.of(context).primaryColor,
-                                value: _state,
+                                value: widget.orderItem.active,
                                 onChanged: (state) {
                                   setState(() {
-                                    _state = state;
+                                    widget.orderItem.active = state;
                                   });
                                 }),
                           ),
@@ -178,7 +173,7 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                               prefixIconConstraints:
                                   BoxConstraints(minWidth: 0, minHeight: 0),
                               suffix: Text(
-                                _selectedText.split("/")[1],
+                                widget.orderItem.pair.split("/")[1],
                                 style: TextStyle(
                                     color: Theme.of(context).primaryColor),
                               ),
@@ -215,23 +210,22 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                             if (value == null || value.isEmpty) {
                               return 'Please enter some value';
                             }
-                            if (_selectedText != null) {
-                              if (_selectedText.isNotEmpty) {
-                                double valueDouble = double.parse(value);
-                                double minDouble = double.parse(listOfSymbols[
-                                        _selectedText
-                                            .toString()
-                                            .replaceAll("/", "")]
-                                    .filters[3]
-                                    .minNotional
-                                    .toString());
-                                if (valueDouble < minDouble) {
-                                  return 'Must be bigger than the minimum amount';
-                                }
-                              }
+                            double valueDouble = double.parse(value);
+                            double minDouble = double.parse(listOfSymbols[widget
+                                    .orderItem.pair
+                                    .toString()
+                                    .replaceAll("/", "")]
+                                .filters[3]
+                                .minNotional
+                                .toString());
+                            if (valueDouble < minDouble) {
+                              return 'Must be bigger than the minimum amount';
                             }
+
                             _amountController.text =
                                 double.parse(value).toString();
+                            widget.orderItem.amount =
+                                double.parse(_amountController.text);
                             return null;
                           },
                         ),
@@ -245,9 +239,7 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                     height: 16,
                   ),
                   Text(
-                    _selectedText.isNotEmpty
-                        ? "Minimum amount: ${listOfSymbols[_selectedText.toString().replaceAll("/", "")].filters[3].minNotional.toString()} ${_selectedText.split("/")[1]}"
-                        : "Minimum Amount: ...",
+                        "Minimum amount: ${listOfSymbols[widget.orderItem.pair.toString().replaceAll("/", "")].filters[3].minNotional.toString()} ${widget.orderItem.pair.split("/")[1]}",
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.black, fontSize: 16),
                   ),
@@ -257,9 +249,10 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                   Container(
                     height: 36,
                     width: 256,
-                    child: WeekIndicatorEditor(this.schedule, (schedule) {
+                    child: WeekIndicatorEditor(widget.orderItem.schedule,
+                        (schedule) {
                       setState(() {
-                        this.schedule = schedule;
+                        widget.orderItem.schedule = schedule;
                       });
                     }),
                   ),
@@ -269,7 +262,7 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                     ),
                     child: Text(
                       double.parse(_amountController.text) >= 0
-                          ? "Weekly expense: ${doubleToValueString(double.parse(_amountController.text) * this.schedule.getMultiplier())} ${_selectedText.split("/")[1]}"
+                          ? "Weekly expense: ${doubleToValueString(double.parse(_amountController.text) * widget.orderItem.schedule.getMultiplier())} ${widget.orderItem.pair.split("/")[1]}"
                           : "Weekly expense: ...",
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.black),
@@ -305,11 +298,12 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                                         Firestore.instance
                                             .collection("users")
                                             .document(widget.userUid)
-                                            .collection("orders")
-                                            .document(
-                                                widget.orderItem.documentId)
-                                            .delete();
-                                        Navigator.of(context).pop("deleted");
+                                            .updateData({
+                                          "orders.${widget.orderItem.pair.replaceAll("/", "_")}":
+                                          FieldValue.delete()
+                                        }).then((value) {
+                                          Navigator.of(context).pop("deleted");
+                                        });
                                       },
                                     ),
                                     TextButton(
@@ -337,19 +331,14 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                         ElevatedButton(
                           onPressed: () {
                             if (_formKey.currentState.validate()) {
+                              widget.orderItem.updatedTimestamp =
+                                  Timestamp.now();
                               Firestore.instance
                                   .collection("users")
                                   .document(widget.userUid)
-                                  .collection("orders")
-                                  .document(widget.orderItem.documentId)
                                   .updateData({
-                                "active": _state,
-                                "amount": double.parse(_amountController.text),
-                                //"exchange": "binance",
-                                //"pair": _selectedText,
-                                //"user": userUid,
-                                "schedule": this.schedule.toJson(),
-                                "updatedTimestamp": Timestamp.now()
+                                "orders.${widget.orderItem.pair.replaceAll("/", "_")}":
+                                    widget.orderItem.toJson()
                               }).then((value) {
                                 Navigator.pop(context);
                               });

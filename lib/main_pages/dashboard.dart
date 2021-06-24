@@ -20,20 +20,23 @@ class DashboardBitMe extends StatefulWidget {
 class _DashboardBitMeState extends State<DashboardBitMe> {
   @override
   Widget build(BuildContext context) {
-    if (widget.user != null && widget.user.orderItems!=null) {
+    if (widget.user != null && widget.user.userData!=null) {
       return SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: ClampingScrollPhysics(),
         scrollDirection: Axis.vertical,
-        child: Container(child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ChartWidget(widget.user, widget.settings),
-            OrdersWidget(user: widget.user, settings: widget.settings),
-            /*OrdersWidget(user: widget.user, settings: widget.settings)*/
-          ],
-        ),),
+        child: Container(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ChartWidget(widget.user, widget.settings),
+              OrdersWidget(user: widget.user, settings: widget.settings),
+              /*OrdersWidget(user: widget.user, settings: widget.settings)*/
+            ],
+          ),
+        ),
       );
     } else {
+      print("here");
       return Center(
         child: CircularProgressIndicator(),
       );

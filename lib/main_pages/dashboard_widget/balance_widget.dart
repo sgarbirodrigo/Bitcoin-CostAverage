@@ -272,7 +272,7 @@ class _BalanceWidgetState extends State<BalanceWidget> {
                                       context: context,
                                       builder: (BuildContext context) {
                                         return EditOrderDialog(
-                                            widget.user.orderItems[index],
+                                            widget.user.userData.orders.values.toList()[index],
                                             widget.user.firebasUser.uid);
                                       });
                                 },

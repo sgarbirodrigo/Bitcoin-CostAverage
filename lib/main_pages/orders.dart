@@ -28,9 +28,9 @@ class _OrdersPageState extends State<OrdersPage> {
           mainAxisSpacing: 0,
           childAspectRatio: 1.0,
         ),
-        itemCount: widget.user.orderItems.length + 1,
+        itemCount: widget.user.userData.orders.length + 1,
         itemBuilder: (context, index) {
-          return widget.user.orderItems.length != index
+          return widget.user.userData.orders.length != index
               ? Container(
                   padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
@@ -50,7 +50,7 @@ class _OrdersPageState extends State<OrdersPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          '${widget.user.orderItems[index].pair}',
+                          '${widget.user.userData.orders.values.toList()[index].pair}',
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
@@ -70,7 +70,7 @@ class _OrdersPageState extends State<OrdersPage> {
                             children: <TextSpan>[
                               TextSpan(
                                 text:
-                                    '${widget.user.orderItems[index].amount} ${widget.user.orderItems[index].pair.split("/")[1]}',
+                                    '${widget.user.userData.orders.values.toList()[index].amount} ${widget.user.userData.orders.values.toList()[index].pair.split("/")[1]}',
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold),
@@ -78,7 +78,7 @@ class _OrdersPageState extends State<OrdersPage> {
                               TextSpan(text: '\n for '),
                               TextSpan(
                                 text:
-                                    '${widget.user.orderItems[index].pair.split("/")[0]}',
+                                    '${widget.user.userData.orders.values.toList()[index].pair.split("/")[0]}',
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold),
@@ -103,7 +103,7 @@ class _OrdersPageState extends State<OrdersPage> {
         showDialog(
           context: context,
           builder: (BuildContext context) {
-            return CreateOrderDialog(widget.user.firebasUser.uid);
+            return CreateOrderDialog(widget.user);
           },
         );
       },

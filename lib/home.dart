@@ -1,3 +1,4 @@
+import 'package:Bit.Me/contants.dart';
 import 'package:Bit.Me/external/binance_api.dart';
 import 'package:Bit.Me/main_pages/dashboard.dart';
 import 'package:Bit.Me/main_pages/history.dart';
@@ -10,6 +11,8 @@ import 'package:Bit.Me/widgets/drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'dialog_config.dart';
 
 class Home extends StatefulWidget {
@@ -29,6 +32,7 @@ class _HomeState extends State<Home> {
   Section section;
   User user;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  bool entitlementIsActive = false;
 
   /*
   final _ordersKey = new GlobalKey<ScaffoldState>();*/
@@ -43,8 +47,11 @@ class _HomeState extends State<Home> {
     this.user = User(widget.firebaseUser, this.settings, (user) async {
       setState(() {
         this.user = user;
-        if(this.settings.base_pair==null){
-          settings.updateBasePair(this.user.orderItems[0].pair.toString());
+        if (this.settings.base_pair == null &&
+            this.user.userData != null &&
+            this.user.userData.orders.length > 0) {
+          settings.updateBasePair(
+              this.user.userData.orders.values.toList()[0].pair.toString());
         }
       });
       if (await areUserKeysSavedCorrect(this.user)) {
@@ -75,6 +82,44 @@ class _HomeState extends State<Home> {
     });
 
     section = Section.DASHBOARD;
+    initPlatformState();
+    super.initState();
+  }
+
+  void loadPurchase() async {
+    try {
+      Offerings offerings = await Purchases.getOfferings();
+      if (offerings.current != null &&
+          offerings.current.availablePackages.isNotEmpty) {
+        // Display packages for sale
+      }
+    } on PlatformException catch (e) {
+      // optional error handling
+    }
+  }
+
+  Future<void> initPlatformState() async {
+    // Enable debug logs before calling `configure`.
+    await Purchases.setDebugLogsEnabled(true);
+
+    /*
+    - appUserID is nil, so an anonymous ID will be generated automatically by the Purchases SDK. Read more about Identifying Users here: https://docs.revenuecat.com/docs/user-ids
+    - observerMode is false, so Purchases will automatically handle finishing transactions. Read more about Observer Mode here: https://docs.revenuecat.com/docs/observer-mode
+    */
+    await Purchases.setup(apiKey,
+        appUserId: this.user.firebaseUser.uid, observerMode: false);
+
+    Purchases.addPurchaserInfoUpdateListener((purchaserInfo) async {
+      //appData.appUserID = await Purchases.appUserID;
+
+      PurchaserInfo purchaserInfo = await Purchases.getPurchaserInfo();
+      (purchaserInfo.entitlements.all[entitlementID] != null &&
+              purchaserInfo.entitlements.all[entitlementID].isActive)
+          ? entitlementIsActive = true
+          : entitlementIsActive = false;
+
+      setState(() {});
+    });
   }
 
   @override

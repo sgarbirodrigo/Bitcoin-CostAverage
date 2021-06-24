@@ -1,7 +1,7 @@
 import 'dart:collection';
 import 'dart:convert';
 
-import 'package:Bit.Me/binanceOrderMaker.dart';
+import 'package:Bit.Me/external/binanceOrderMaker.dart';
 import 'package:Bit.Me/models/order_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 

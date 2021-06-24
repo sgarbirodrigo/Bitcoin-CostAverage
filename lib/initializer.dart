@@ -1,5 +1,5 @@
 import 'external/authService.dart';
-import 'authentication.dart';
+import 'auth_pages/authentication.dart';
 import 'home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'package:Bit.Me/models/binance_balance_model.dart';
 import 'package:Bit.Me/models/user_model.dart';
 import 'package:crypto/crypto.dart';
-import '../BinanceSymbolModel.dart';
+import 'BinanceSymbolModel.dart';
 import 'package:http/http.dart' as http;
+
+import 'firestoreService.dart';
 
 Map<String, BinanceSymbol> listOfSymbols;
 
@@ -51,8 +53,8 @@ Future<bool> areUserKeysNewCorrect(String private_key,String public_key) async {
 }
 
 
-Future<Balance>    getBinanceBalance(User user) async {
-  UserData userData = await user.getDocumentData();
+Future<Balance> getBinanceBalance(User user) async {
+  UserData userData = await FirestoreDB.getUserData(user.firebaseUser.uid);
   if (userData != null) {
     if (userData.private_key != null && userData.public_key != null) {
       int timeStamp = DateTime.now().millisecondsSinceEpoch;

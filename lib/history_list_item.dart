@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:Bit.Me/binanceOrderMaker.dart';
+import 'package:Bit.Me/tools.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,11 +36,12 @@ class _HistoryItemListState extends State<HistoryItemList> {
             ),
           )
       ),
-      height: 96,
+      //height:64,
       child: Slidable(
         actionPane: SlidableDrawerActionPane(),
         actionExtentRatio: 0.25,
         child: Container(
+          padding: EdgeInsets.only(top:16,bottom:16,left: 8,right: 8),
           color: Colors.white,
           child: Row(
             children: [
@@ -51,13 +52,13 @@ class _HistoryItemListState extends State<HistoryItemList> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    /*Text(
                       widget.historyItem.order.pair,
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 20,
                           fontWeight: FontWeight.w400),
-                    ),
+                    ),*/
                     success
                         ? Column(
                             mainAxisSize: MainAxisSize.min,
@@ -65,13 +66,13 @@ class _HistoryItemListState extends State<HistoryItemList> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                  "Price: ${double.parse(widget.historyItem.response.price.toStringAsFixed(8))} ${widget.historyItem.response.symbol.split("/")[1]}",
+                                  "Price: ${doubleToValueString(widget.historyItem.response.price)} ${widget.historyItem.response.symbol.split("/")[1]}",
                                   style: TextStyle(
                                       color: Colors.black.withOpacity(0.6),
                                       fontSize: 16,
                                       fontWeight: FontWeight.w400)),
                               Text(
-                                  "Bought ${widget.historyItem.response.filled} ${widget.historyItem.response.symbol.split("/")[0]}",
+                                  "+${widget.historyItem.response.filled} ${widget.historyItem.response.symbol.split("/")[0]}",
                                   style: TextStyle(
                                       color: Colors.black.withOpacity(0.6),
                                       fontSize: 16,
@@ -92,7 +93,7 @@ class _HistoryItemListState extends State<HistoryItemList> {
                 child: Container(
                   //width: 110,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       /*Text(
                         "${success ? "+" : ""}${binanceResponse.filled} ${binanceResponse.symbol.split("/")[0]}",
@@ -149,7 +150,7 @@ class _HistoryItemListState extends State<HistoryItemList> {
                     content: SingleChildScrollView(
                       child: Column(
                         children: <Widget>[
-                          Text('${widget.historyItem.response}'),
+                          Text('${success ? JsonEncoder.withIndent('  ').convert(widget.historyItem.response.toJson()):widget.historyItem.error}'),
                         ],
                       ),
                     ),

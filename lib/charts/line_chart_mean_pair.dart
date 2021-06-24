@@ -1,4 +1,5 @@
 import 'package:Bit.Me/tools.dart';
+import 'package:Bit.Me/widgets/dashed_line.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -73,26 +74,84 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
       case ScaleLineChart.WEEK1:
         xmin = DateTime.now().add(Duration(days: -7)).millisecondsSinceEpoch /
             1000;
+        interval = (2.0 * (60 * 60 * 24)) - 1;
         break;
       case ScaleLineChart.WEEK2:
         xmin = DateTime.now().add(Duration(days: -14)).millisecondsSinceEpoch /
             1000;
+        interval = (4.0 * (60 * 60 * 24)) - 1;
         break;
       case ScaleLineChart.MONTH1:
         xmin = DateTime.now().add(Duration(days: -30)).millisecondsSinceEpoch /
             1000;
+        interval = (8.0 * (60 * 60 * 24)) - 1;
         break;
       case ScaleLineChart.MONTH6:
         xmin = DateTime.now().add(Duration(days: -180)).millisecondsSinceEpoch /
             1000;
+        interval = (28.0 * (60 * 60 * 24)) - 1;
         break;
       case ScaleLineChart.YEAR1:
         xmin = DateTime.now().add(Duration(days: -365)).millisecondsSinceEpoch /
             1000;
+        interval = (55.0 * (60 * 60 * 24)) - 1;
         break;
     }
     return Column(
       children: [
+        Text(
+          "Purchase History",
+          style: TextStyle(
+              fontSize: 24,
+              color: Colors.deepPurple,
+              fontFamily: 'Arial Rounded MT Bold'),
+        ),
+        Container(
+          height: 16,
+        ),
+        Container(
+          height: 64,
+          margin: EdgeInsets.only(left: 16, right: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Column(
+                  children: [
+                    Text("Average Price",textAlign: TextAlign.center,),
+                    Container(
+                      height: 16,
+                    ),
+                    DotWidget(
+                      dashColor: Colors.deepPurple,
+                      dashHeight: 2,
+                      totalWidth: 60,
+                      dashWidth: 8,
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                width: 64,
+              ),
+              Expanded(
+                  child: Column(
+                children: [
+                  Text("Purchase Price",textAlign: TextAlign.center),
+                  Container(
+                    height: 16,
+                  ),
+                  DotWidget(
+                    dashColor: Colors.deepPurple,
+                    dashHeight: 2,
+                    totalWidth: 80,
+                    dashWidth: 50,
+                  )
+                ],
+              ))
+            ],
+          ),
+        ),
         Container(
           height: 200,
           padding: EdgeInsets.only(bottom: 8),
@@ -208,7 +267,7 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                   },
                 ),
                 leftTitles: SideTitles(
-                  interval:  widget.avgPrice * 0.03,
+                  interval: widget.avgPrice * 0.03,
                   showTitles: true,
                   getTextStyles: (value) => const TextStyle(
                     color: Color(0xff75729e),
@@ -218,7 +277,6 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                   getTitles: (value) {
                     /*return "${doubleToValueString(value)}";*/
                     return "";
-
                   },
                   margin: 0,
                   //reservedSize: 84,

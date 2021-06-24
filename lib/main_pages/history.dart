@@ -30,7 +30,7 @@ class _HistoryPageState extends State<HistoryPage> {
             child: FutureBuilder<QuerySnapshot>(
               future: Firestore.instance
                   .collection("users")
-                  .document(widget.user.firebasUser.uid)
+                  .document(widget.user.firebaseUser.uid)
                   .collection("history")
               .orderBy("timestamp",descending: true)
                   .getDocuments(),

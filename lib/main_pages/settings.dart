@@ -33,7 +33,7 @@ class _SettingsPageState extends State<SettingsPage> {
     publickey_controller = TextEditingController();
     Firestore.instance
         .collection("users")
-        .document(widget.user.firebasUser.uid)
+        .document(widget.user.firebaseUser.uid)
         .get()
         .then((DocumentSnapshot userSnapshot) {
       if (userSnapshot.data != null) {
@@ -269,7 +269,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             publickey_controller.text)) {
                           Firestore.instance
                               .collection("users")
-                              .document(widget.user.firebasUser.uid)
+                              .document(widget.user.firebaseUser.uid)
                               .updateData({
                             "private_key": privatekey_controller.text,
                             "public_key": publickey_controller.text,

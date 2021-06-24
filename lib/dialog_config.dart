@@ -28,7 +28,7 @@ class DialogConfigState extends State<DialogConfig> {
         child: FutureBuilder(
           future: Firestore.instance
               .collection("users")
-              .document(widget.user.firebasUser.uid)
+              .document(widget.user.firebaseUser.uid)
               .get(),
           builder: (BuildContext context, snapshot) {
             if (snapshot.hasData) {
@@ -141,7 +141,7 @@ class DialogConfigState extends State<DialogConfig> {
                                 if(await areUserKeysNewCorrect(privatekey_controller.text, publickey_controller.text)){
                                   Firestore.instance
                                       .collection("users")
-                                      .document(widget.user.firebasUser.uid)
+                                      .document(widget.user.firebaseUser.uid)
                                       .updateData({
                                     "private_key": privatekey_controller.text,
                                     "public_key": publickey_controller.text,

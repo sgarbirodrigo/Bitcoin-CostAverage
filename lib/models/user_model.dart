@@ -1,6 +1,8 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:Bit.Me/external/binance_api.dart';
+import 'package:Bit.Me/external/firestoreService.dart';
 import 'package:Bit.Me/models/binance_balance_model.dart';
 import 'package:Bit.Me/models/settings_model.dart';
 import 'package:Bit.Me/tools.dart';
@@ -8,23 +10,29 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../charts/line_chart_mean.dart';
-import '../widgets/weekindicator.dart';
 import 'history_model.dart';
 import 'order_model.dart';
 
 class UserData {
   String email;
-  Timestamp lastUpdateTime;
+  Timestamp lastUpdateTimestamp;
   String public_key;
   String private_key;
+  bool active;
   String uid;
+  Map<String, OrderItem> orders;
 
-  UserData.fromJson(Map<String, dynamic> json) {
-    email = json['email'];
-    lastUpdateTime = json['lastUpdateTime'];
-    public_key = json['public_key'];
-    private_key = json['private_key'];
-    uid = json['uid'];
+  UserData.fromJson(Map<String, dynamic> jsonx) {
+    email = jsonx['email'];
+    lastUpdateTimestamp = jsonx['lastUpdateTimestamp'];
+    active = jsonx['active'];
+    public_key = jsonx['public_key'];
+    private_key = jsonx['private_key'];
+    uid = jsonx['uid'];
+    orders = new Map();
+    (jsonx['orders'] as Map).forEach((key, value) {
+      orders[key] = OrderItem.fromJson(Map<String, dynamic>.from(value));
+    });
   }
 }
 
@@ -33,7 +41,7 @@ class PairData {
   double max;
   double min;
   List<HistoryItem> historyItems = List();
-  double percentage_variation=0;
+  double percentage_variation = 0;
   double coinAccumulated = 0;
   double avgPrice = 0;
   Timestamp firstTimestamp;
@@ -41,6 +49,7 @@ class PairData {
   double totalExpended = 0;
   List<FlSpot> price_spots = List();
   List<FlSpot> avg_price_spots = List();
+  bool isLoaded = false;
 
   PairData();
 
@@ -68,19 +77,26 @@ class PairData {
       coinAccumulated += historyItem.response.filled;
       totalExpended += historyItem.response.filled * historyItem.response.price;
       avgPrice = totalExpended / coinAccumulated;
+      //avgPrice =null;
       price_spots.add(FlSpot((historyItem.timestamp.seconds).toDouble(),
           historyItem.response.price));
       avg_price_spots
           .add(FlSpot((historyItem.timestamp.seconds).toDouble(), avgPrice));
-      percentage_variation = getValueVariation(historyItem.response.price, avgPrice);
+      percentage_variation =
+          getValueVariation(historyItem.response.price, avgPrice);
+      isLoaded = true;
+    } else {
+      isLoaded = false;
     }
     return this;
   }
 }
 
 class User {
-  final FirebaseUser firebasUser;
-  List<OrderItem> orderItems = List();
+  final FirebaseUser firebaseUser;
+  UserData userData;
+
+  /*List<OrderItem> orderItems = List();*/
   List<HistoryItem> historyItems = List();
   Map<String, double> userTotalBuyingAmount = Map();
   Map<String, double> userTotalExpendingAmount = Map();
@@ -90,9 +106,8 @@ class User {
   Settings settings;
   bool isUpdatingHistory = false;
 
-  User(this.firebasUser, this.settings, this.onUserDataUpdate) {
-
-    Firestore.instance
+  User(this.firebaseUser, this.settings, this.onUserDataUpdate) {
+    /*Firestore.instance
         .collection("users")
         .document(firebasUser.uid)
         .collection("orders")
@@ -108,11 +123,17 @@ class User {
       _calculateUserStats();
 
       this.onUserDataUpdate(this);
-    });
-    getBinanceBalance(this).then((Balance balance) {
-      this.balance = balance;
+    });*/
+    FirestoreDB.getUserData(this.firebaseUser.uid).then((UserData userdata) {
+      this.userData = userdata;
+      _calculateUserStats();
       this.onUserDataUpdate(this);
+      getBinanceBalance(this).then((Balance balance) {
+        this.balance = balance;
+        this.onUserDataUpdate(this);
+      });
     });
+
     switch (this.settings.scaleLineChart) {
       case ScaleLineChart.WEEK1:
         forceUpdateHistoryData(7);
@@ -137,7 +158,7 @@ class User {
     this.onUserDataUpdate(this);
     Firestore.instance
         .collection("users")
-        .document(firebasUser.uid)
+        .document(firebaseUser.uid)
         .collection("history")
         .orderBy("timestamp", descending: false)
         .where(
@@ -172,68 +193,57 @@ class User {
     });
   }
 
-  Future<UserData> getDocumentData() async {
-    DocumentSnapshot documentSnapshot = await Firestore.instance
-        .collection("users")
-        .document(this.firebasUser.uid)
-        .get();
-
-    if (documentSnapshot.exists) {
-      return UserData.fromJson(documentSnapshot.data);
-    } else {
-      return null;
-    }
-  }
-
   void _calculateUserStats() {
     userTotalBuyingAmount.keys.forEach((key) {
       userTotalBuyingAmount[key] = 0;
       userTotalExpendingAmount[key.split("/")[1]] = 0;
     });
 
-    orderItems.forEach((OrderItem element) {
-      double amount = double.parse(element.amount.toString());
-      if (element.active) {
-        int multiplier = 0;
-        if (element.schedule != null) {
-          if (element.schedule.monday) {
-            multiplier++;
+    if (this.userData != null) {
+      this.userData.orders.forEach((dynamic pair, dynamic element) {
+        double amount = double.parse(element.amount.toString());
+        if (element.active) {
+          int multiplier = 0;
+          if (element.schedule != null) {
+            if (element.schedule.monday) {
+              multiplier++;
+            }
+            if (element.schedule.tuesday) {
+              multiplier++;
+            }
+            if (element.schedule.wednesday) {
+              multiplier++;
+            }
+            if (element.schedule.thursday) {
+              multiplier++;
+            }
+            if (element.schedule.friday) {
+              multiplier++;
+            }
+            if (element.schedule.saturday) {
+              multiplier++;
+            }
+            if (element.schedule.sunday) {
+              multiplier++;
+            }
+          } else {
+            multiplier = 0;
           }
-          if (element.schedule.tuesday) {
-            multiplier++;
+          if (userTotalBuyingAmount[element.pair] != null) {
+            userTotalBuyingAmount[element.pair] += amount * multiplier;
+          } else {
+            userTotalBuyingAmount[element.pair] = amount * multiplier;
           }
-          if (element.schedule.wednesday) {
-            multiplier++;
+          if (userTotalExpendingAmount[element.pair.split("/")[1]] != null) {
+            userTotalExpendingAmount[element.pair.split("/")[1]] +=
+                double.parse((amount * multiplier).toStringAsFixed(6));
+          } else {
+            userTotalExpendingAmount[element.pair.split("/")[1]] =
+                double.parse((amount * multiplier).toStringAsFixed(6));
           }
-          if (element.schedule.thursday) {
-            multiplier++;
-          }
-          if (element.schedule.friday) {
-            multiplier++;
-          }
-          if (element.schedule.saturday) {
-            multiplier++;
-          }
-          if (element.schedule.sunday) {
-            multiplier++;
-          }
-        } else {
-          multiplier = 0;
+          //print("totalbuying: ${userTotalBuyingAmount}");
         }
-        if (userTotalBuyingAmount[element.pair] != null) {
-          userTotalBuyingAmount[element.pair] += amount * multiplier;
-        } else {
-          userTotalBuyingAmount[element.pair] = amount * multiplier;
-        }
-        if (userTotalExpendingAmount[element.pair.split("/")[1]] != null) {
-          userTotalExpendingAmount[element.pair.split("/")[1]] +=
-              double.parse((amount * multiplier).toStringAsFixed(6));
-        } else {
-          userTotalExpendingAmount[element.pair.split("/")[1]] =
-              double.parse((amount * multiplier).toStringAsFixed(6));
-        }
-        //print("totalbuying: ${userTotalBuyingAmount}");
-      }
-    });
+      });
+    }
   }
 }

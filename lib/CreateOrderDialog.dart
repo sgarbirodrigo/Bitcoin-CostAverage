@@ -1,3 +1,4 @@
+import 'package:Bit.Me/models/order_model.dart';
 import 'package:Bit.Me/widgets/weekindicator_editor.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -7,13 +8,14 @@ import 'dart:convert';
 
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 
-import 'BinanceSymbolModel.dart';
+import 'external/BinanceSymbolModel.dart';
 import 'models/schedule_model.dart';
+import 'models/user_model.dart';
 
 class CreateOrderDialog extends StatefulWidget {
-  String userUid;
+  User user;
 
-  CreateOrderDialog(this.userUid);
+  CreateOrderDialog(this.user);
 
   @override
   State<StatefulWidget> createState() {
@@ -22,7 +24,7 @@ class CreateOrderDialog extends StatefulWidget {
 }
 
 class CreateOrderDialogState extends State<CreateOrderDialog> {
-  String _selectedText = "BTC/USDT";
+  String _selectedPair = "BTC/USDT";
   Map<String, BinanceSymbol> listOfSymbols;
   TextEditingController _amountController = TextEditingController();
   Schedule schedule = Schedule();
@@ -99,13 +101,13 @@ class CreateOrderDialogState extends State<CreateOrderDialog> {
                           child: Text(value),
                         );
                       }).toList(),
-                      value: _selectedText,
+                      value: _selectedPair,
                       hint: "Select a pair",
                       searchHint: "Select a pair",
                       onChanged: (value) {
                         setState(() {
                           //_formKey.currentState.validate();
-                          _selectedText = value;
+                          _selectedPair = value;
                           print(listOfSymbols.keys.toString());
                         });
                       },
@@ -126,7 +128,7 @@ class CreateOrderDialogState extends State<CreateOrderDialog> {
                           prefixIconConstraints:
                               BoxConstraints(minWidth: 0, minHeight: 0),
                           suffix: Text(
-                            _selectedText.split("/")[1],
+                            _selectedPair.split("/")[1],
                             style: TextStyle(
                                 color: Theme.of(context).primaryColor),
                           ),
@@ -163,12 +165,12 @@ class CreateOrderDialogState extends State<CreateOrderDialog> {
                         if (value == null || value.isEmpty) {
                           return 'Please enter some value';
                         }
-                        if (_selectedText != null) {
-                          if (_selectedText.isNotEmpty) {
+                        if (_selectedPair != null) {
+                          if (_selectedPair.isNotEmpty) {
                             double valueDouble =
                                 double.parse(value.replaceAll(",", "."));
                             double minDouble = double.parse(listOfSymbols[
-                                    _selectedText
+                                    _selectedPair
                                         .toString()
                                         .replaceAll("/", "")]
                                 .filters[3]
@@ -189,8 +191,8 @@ class CreateOrderDialogState extends State<CreateOrderDialog> {
                     height: 16,
                   ),
                   Text(
-                    _selectedText.isNotEmpty
-                        ? "Minimum amount: ${listOfSymbols[_selectedText.toString().replaceAll("/", "")].filters[3].minNotional.toString()} ${_selectedText.split("/")[1]}"
+                    _selectedPair.isNotEmpty
+                        ? "Minimum amount: ${listOfSymbols[_selectedPair.toString().replaceAll("/", "")].filters[3].minNotional.toString()} ${_selectedPair.split("/")[1]}"
                         : "Minimum Amount: ...",
                     style: TextStyle(color: Colors.black),
                   ),
@@ -203,14 +205,15 @@ class CreateOrderDialogState extends State<CreateOrderDialog> {
                       setState(() {
                         this.schedule = schedule;
                       });
-
                     }),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(top: 16,),
+                    padding: EdgeInsets.only(
+                      top: 16,
+                    ),
                     child: Text(
-                      double.parse(_amountController.text)>=0
-                          ? "Weekly expense: ${double.parse(_amountController.text)*this.schedule.getMultiplier()} ${_selectedText.split("/")[1]}"
+                      double.parse(_amountController.text) >= 0
+                          ? "Weekly expense: ${double.parse(_amountController.text) * this.schedule.getMultiplier()} ${_selectedPair.split("/")[1]}"
                           : "Weekly expense: ...",
                       style: TextStyle(color: Colors.black),
                     ),
@@ -230,26 +233,29 @@ class CreateOrderDialogState extends State<CreateOrderDialog> {
                           width: 16,
                         ),
                         ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState.validate()) {
-                                Firestore.instance
-                                    .collection("users")
-                                    .document(widget.userUid)
-                                    .collection("orders")
-                                    .add({
-                                  "active": true,
-                                  "amount": _selectedAmount,
-                                  "exchange": "binance",
-                                  "pair": _selectedText,
-                                  "user": widget.userUid,
-                                  "schedule": this.schedule.toJson(),
-                                  "createdTimestamp": Timestamp.now()
-                                }).then((value) {
-                                  Navigator.pop(context);
-                                });
-                              }
-                            },
-                            child: Text("CREATE"))
+                          onPressed: () {
+                            if (_formKey.currentState.validate()) {
+                              OrderItem newOrder = OrderItem(
+                                active: true,
+                                amount: _selectedAmount,
+                                exchange: "Binance",
+                                pair: _selectedPair,
+                                schedule: this.schedule,
+                                createdTimestamp: Timestamp.now(),
+                              );
+                              Firestore.instance
+                                  .collection("users")
+                                  .document(widget.user.firebaseUser.uid)
+                                  .updateData({
+                                "orders.${newOrder.pair.replaceAll("/", "_")}":
+                                    newOrder.toJson()
+                              }).then((value) {
+                                Navigator.pop(context);
+                              });
+                            }
+                          },
+                          child: Text("CREATE"),
+                        )
                       ],
                     ),
                   )

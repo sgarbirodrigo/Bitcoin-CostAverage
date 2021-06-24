@@ -36,7 +36,7 @@ class _PairDetailPageState extends State<PairDetailPage> {
     user = User(widget.firebaseUser, widget.settings, (user) async {
       setState(() {
         this.user = user;
-        widget.settings.updateBasePair(user.orderItems[0].pair.toString());
+        widget.settings.updateBasePair(user.userData.orders.values.toList()[0].pair.toString());
         pairData = this.user.pairDataItems[widget.orderItem.pair];
       });
     });
@@ -53,144 +53,156 @@ class _PairDetailPageState extends State<PairDetailPage> {
         returnIcon: true,
         title: widget.orderItem.pair,
       ),
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            clipBehavior: Clip.antiAlias,
-            padding: EdgeInsets.only( /*bottom: 8,*/ top: 16),
-            margin: EdgeInsets.only(left: 8, right: 8, bottom: 16, top: 8),
-            decoration: BoxDecoration(
-               borderRadius: BorderRadius.all(Radius.circular(8)),
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  blurRadius: 15.0,
-                  offset: Offset(0.0, 0.75),
-                )
-              ],
-              color: Colors.grey.shade50,
-            ),
-            // height: 30,
-            child: pairData != null
-                ? (pairData.price_spots.length > 0)
-                    ? PriceAVGChartLinePair(
-                        user: this.user,
-                        settings: widget.settings,
-                        pair: widget.orderItem.pair,
-                        avgPrice: pairData.avgPrice,
-                        color: Colors.deepPurple)
-                    : Container(
-              height: 200,
-                        width: MediaQuery.of(context).size.width,
-                        child: Text(
-                          "Not enough data to show.",
-                          textAlign: TextAlign.center,
-                        ),
-                      )
-                : Container(
-                    child: Text(
-                      "Not enough data to show.",
-                      textAlign: TextAlign.center,
+      body: pairData != null
+          ? pairData.isLoaded
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      clipBehavior: Clip.antiAlias,
+                      padding: EdgeInsets.only(/*bottom: 8,*/ top: 16),
+                      margin: EdgeInsets.only(
+                          left: 8, right: 8, bottom: 16, top: 8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 15.0,
+                            offset: Offset(0.0, 0.75),
+                          )
+                        ],
+                        color: Colors.grey.shade50,
+                      ),
+                      // height: 30,
+                      child: pairData != null
+                          ? (pairData.price_spots.length > 0)
+                              ? PriceAVGChartLinePair(
+                                  user: this.user,
+                                  settings: widget.settings,
+                                  pair: widget.orderItem.pair,
+                                  avgPrice: pairData.avgPrice,
+                                  color: Colors.deepPurple)
+                              : Container(
+                                  height: 200,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Text(
+                                    "Not enough data to show.",
+                                    textAlign: TextAlign.center,
+                                  ),
+                                )
+                          : Container(
+                              child: Text(
+                                "Not enough data to show.",
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
                     ),
-                  ),
-          ),
-          Container(
-            padding: EdgeInsets.only(left: 8, right: 8, bottom: 16, top: 16),
-            //padding:EdgeInsets.only(left: 8,right: 8,bottom: 16,top: 16),
-            decoration: BoxDecoration(
-             /* borderRadius: BorderRadius.all(Radius.circular(8)),*/
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  blurRadius: 15.0,
-                  offset: Offset(0.0, 0.75),
-                )
-              ],
-              color: Colors.grey.shade50,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text(
-                        "Average Buy Price",
-                        style: _headerStyle,
+                    Container(
+                      padding: EdgeInsets.only(
+                          left: 8, right: 8, bottom: 16, top: 16),
+                      //padding:EdgeInsets.only(left: 8,right: 8,bottom: 16,top: 16),
+                      decoration: BoxDecoration(
+                        /* borderRadius: BorderRadius.all(Radius.circular(8)),*/
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 15.0,
+                            offset: Offset(0.0, 0.75),
+                          )
+                        ],
+                        color: Colors.grey.shade50,
                       ),
-                      Text(
-                        "${doubleToValueString(pairData.avgPrice)} ${pairData.pair.split("/")[1]}",
-                        style: _valueStyle,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Average Buy Price",
+                                  style: _headerStyle,
+                                ),
+                                Text(
+                                  "${doubleToValueString(pairData.avgPrice)} ${pairData.pair.split("/")[1]}",
+                                  style: _valueStyle,
+                                ),
+                                Container(height: 8,),
+                                Text(
+                                  "Invested Amount",
+                                  style: _headerStyle,
+                                ),
+                                Text(
+                                    "${doubleToValueString(pairData.totalExpended)} ${pairData.pair.split("/")[1]}",
+                                    style: _valueStyle)
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "Growth",
+                                    style: _headerStyle,
+                                  ),
+                                  Text(
+                                      "${pairData.percentage_variation.toStringAsFixed(2)}%",
+                                      style: _valueStyle),
+                                  Container(height: 8,),
+                                  Text(
+                                    "Accumulated",
+                                    style: _headerStyle,
+                                  ),
+                                  Text(
+                                      "+${doubleToValueString(pairData.coinAccumulated)} ${pairData.pair.split("/")[0]}",
+                                      style: _valueStyle)
+                                ],
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                              child: Column(
+                            children: [
+                              Text(
+                                "Actual Price",
+                                style: _headerStyle,
+                              ),
+                              Text(
+                                  "${doubleToValueString(widget.settings.binanceTicker[pairData.pair.replaceAll("/", "")])} ${pairData.pair.split("/")[1]}",
+                                  style: _valueStyle),
+                              Container(height: 8,),
+                              Text(
+                                "Actual Worth",
+                                style: _headerStyle,
+                              ),
+                              Text(
+                                  "${doubleToValueString(widget.settings.binanceTicker[pairData.pair.replaceAll("/", "")] * pairData.coinAccumulated)} ${pairData.pair.split("/")[1]}",
+                                  style: _valueStyle)
+                            ],
+                          ))
+                        ],
                       ),
-                      Text(
-                        "Invested Amount",
-                        style: _headerStyle,
-                      ),
-                      Text(
-                          "${doubleToValueString(pairData.totalExpended)} ${pairData.pair.split("/")[1]}",
-                          style: _valueStyle)
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    child: Column(
-                      children: [
-                        Text(
-                          "Growth",
-                          style: _headerStyle,
-                        ),
-                        Text(
-                            "${pairData.percentage_variation.toStringAsFixed(2)}%",
-                            style: _valueStyle),
-                        Text(
-                          "Accumulated",
-                          style: _headerStyle,
-                        ),
-                        Text(
-                            "+${doubleToValueString(pairData.coinAccumulated)} ${pairData.pair.split("/")[0]}",
-                            style: _valueStyle)
-                      ],
                     ),
-                  ),
-                ),
-                Expanded(
-                    child: Column(
-                      children: [
-                        Text(
-                          "Actual Price",
-                          style: _headerStyle,
-                        ),
-                        Text(
-                            "${doubleToValueString(widget.settings.binanceTicker[pairData.pair.replaceAll("/", "")])} ${pairData.pair.split("/")[0]}",
-                            style: _valueStyle),
-                        Text(
-                          "Actual Worth",
-                          style: _headerStyle,
-                        ),
-                        Text(
-                            "${doubleToValueString(widget.settings.binanceTicker[pairData.pair.replaceAll("/", "")] * pairData.coinAccumulated)} ${pairData.pair.split("/")[0]}",
-                            style: _valueStyle)
-                      ],
-                    ))
-              ],
+                    Container(height: 16,),
+                    Expanded(
+                        child: ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            itemCount: pairData.historyItems.length,
+                            itemBuilder: (context, index) {
+                              return HistoryItemList(
+                                historyItem: pairData.historyItems[
+                                    pairData.historyItems.length - index - 1],
+                                userUid: widget.firebaseUser.uid,
+                              );
+                            }))
+                  ],
+                )
+              : Center(child: Text("No order has been executed yet."))
+          : Center(
+              child: CircularProgressIndicator(),
             ),
-          ),
-          Expanded(
-              child: ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  itemCount: pairData.historyItems.length,
-                  itemBuilder: (context, index) {
-                    return HistoryItemList(
-                      historyItem: pairData.historyItems[
-                          pairData.historyItems.length - index - 1],
-                      userUid: widget.firebaseUser.uid,
-                    );
-                  }))
-        ],
-      ),
     );
   }
 }
