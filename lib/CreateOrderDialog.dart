@@ -1,4 +1,5 @@
 import 'package:Bit.Me/models/order_model.dart';
+import 'package:Bit.Me/tools.dart';
 import 'package:Bit.Me/widgets/weekindicator_editor.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -75,7 +76,7 @@ class CreateOrderDialogState extends State<CreateOrderDialog> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    width: 156,
+                    width: 200,
                     child: SearchableDropdown.single(
                       icon: null,
                       displayClearIcon: false,
@@ -213,7 +214,7 @@ class CreateOrderDialogState extends State<CreateOrderDialog> {
                     ),
                     child: Text(
                       double.parse(_amountController.text) >= 0
-                          ? "Weekly expense: ${double.parse(_amountController.text) * this.schedule.getMultiplier()} ${_selectedPair.split("/")[1]}"
+                          ? "Weekly expense: ${doubleToValueString(double.parse(_amountController.text) * this.schedule.getMultiplier())} ${_selectedPair.split("/")[1]}"
                           : "Weekly expense: ...",
                       style: TextStyle(color: Colors.black),
                     ),

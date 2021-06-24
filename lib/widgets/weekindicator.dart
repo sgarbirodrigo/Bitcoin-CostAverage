@@ -6,7 +6,7 @@ enum ORDER_STATUS { RUNNING, PAUSED, ERROR }
 
 class WeekIndicator extends StatefulWidget {
   Schedule schedule;
-ORDER_STATUS order_status;
+  ORDER_STATUS order_status;
   WeekIndicator(this.schedule,this.order_status);
 
   @override
@@ -23,6 +23,11 @@ class _WeekIndicatorState extends State<WeekIndicator> {
   @override
   void initState() {
     super.initState();
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
     switch(widget.order_status){
       case ORDER_STATUS.RUNNING:
         _selectedColor = Color(0xff69A67C);
@@ -36,15 +41,8 @@ class _WeekIndicatorState extends State<WeekIndicator> {
       default:
         _selectedColor = Colors.grey.withOpacity(0.8);
     }
-
     _notSelectedTextStyle = TextStyle(color: _selectedColor);
     _notSelectedColor = _selectedColor.withOpacity(0.2);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-
-
     double borderRadius = 4;
     return Container(
       height: 18,

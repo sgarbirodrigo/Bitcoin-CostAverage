@@ -9,13 +9,12 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'models/order_model.dart';
 import 'models/schedule_model.dart';
+import 'models/user_model.dart';
 
 class EditOrderDialog extends StatefulWidget {
   OrderItem orderItem;
-
-  String userUid;
-
-  EditOrderDialog(this.orderItem, this.userUid);
+  User user;
+  EditOrderDialog(this.orderItem, this.user);
 
   @override
   State<StatefulWidget> createState() {
@@ -297,7 +296,7 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                                       onPressed: () {
                                         Firestore.instance
                                             .collection("users")
-                                            .document(widget.userUid)
+                                            .document(widget.user.firebaseUser.uid)
                                             .updateData({
                                           "orders.${widget.orderItem.pair.replaceAll("/", "_")}":
                                           FieldValue.delete()
@@ -319,6 +318,7 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                             if (result == "deleted") {
                               Navigator.of(context).pop();
                             }
+                            widget.user.updateUser();
                           },
                           child: Text("DELETE"),
                           style: ButtonStyle(
@@ -335,7 +335,7 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                                   Timestamp.now();
                               Firestore.instance
                                   .collection("users")
-                                  .document(widget.userUid)
+                                  .document(widget.user.firebaseUser.uid)
                                   .updateData({
                                 "orders.${widget.orderItem.pair.replaceAll("/", "_")}":
                                     widget.orderItem.toJson()

@@ -107,33 +107,7 @@ class User {
   bool isUpdatingHistory = false;
 
   User(this.firebaseUser, this.settings, this.onUserDataUpdate) {
-    /*Firestore.instance
-        .collection("users")
-        .document(firebasUser.uid)
-        .collection("orders")
-        .orderBy("active", descending: true)
-        .snapshots()
-        .listen((QuerySnapshot querySnapshot) {
-      orderItems.clear();
-      querySnapshot.documents.forEach((DocumentSnapshot orderDocumentSnapshot) {
-        OrderItem orderItem = OrderItem.fromJson(orderDocumentSnapshot.data);
-        orderItem.documentId = orderDocumentSnapshot.documentID;
-        orderItems.add(orderItem);
-      });
-      _calculateUserStats();
-
-      this.onUserDataUpdate(this);
-    });*/
-    FirestoreDB.getUserData(this.firebaseUser.uid).then((UserData userdata) {
-      this.userData = userdata;
-      _calculateUserStats();
-      this.onUserDataUpdate(this);
-      getBinanceBalance(this).then((Balance balance) {
-        this.balance = balance;
-        this.onUserDataUpdate(this);
-      });
-    });
-
+    updateUser();
     switch (this.settings.scaleLineChart) {
       case ScaleLineChart.WEEK1:
         forceUpdateHistoryData(7);
@@ -151,6 +125,17 @@ class User {
         forceUpdateHistoryData(365);
         break;
     }
+  }
+  void updateUser(){
+    FirestoreDB.getUserData(this.firebaseUser.uid).then((UserData userdata) {
+      this.userData = userdata;
+      _calculateUserStats();
+      this.onUserDataUpdate(this);
+      getBinanceBalance(this).then((Balance balance) {
+        this.balance = balance;
+        this.onUserDataUpdate(this);
+      });
+    });
   }
 
   void forceUpdateHistoryData(int daysToConsider) {
