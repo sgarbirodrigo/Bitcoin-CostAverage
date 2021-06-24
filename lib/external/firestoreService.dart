@@ -11,10 +11,10 @@ class FirestoreDB{
         .collection("users")
         .document(uid)
         .get();
-    print("uid:${uid}");
-    print("document${documentSnapshot.data}");
+    //print("uid:${uid}");
+    //print("document${documentSnapshot.data}");
     if (documentSnapshot.exists) {
-      print("exist");
+      //print("exist");
       return UserData.fromJson(documentSnapshot.data);
     } else {
       return null;

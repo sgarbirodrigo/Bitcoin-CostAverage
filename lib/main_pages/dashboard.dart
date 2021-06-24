@@ -20,7 +20,7 @@ class DashboardBitMe extends StatefulWidget {
 class _DashboardBitMeState extends State<DashboardBitMe> {
   @override
   Widget build(BuildContext context) {
-    if (widget.user != null && widget.user.userData!=null) {
+    if (widget.user != null && widget.user.userData != null) {
       return SingleChildScrollView(
         physics: ClampingScrollPhysics(),
         scrollDirection: Axis.vertical,
@@ -36,7 +36,6 @@ class _DashboardBitMeState extends State<DashboardBitMe> {
         ),
       );
     } else {
-      print("here");
       return Center(
         child: CircularProgressIndicator(),
       );

@@ -50,8 +50,9 @@ class _HomeState extends State<Home> {
         if (this.settings.base_pair == null &&
             this.user.userData != null &&
             this.user.userData.orders.length > 0) {
-          settings.updateBasePair(
-              this.user.userData.orders.values.toList()[0].pair.toString());
+          //print("opa ${this.user.userTotalBuyingAmount.keys.toList()[0]}");
+
+          settings.updateBasePair(this.user.userTotalBuyingAmount.keys.toList()[0]);
         }
       });
       if (await areUserKeysSavedCorrect(this.user)) {

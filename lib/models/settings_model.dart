@@ -7,7 +7,7 @@ class Settings {
   Map<String, double> binanceTicker;
   String base_coin;
   String base_pair;
-  Color base_pair_color;
+  //Color base_pair_color;
   ScaleLineChart scaleLineChart;
   final Function(Settings newSettings) updateWidgets;
 

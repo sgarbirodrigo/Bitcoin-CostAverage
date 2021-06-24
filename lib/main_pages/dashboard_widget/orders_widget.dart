@@ -147,8 +147,8 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       //print("pair: ${widget.user.userData.orders.values.toList()[index].pair}");
-                      print(
-                          "test${widget.user.userData.orders.values.toList()[index]}");
+                      /*print(
+                          "test${widget.user.userData.orders.values.toList()[index]}");*/
                       PairData _pairData = widget.user.pairDataItems[widget
                           .user.userData.orders.values
                           .toList()[index]

@@ -179,11 +179,12 @@ class User {
   }
 
   void _calculateUserStats() {
+    /*print("0: $userTotalBuyingAmount");
     userTotalBuyingAmount.keys.forEach((key) {
       userTotalBuyingAmount[key] = 0;
       userTotalExpendingAmount[key.split("/")[1]] = 0;
     });
-
+    print("2: $userTotalBuyingAmount");*/
     if (this.userData != null) {
       this.userData.orders.forEach((dynamic pair, dynamic element) {
         double amount = double.parse(element.amount.toString());
@@ -229,6 +230,9 @@ class User {
           //print("totalbuying: ${userTotalBuyingAmount}");
         }
       });
+
     }
+    //print("3: $userTotalBuyingAmount");
+    //print("4: $userTotalExpendingAmount");
   }
 }

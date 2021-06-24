@@ -68,7 +68,10 @@ class _ChartWidgetState extends State<ChartWidget> {
   Widget build(BuildContext context) {
     double legendHeight = 42;
     data = convertUserData(widget.user);
-
+    /*print(
+        "selected ${widget.settings.base_pair} -${widget.settings.base_coin}  ");
+    print(
+        "exp ${widget.user.userTotalExpendingAmount}");*/
     return AnimatedContainer(
       key: _animatedKey,
       duration: Duration(seconds: 2),
@@ -89,8 +92,10 @@ class _ChartWidgetState extends State<ChartWidget> {
             children: [
               Padding(
                 padding: EdgeInsets.only(top: 32),
-                child: Text("Money Distribution",
-                  style: TextStyle(fontSize: 36, fontWeight: FontWeight.w600),),
+                child: Text(
+                  "Money Distribution",
+                  style: TextStyle(fontSize: 36, fontWeight: FontWeight.w600),
+                ),
               ),
               FittedBox(
                 fit: BoxFit.fitWidth,
@@ -106,12 +111,10 @@ class _ChartWidgetState extends State<ChartWidget> {
                         onPressed: () {
                           _multiplierIndex -= 1;
                           if (_multiplierIndex < 0) {
-                            _multiplierIndex =
-                                _multiplierOptions.length - 1;
+                            _multiplierIndex = _multiplierOptions.length - 1;
                           }
                           setState(() {
-                            _multiplier =
-                            _multiplierOptions[_multiplierIndex];
+                            _multiplier = _multiplierOptions[_multiplierIndex];
                           });
                         }),
                     Text(
@@ -134,138 +137,136 @@ class _ChartWidgetState extends State<ChartWidget> {
                             _multiplierIndex = 0;
                           }
                           setState(() {
-                            _multiplier =
-                            _multiplierOptions[_multiplierIndex];
+                            _multiplier = _multiplierOptions[_multiplierIndex];
                           });
                         })
                   ],
                 ),
               ),
               Container(
-                height: MediaQuery
-                    .of(context)
-                    .size
-                    .width * 0.7,
+                height: MediaQuery.of(context).size.width * 0.7,
                 child: Stack(children: [
-                  data != null ? Center(
-                    child: PieChart(
-                      PieChartData(
-                          pieTouchData: PieTouchData(
-                              touchCallback: (pieTouchResponse) {
-                                setState(() {
-                                  final desiredTouch = pieTouchResponse
-                                      .touchInput is! PointerExitEvent &&
-                                      pieTouchResponse.touchInput
-                                      is! PointerUpEvent;
-                                  if (desiredTouch &&
-                                      pieTouchResponse.touchedSection != null) {
-                                    touchedIndex = pieTouchResponse
-                                        .touchedSection.touchedSectionIndex;
-                                  } else {
-                                    touchedIndex = -1;
-                                  }
-                                });
-                              }),
-                          borderData: FlBorderData(
-                            show: false,
-                          ),
-                          sectionsSpace: 1,
-                          centerSpaceRadius: 84,
-                          sections: List.generate(data.length, (i) {
-                            final isTouched = i == touchedIndex;
-                            final fontSize = isTouched ? 20.0 : 16.0;
-                            final radius = isTouched ? 62.0 : 48.0;
-                            final Color sectionColor = colorsList[i];
-                            return PieChartSectionData(
-                              badgePositionPercentageOffset:
-                              isTouched ? -1.5 : 2.8,
-                              color: sectionColor,
-                              value: data[i].percentage,
-                              title:
-                              "${(data[i].percentage * 100).toStringAsFixed(
-                                  0)}%",
-                              radius: radius,
-                              //showTitle: false,
-                              titleStyle: TextStyle(
-                                  fontSize: fontSize,
-                                  fontWeight: FontWeight.w400,
-                                  color: const Color(0xffffffff)),
-                            );
-                          })),
-
-                      swapAnimationDuration:
-                      Duration(milliseconds:250), // Optional
-                      swapAnimationCurve: Curves.linear, // Optional
-                    ),) : Center(
-                    child: Container(width: 169,
-                      height: 169,child: CircularProgressIndicator(),),
-                  ),
-                  widget.user.userTotalExpendingAmount[
-                  widget.settings.base_coin] !=
-                      null
+                  data != null
                       ? Center(
-                    child: Container(
-                      width: 169,
-                      height: 169,
-                      decoration: BoxDecoration(
-                          boxShadow: <BoxShadow>[
-                            BoxShadow(
-                                color:
-                                Colors.black.withOpacity(0.6),
-                                blurRadius: 16.0,
-                                offset: Offset(0.0, 0.0))
-                          ],
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(128))),
-                      child: Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            //mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Trading",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontFamily: 'Arial',
-                                    fontSize: 24,
-                                    color:
-                                    Colors.black.withOpacity(0.7)),
-                              ),
-                              FittedBox(
-                                fit: BoxFit.fitWidth,
-                                child: Text(
-                                  "${doubleToValueString(widget.user
-                                      .userTotalExpendingAmount[widget.settings
-                                      .base_coin] * _multiplier)} ${widget
-                                      .settings.base_coin}",
+                          child: PieChart(
+                            PieChartData(
+                                pieTouchData: PieTouchData(
+                                    touchCallback: (pieTouchResponse) {
+                                  setState(() {
+                                    final desiredTouch = pieTouchResponse
+                                            .touchInput is! PointerExitEvent &&
+                                        pieTouchResponse.touchInput
+                                            is! PointerUpEvent;
+                                    if (desiredTouch &&
+                                        pieTouchResponse.touchedSection !=
+                                            null) {
+                                      touchedIndex = pieTouchResponse
+                                          .touchedSection.touchedSectionIndex;
+                                    } else {
+                                      touchedIndex = -1;
+                                    }
+                                  });
+                                }),
+                                borderData: FlBorderData(
+                                  show: false,
+                                ),
+                                sectionsSpace: 1,
+                                centerSpaceRadius: 84,
+                                sections: List.generate(data.length, (i) {
+                                  final isTouched = i == touchedIndex;
+                                  final fontSize = isTouched ? 20.0 : 16.0;
+                                  final radius = isTouched ? 62.0 : 48.0;
+                                  final Color sectionColor = colorsList[i];
+                                  return PieChartSectionData(
+                                    badgePositionPercentageOffset:
+                                        isTouched ? -1.5 : 2.8,
+                                    color: sectionColor,
+                                    value: data[i].percentage,
+                                    title:
+                                        "${(data[i].percentage * 100).toStringAsFixed(0)}%",
+                                    radius: radius,
+                                    //showTitle: false,
+                                    titleStyle: TextStyle(
+                                        fontSize: fontSize,
+                                        fontWeight: FontWeight.w400,
+                                        color: const Color(0xffffffff)),
+                                  );
+                                })),
+
+                            swapAnimationDuration:
+                                Duration(milliseconds: 250), // Optional
+                            swapAnimationCurve: Curves.linear, // Optional
+                          ),
+                        )
+                      : Center(
+                          child: Container(
+                            width: 169,
+                            height: 169,
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                  widget.user.userTotalExpendingAmount[
+                              widget.settings.base_coin] !=
+                          null
+                      ? Center(
+                          child: Container(
+                            width: 169,
+                            height: 169,
+                            decoration: BoxDecoration(
+                                boxShadow: <BoxShadow>[
+                                  BoxShadow(
+                                      color: Colors.black.withOpacity(0.6),
+                                      blurRadius: 16.0,
+                                      offset: Offset(0.0, 0.0))
+                                ],
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(128))),
+                            child: Center(
+                                child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              //mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Trading",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontFamily: 'Arial',
                                       fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black),
+                                      color: Colors.black.withOpacity(0.7)),
                                 ),
-                              ),
-                            ],
-                          )),
-                    ),
-                  )
+                                FittedBox(
+                                  fit: BoxFit.fitWidth,
+                                  child: Text(
+                                    "${doubleToValueString(widget.user.userTotalExpendingAmount[widget.settings.base_coin] * _multiplier)} ${widget.settings.base_coin}",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontFamily: 'Arial',
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black),
+                                  ),
+                                ),
+                              ],
+                            )),
+                          ),
+                        )
                       : Center(
-                    child: Container(
-                      width: 256,
-                      child: Text(
-                        "Each order you create will be easily shown here so you can better understand your money flow.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ),
-                  ),
+                          child: Container(
+                            width: 256,
+                            child: Text(
+                              "Each order you create will be easily shown here so you can better understand your money flow.",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ),
+                        ),
                 ]),
               ),
               AnimatedContainer(
-                height: data!=null? ((data.length / 2).ceil().toDouble() * legendHeight) +
-                    16:0,
+                height: data != null
+                    ? ((data.length / 2).ceil().toDouble() * legendHeight) + 16
+                    : 0,
                 duration: Duration(milliseconds: 250),
                 child: GridView.builder(
                   physics: NeverScrollableScrollPhysics(),
@@ -274,27 +275,23 @@ class _ChartWidgetState extends State<ChartWidget> {
                       crossAxisSpacing: 0,
                       mainAxisSpacing: 0,
                       childAspectRatio:
-                      ((MediaQuery
-                          .of(context)
-                          .size
-                          .width - 32) / 2) /
-                          legendHeight),
+                          ((MediaQuery.of(context).size.width - 32) / 2) /
+                              legendHeight),
                   // padding: EdgeInsets.all(8),
                   //shrinkWrap: true,
-                  itemCount: data!=null?data.length:0,
+                  itemCount: data != null ? data.length : 0,
                   itemBuilder: (context, index) {
                     //widget.settings.updateBasePair(data[index].pair);
                     return GestureDetector(
                       onTap: () {
                         widget.settings.updateBasePair(data[index].pair);
-                        widget.settings.base_pair_color =
-                        colorsList[index];
+                        /* widget.settings.base_pair_color =
+                        colorsList[index];*/
                       },
                       child: Container(
                         margin: EdgeInsets.only(left: 4, right: 4),
                         child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -311,8 +308,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                             //Container(width: ,),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
@@ -329,16 +325,12 @@ class _ChartWidgetState extends State<ChartWidget> {
                                   text: TextSpan(
                                     text: '',
                                     style: TextStyle(
-                                        color:
-                                        Colors.black.withOpacity(0.4),
+                                        color: Colors.black.withOpacity(0.4),
                                         fontSize: 11),
                                     children: <TextSpan>[
                                       TextSpan(
                                         text:
-                                        '${doubleToValueString(
-                                            data[index].amount *
-                                                _multiplier)} ${data[index].pair
-                                            .split("/")[1]}',
+                                            '${doubleToValueString(data[index].amount * _multiplier)} ${data[index].pair.split("/")[1]}',
                                         style: TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.bold),
@@ -346,8 +338,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                                       TextSpan(text: ' for '),
                                       TextSpan(
                                         text:
-                                        '${data[index].pair.toString().split(
-                                            "/")[0]}',
+                                            '${data[index].pair.toString().split("/")[0]}',
                                         style: TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.bold),
@@ -386,7 +377,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       List coins =
-                      widget.user.userTotalExpendingAmount.keys.toList();
+                          widget.user.userTotalExpendingAmount.keys.toList();
                       List<String> openPairs = List();
                       widget.user.userTotalExpendingAmount
                           .forEach((key, value) {
@@ -398,31 +389,33 @@ class _ChartWidgetState extends State<ChartWidget> {
                             String initial = widget
                                 .user.userTotalBuyingAmount.keys
                                 .where((element) =>
-                                element.contains("/${coins[index]}"))
+                                    element.contains("/${coins[index]}"))
                                 .first;
+                            print("pair: ${initial}");
                             widget.settings.updateBasePair(initial);
-                            widget.settings.base_pair_color = colorsList[0];
+                            // widget.settings.base_pair_color = colorsList[0];
                           },
                           child: AnimatedContainer(
                               width: 128,
                               // padding: EdgeInsets.symmetric(horizontal: 12),
                               decoration: BoxDecoration(
                                 //color: Color(0xffF7F8F9),
-                                color:coins[index] ==widget.settings.base_coin
-                                    ? Colors.deepPurple.shade50:Color(0xffF7F8F9),
+                                color: coins[index] == widget.settings.base_coin
+                                    ? Colors.deepPurple.shade50
+                                    : Color(0xffF7F8F9),
                                 border: coins[index] ==
-                                    widget.settings.base_coin
+                                        widget.settings.base_coin
                                     ? Border(
-                                    top: BorderSide(
-                                        color: Colors.deepPurple, width: 4),
-                                    right: BorderSide(
-                                        color:
-                                        Colors.black.withOpacity(0.3),
-                                        width: 0.5),
-                                    left: BorderSide(
-                                        color:
-                                        Colors.black.withOpacity(0.3),
-                                        width: 0.5))
+                                        top: BorderSide(
+                                            color: Colors.deepPurple, width: 4),
+                                        right: BorderSide(
+                                            color:
+                                                Colors.black.withOpacity(0.3),
+                                            width: 0.5),
+                                        left: BorderSide(
+                                            color:
+                                                Colors.black.withOpacity(0.3),
+                                            width: 0.5))
                                     : null,
                               ),
                               duration: Duration(milliseconds: 250),
@@ -433,7 +426,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                                   Padding(
                                     padding: EdgeInsets.only(
                                         top: coins[index] ==
-                                            widget.settings.base_coin
+                                                widget.settings.base_coin
                                             ? 4
                                             : 8),
                                     child: Text(
@@ -455,9 +448,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                                   ),*/
                                   Text(
                                     widget.user.balance != null
-                                        ? "${doubleToValueString(
-                                        widget.user.balance
-                                            .balancesMapped[coins[index]])} ${coins[index]}"
+                                        ? "${doubleToValueString(widget.user.balance.balancesMapped[coins[index]])} ${coins[index]}"
                                         : "...",
                                     style: TextStyle(
                                         color: Colors.black,
@@ -484,7 +475,7 @@ class _ChartWidgetState extends State<ChartWidget> {
       user.userTotalBuyingAmount.forEach((pair, amount) {
         if (pair.split("/")[1] == widget.settings.base_coin) {
           double price =
-          widget.settings.binanceTicker["BTC${pair.split("/")[1]}"];
+              widget.settings.binanceTicker["BTC${pair.split("/")[1]}"];
           double percentage;
           if (price == null) {
             percentage = amount;
@@ -497,7 +488,7 @@ class _ChartWidgetState extends State<ChartWidget> {
       user.userTotalBuyingAmount.forEach((pair, amount) {
         if (pair.split("/")[1] == widget.settings.base_coin) {
           double price =
-          widget.settings.binanceTicker["BTC${pair.split("/")[1]}"];
+              widget.settings.binanceTicker["BTC${pair.split("/")[1]}"];
           double percentage = 1;
           if (price == null) {
             percentage = amount;
