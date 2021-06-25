@@ -23,11 +23,15 @@ class OrderItem {
   OrderItem.fromJson(Map<String, dynamic> json) {
     active = json['active'];
     amount = json['amount'];
-    createdTimestamp = json['createdTimestamp'];
-    updatedTimestamp = json['updatedTimestamp'];
+    createdTimestamp = json['createdTimestamp'] is int
+        ? Timestamp.fromMillisecondsSinceEpoch(json['createdTimestamp'])
+        : json['createdTimestamp'];
+    updatedTimestamp = json['updatedTimestamp'] is int
+        ? Timestamp.fromMillisecondsSinceEpoch(json['updatedTimestamp'])
+        : json['updatedTimestamp'];
     exchange = json['exchange'];
     pair = json['pair'];
-    if(json["schedule"]!=null) {
+    if (json["schedule"] != null) {
       schedule = Schedule(
           monday: json['schedule']['monday'] ?? false,
           tuesday: json['schedule']['tuesday'] ?? false,
@@ -36,7 +40,7 @@ class OrderItem {
           friday: json['schedule']['friday'] ?? false,
           saturday: json['schedule']['saturday'] ?? false,
           sunday: json['schedule']['sunday'] ?? false);
-    }else{
+    } else {
       schedule = Schedule();
     }
   }
@@ -45,11 +49,15 @@ class OrderItem {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['active'] = this.active;
     data['amount'] = this.amount;
-    data['createdTimestamp'] =this.createdTimestamp!=null? this.createdTimestamp.millisecondsSinceEpoch:null;
-    data['updatedTimestamp'] = this.updatedTimestamp!=null?this.updatedTimestamp.millisecondsSinceEpoch:null;
+    data['createdTimestamp'] = this.createdTimestamp != null
+        ? this.createdTimestamp.millisecondsSinceEpoch
+        : null;
+    data['updatedTimestamp'] = this.updatedTimestamp != null
+        ? this.updatedTimestamp.millisecondsSinceEpoch
+        : null;
     data['exchange'] = this.exchange;
     data['pair'] = this.pair;
-    data['schedule'] = this.schedule!=null? this.schedule.toJson():null;
+    data['schedule'] = this.schedule != null ? this.schedule.toJson() : null;
     return data;
   }
 }

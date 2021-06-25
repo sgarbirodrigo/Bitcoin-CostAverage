@@ -36,7 +36,7 @@ class _PairDetailPageState extends State<PairDetailPage> {
     user = User(widget.firebaseUser, widget.settings, (user) async {
       setState(() {
         this.user = user;
-        widget.settings.updateBasePair(user.userData.orders.values.toList()[0].pair.toString());
+        //widget.settings.updateBasePair(user.userData.orders.values.toList()[0].pair.toString());
         pairData = this.user.pairDataItems[widget.orderItem.pair];
       });
     });

@@ -1,4 +1,3 @@
-
 import 'package:Bit.Me/tools.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -35,14 +34,77 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
     super.initState();
     //_pairData = widget.user.pairDataItems[widget.pair];
     //print("pairItens: ${_pairData.historyItems.length}");
+  }
 
+  void fillLineChart() {
+    price_spots.clear();
+    avg_price_spots.clear();
+    if (_pairData.price_spots.isNotEmpty) {
+      int spots_missing = 0;
+      switch (widget.settings.scaleLineChart) {
+        case ScaleLineChart.WEEK1:
+          spots_missing = 7 - _pairData.price_spots.length;
+          break;
+        case ScaleLineChart.WEEK2:
+          spots_missing = 14 - _pairData.price_spots.length;
+          break;
+        case ScaleLineChart.MONTH1:
+          spots_missing = 30 - _pairData.price_spots.length;
+          break;
+        case ScaleLineChart.MONTH6:
+          spots_missing = 180 - _pairData.price_spots.length;
+          break;
+        case ScaleLineChart.YEAR1:
+          spots_missing = 365 - _pairData.price_spots.length;
+          break;
+      }
+      if (spots_missing > 0) {
+        FlSpot reference = _pairData.price_spots.first;
+        Timestamp firstPoint = Timestamp.fromDate(
+            DateTime.fromMillisecondsSinceEpoch(reference.x.toInt() * 1000)
+                .add(Duration(days: -spots_missing)));
+        price_spots.add(FlSpot(firstPoint.seconds.toDouble(), reference.y));
+      }
+
+      price_spots.addAll(_pairData.price_spots);
+      avg_price_spots = _pairData.avg_price_spots;
+    } else {
+      int spots_missing = 0;
+      switch (widget.settings.scaleLineChart) {
+        case ScaleLineChart.WEEK1:
+          spots_missing = 7;
+          break;
+        case ScaleLineChart.WEEK2:
+          spots_missing = 14;
+          break;
+        case ScaleLineChart.MONTH1:
+          spots_missing = 30;
+          break;
+        case ScaleLineChart.MONTH6:
+          spots_missing = 180;
+          break;
+        case ScaleLineChart.YEAR1:
+          spots_missing = 365;
+          break;
+      }
+      price_spots.add(FlSpot(
+          Timestamp.fromMillisecondsSinceEpoch(DateTime.now()
+                  .add(Duration(days: -spots_missing))
+                  .millisecondsSinceEpoch)
+              .seconds
+              .toDouble(),
+          1.toDouble()));
+      price_spots.add(FlSpot(Timestamp.now().seconds.toDouble(), 1.toDouble()));
+      _pairData.max = 2;
+      _pairData.min = 0;
+      widget.color = Colors.grey;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     _pairData = widget.user.pairDataItems[widget.pair];
-    price_spots = _pairData.price_spots;
-    avg_price_spots = _pairData.avg_price_spots;
+    fillLineChart();
     xmax = DateTime.now().millisecondsSinceEpoch / 1000;
     xmin = DateTime.now().add(Duration(days: -7)).millisecondsSinceEpoch / 1000;
     //interval = (1.0 * (60 * 60 * 24)) - 1;
@@ -98,7 +160,7 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
                       children: [
                         TextSpan(
                           text:
-                              '${"Price: "} ${doubleToValueString(touchedBarSpots[touchedBarSpots[0].barIndex==0?0:1].y)}',
+                              '${"Price: "} ${doubleToValueString(touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 0 : 1].y)}',
                           style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.normal,
@@ -114,7 +176,7 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
                       ]);
 
                   LineTooltipItem _avgTooltip = LineTooltipItem(
-                      "AVG: ${doubleToValueString(touchedBarSpots[touchedBarSpots[0].barIndex==0?1:0].y)}",
+                      "AVG: ${doubleToValueString(touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 1 : 0].y)}",
                       TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.normal,
@@ -159,13 +221,13 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
                 //width: 1,
               ),
               left: BorderSide(
-                color:  Colors.transparent,
+                color: Colors.transparent,
               ),
               right: BorderSide(
                 color: Colors.transparent,
               ),
               top: BorderSide(
-                color:  Colors.transparent,
+                color: Colors.transparent,
               ),
             ),
           ),
@@ -177,7 +239,7 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
             LineChartBarData(
               spots: price_spots,
               isCurved: true,
-              curveSmoothness: 0.2,
+              curveSmoothness: 0,
               colors: [
                 widget.color,
               ],
@@ -193,7 +255,6 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
                       //trokeColor: Colors.green
                     );
                   }),
-
               belowBarData: BarAreaData(
                 show: true,
                 colors: [

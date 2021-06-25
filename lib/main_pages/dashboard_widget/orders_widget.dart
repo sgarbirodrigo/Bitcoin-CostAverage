@@ -53,9 +53,11 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                     widget.user.updateUser();
                   },
                   icon: Icon(Icons.add_circle)),
-              IconButton(onPressed: () async {
-                //var history = await widget.user.getHistoryData(7);
-              }, icon: Icon(Icons.terrain)),
+              IconButton(
+                  onPressed: () async {
+                    //var history = await widget.user.getHistoryData(7);
+                  },
+                  icon: Icon(Icons.terrain)),
               Padding(
                 padding: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
                 child: Text(
@@ -259,23 +261,15 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                               ),
                               Expanded(
                                 child: _pairData != null
-                                    ? (_pairData.price_spots.length > 0)
-                                        ? PriceAVGChartLine(
-                                            // key:_chartKey,
-                                            user: widget.user,
-                                            settings: widget.settings,
-                                            pair: widget
-                                                .user.userData.orders.values
-                                                .toList()[index]
-                                                .pair,
-                                            color: Colors.deepPurple
-                                            /*hasProfit ? Colors.green : Colors.red*/)
-                                        : Container(
-                                            child: Text(
-                                              "Not enough data to show.",
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          )
+                                    ? PriceAVGChartLine(
+                                        // key:_chartKey,
+                                        user: widget.user,
+                                        settings: widget.settings,
+                                        pair: widget.user.userData.orders.values
+                                            .toList()[index]
+                                            .pair,
+                                        color: Colors.deepPurple
+                                        /*hasProfit ? Colors.green : Colors.red*/)
                                     : Container(
                                         child: Text(
                                           "Not enough data to show.",
@@ -359,7 +353,8 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                                           MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          _pairData.historyItems.last.error??"",
+                                          _pairData.historyItems.last.error ??
+                                              "",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               color: Colors.white,

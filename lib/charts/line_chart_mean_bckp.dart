@@ -542,7 +542,7 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
           isCurved: false,
           //curveSmoothness: 0,
           colors: [
-            widget.settings.base_pair_color,
+            /*widget.settings.base_pair_color,*/
           ],
           barWidth: 2,
           isStrokeCapRound: true,
@@ -553,8 +553,8 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
           belowBarData: BarAreaData(
             show: true,
             colors: [
-              widget.settings.base_pair_color?.withOpacity(0.5),
-              widget.settings.base_pair_color?.withOpacity(0.0),
+              /*widget.settings.base_pair_color?.withOpacity(0.5),
+              widget.settings.base_pair_color?.withOpacity(0.0),*/
             ],
             gradientColorStops: [0.1, 1.0],
             gradientFrom: const Offset(0, 0),

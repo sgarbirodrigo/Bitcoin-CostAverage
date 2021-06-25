@@ -142,61 +142,26 @@ class User {
     });
   }
 
-  Future<int> forceUpdateHistoryData(int daysToConsider) async {
-    final databasePath = await getDatabasesPath();
-    // print(databasePath);
-    final path = join(databasePath, 'bca_v8.db');
-    //todo open sqlDB
-    Database database = await openDatabase(path, version: 8,
+  void forceUpdateHistoryData(int daysToConsider) async {
+    int dbVersion = 8;
+    final path = join(await getDatabasesPath(), 'bca_v$dbVersion.db');
+    Database database = await openDatabase(path, version: dbVersion,
         onCreate: (Database db, int version) async {
-      // When creating the db, create the table
       await db.execute(
           'CREATE TABLE History (id TEXT PRIMARY KEY,timestamp INTEGER, amount REAL, pair TEXT,result TEXT,rawFirestore TEXT)');
     });
-    // Count the records
-
     List<Map<String, dynamic>> db_query = await database
         .rawQuery('SELECT * FROM History ORDER BY timestamp DESC');
-    if (db_query.length > 0) {
-      Timestamp last_loaded_timestamp =
-          Timestamp.fromMillisecondsSinceEpoch(db_query.first['timestamp']);
-      /*print(
-          "last: ${last_loaded_timestamp.toDate()} - today-24h: ${DateTime.now().add(Duration(hours: -24))}");*/
-      //print("resultBool: ${last_loaded_timestamp.toDate().isBefore(DateTime.now().add(Duration(hours: -24)))}");
-      if (last_loaded_timestamp
-          .toDate()
-          .isBefore(DateTime.now().add(Duration(hours: -24)))) {
-        QuerySnapshot historySnapshots = await Firestore.instance
-            .collection("users")
-            .document(firebaseUser.uid)
-            .collection("history")
-            .orderBy("timestamp", descending: false)
-            .where('timestamp', isGreaterThan: last_loaded_timestamp)
-            .getDocuments();
-        //print("new: ${historySnapshots.documents.length}");
-        historySnapshots.documents.forEach((element) async {
-          HistoryItem historyItem = HistoryItem.fromJson(element.data);
-          int recordId = await database.insert('history', {
-            'id': element.documentID,
-            'timestamp': historyItem.timestamp.millisecondsSinceEpoch,
-            'amount': historyItem.order.amount,
-            'pair': historyItem.order.pair,
-            'result': historyItem.result.index,
-            'rawFirestore':json.encode(historyItem.toJson()),
-          });
-          print("rec: $recordId");
-        });
-      }
-    } else {
-      QuerySnapshot historySnapshots = await Firestore.instance
-          .collection("users")
-          .document(firebaseUser.uid)
-          .collection("history")
-          .orderBy("timestamp", descending: false)
-          .getDocuments();
+
+    Query firestoreHistoryQuery = Firestore.instance
+        .collection("users")
+        .document(firebaseUser.uid)
+        .collection("history")
+        .orderBy("timestamp", descending: false);
+    void addSnapshotToSQLDB(QuerySnapshot historySnapshots) async {
       historySnapshots.documents.forEach((element) async {
         HistoryItem historyItem = HistoryItem.fromJson(element.data);
-        int recordId = await database.insert('history', {
+        await database.insert('history', {
           'id': element.documentID,
           'timestamp': historyItem.timestamp.millisecondsSinceEpoch,
           'amount': historyItem.order.amount,
@@ -204,36 +169,44 @@ class User {
           'result': historyItem.result.index,
           'rawFirestore': json.encode(historyItem.toJson()),
         });
-        print("rec: $recordId");
       });
     }
-    print("now-7: ${DateTime.now().add(Duration(days: -daysToConsider))}");
+
+    if (db_query.length > 0) {
+      Timestamp last_loaded_timestamp =
+          Timestamp.fromMillisecondsSinceEpoch(db_query.first['timestamp']);
+      if (last_loaded_timestamp
+          .toDate()
+          .isBefore(DateTime.now().add(Duration(hours: -24)))) {
+        addSnapshotToSQLDB(await firestoreHistoryQuery
+            .where('timestamp', isGreaterThan: last_loaded_timestamp)
+            .getDocuments());
+      }
+    } else {
+      addSnapshotToSQLDB(await firestoreHistoryQuery.getDocuments());
+    }
+
     List<Map<String, dynamic>> rawQuery = await database.rawQuery(
         'SELECT * FROM History WHERE timestamp>= ${DateTime.now().add(Duration(days: -daysToConsider)).millisecondsSinceEpoch}');
     historyItems.clear();
     pairDataItems.clear();
-
     rawQuery.forEach((element) {
-      print("raw: ${element['rawFirestore']}");
-      HistoryItem historyItem = HistoryItem.fromJson(json.decode(element['rawFirestore']));
-      print("item Data: ${historyItem.timestamp.toDate()}");
+      HistoryItem historyItem =
+          HistoryItem.fromJson(json.decode(element['rawFirestore']));
       historyItems.add(historyItem);
-
       if (pairDataItems[historyItem.order.pair] == null) {
         pairDataItems[historyItem.order.pair] =
             PairData().addHistoryItem(historyItem);
       } else {
         pairDataItems[historyItem.order.pair] =
-            pairDataItems[historyItem.order.pair]
-                .addHistoryItem(historyItem);
+            pairDataItems[historyItem.order.pair].addHistoryItem(historyItem);
       }
     });
 
     this.isUpdatingHistory = false;
     this.onUserDataUpdate(this);
-    print("loaded ${rawQuery.length}");
-    return 0;
   }
+/*
 
   void forceUpdateHistoryData2(int daysToConsider) {
     this.isUpdatingHistory = true;
@@ -274,6 +247,7 @@ class User {
       this.onUserDataUpdate(this);
     });
   }
+*/
 
   void _calculateUserStats() {
     /*print("0: $userTotalBuyingAmount");
