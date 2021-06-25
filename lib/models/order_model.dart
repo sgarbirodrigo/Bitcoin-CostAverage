@@ -45,11 +45,11 @@ class OrderItem {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['active'] = this.active;
     data['amount'] = this.amount;
-    data['createdTimestamp'] = this.createdTimestamp;
-    data['updatedTimestamp'] = this.updatedTimestamp;
+    data['createdTimestamp'] =this.createdTimestamp!=null? this.createdTimestamp.millisecondsSinceEpoch:null;
+    data['updatedTimestamp'] = this.updatedTimestamp!=null?this.updatedTimestamp.millisecondsSinceEpoch:null;
     data['exchange'] = this.exchange;
     data['pair'] = this.pair;
-    data['schedule'] = this.schedule.toJson();
+    data['schedule'] = this.schedule!=null? this.schedule.toJson():null;
     return data;
   }
 }

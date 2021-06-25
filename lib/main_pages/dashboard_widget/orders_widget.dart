@@ -53,6 +53,9 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                     widget.user.updateUser();
                   },
                   icon: Icon(Icons.add_circle)),
+              IconButton(onPressed: () async {
+                //var history = await widget.user.getHistoryData(7);
+              }, icon: Icon(Icons.terrain)),
               Padding(
                 padding: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
                 child: Text(
@@ -356,7 +359,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                                           MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          _pairData.historyItems.last.error,
+                                          _pairData.historyItems.last.error??"",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               color: Colors.white,
@@ -420,7 +423,9 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                                   },
                                 ),
                               ]
-                            : [MyIconActionEdit(index),],
+                            : [
+                                MyIconActionEdit(index),
+                              ],
                       );
                     })
                 : Container(
@@ -438,11 +443,9 @@ class _OrdersWidgetState extends State<OrdersWidget> {
       iconWidget: Container(
         color: Colors.deepPurple,
         child: Column(
-          crossAxisAlignment:
-          CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment:
-          MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.edit,
@@ -452,20 +455,17 @@ class _OrdersWidgetState extends State<OrdersWidget> {
             Text(
               "Edit",
               textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16),
+              style: TextStyle(color: Colors.white, fontSize: 16),
             )
           ],
         ),
       ),
       onTap: () async {
-       await showDialog(
+        await showDialog(
           context: context,
           builder: (BuildContext context) {
             return EditOrderDialog(
-                widget.user.userData.orders.values
-                    .toList()[index],
+                widget.user.userData.orders.values.toList()[index],
                 widget.user);
           },
         );

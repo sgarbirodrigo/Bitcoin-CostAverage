@@ -2,10 +2,9 @@ import 'package:Bit.Me/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreDB{
+  FirestoreDB(String userId,Function(UserData userData) onLoad){
 
-  /*FirestoreDB(String userId,Function(UserData userData) onLoad){
-    _getDocumentData(userId);
-  }*/
+  }
   static Future<UserData> getUserData(String uid) async {
     DocumentSnapshot documentSnapshot = await Firestore.instance
         .collection("users")
@@ -20,6 +19,4 @@ class FirestoreDB{
       return null;
     }
   }
-
-
 }

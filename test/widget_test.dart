@@ -5,13 +5,26 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:Bit.Me/models/user_model.dart';
 import 'package:Bit.Me/tools.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sqflite/sqflite.dart';
 
 void main() {
   test('test porcentages', () {
     expect(getValueVariation(100, 100), 0);
     expect(getValueVariation(100, 80), 20);
     expect(getValueVariation(100, 120), -20);
+  });
+
+
+  test('db test', ()async{
+    // Get a location using getDatabasesPath
+     var userHistory = await User.getHistoryData();
+     expect(userHistory,1);
+  });
+  test('Future.value() returns the value', () async {
+    var value = await Future.value(10);
+    expect(value, equals(10));
   });
 }
