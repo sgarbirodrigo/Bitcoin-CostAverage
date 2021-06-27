@@ -26,7 +26,6 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
   //double interval = 1; //intervalo de 24 horas
   PairData _pairData;
   List<FlSpot> price_spots = List();
-  List<FlSpot> avg_price_spots = List();
   double xmin, xmax;
 
   @override
@@ -38,7 +37,6 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
 
   void fillLineChart() {
     price_spots.clear();
-    avg_price_spots.clear();
     if (_pairData.price_spots.isNotEmpty) {
       int spots_missing = 0;
       switch (widget.settings.scaleLineChart) {
@@ -67,7 +65,7 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
       }
 
       price_spots.addAll(_pairData.price_spots);
-      avg_price_spots = _pairData.avg_price_spots;
+
     } else {
       int spots_missing = 0;
       switch (widget.settings.scaleLineChart) {
@@ -95,6 +93,7 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
               .toDouble(),
           1.toDouble()));
       price_spots.add(FlSpot(Timestamp.now().seconds.toDouble(), 1.toDouble()));
+
       _pairData.max = 2;
       _pairData.min = 0;
       widget.color = Colors.grey;
@@ -193,8 +192,8 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
 
                   return [_priceTooltip, _avgTooltip];
                 }),
-            touchCallback: (LineTouchResponse touchResponse) {},
-            handleBuiltInTouches: true,
+            //touchCallback: (LineTouchResponse touchResponse) {},
+            //handleBuiltInTouches: true,
           ),
           clipData: FlClipData.vertical(),
           gridData: FlGridData(
@@ -269,7 +268,7 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
           gradientFrom: Offset(0, 0),*/
             ),
             LineChartBarData(
-              spots: avg_price_spots,
+              spots: _pairData.avg_price_spots,
               isCurved: true,
               curveSmoothness: 0.2,
               dashArray: [8, 8],

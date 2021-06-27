@@ -1,8 +1,8 @@
+import 'package:Bit.Me/CreateOrderDialog.dart';
 import 'package:Bit.Me/contants.dart';
 import 'package:Bit.Me/external/binance_api.dart';
 import 'package:Bit.Me/main_pages/dashboard.dart';
-import 'package:Bit.Me/main_pages/history.dart';
-import 'package:Bit.Me/main_pages/orders.dart';
+import 'package:Bit.Me/bkp/orders.dart';
 import 'package:Bit.Me/main_pages/settings.dart';
 import 'package:Bit.Me/models/settings_model.dart';
 import 'package:Bit.Me/models/user_model.dart';
@@ -12,8 +12,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:titled_navigation_bar/titled_navigation_bar.dart';
+import 'CreateEditOrder.dart';
 import 'dialog_config.dart';
+import 'history_page.dart';
+import 'history_selector_coin.dart';
+import 'orders_Page.dart';
 
 class Home extends StatefulWidget {
   Home({this.title, this.firebaseUser});
@@ -29,10 +35,13 @@ enum Section { LOGIN, DASHBOARD, ORDERS, HISTORY, SETTINGS }
 
 class _HomeState extends State<Home> {
   Settings settings;
-  Section section;
+  //Section section;
   User user;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   bool entitlementIsActive = false;
+  int _pageIndex = 0;
+  Widget body;
+  String title = "Bitcoin-Cost Average";
 
   /*
   final _ordersKey = new GlobalKey<ScaffoldState>();*/
@@ -52,7 +61,8 @@ class _HomeState extends State<Home> {
             this.user.userData.orders.length > 0) {
           //print("opa ${this.user.userTotalBuyingAmount.keys.toList()[0]}");
 
-          settings.updateBasePair(this.user.userTotalBuyingAmount.keys.toList()[0]);
+          settings
+              .updateBasePair(this.user.userTotalBuyingAmount.keys.toList()[0]);
         }
       });
       if (await areUserKeysSavedCorrect(this.user)) {
@@ -69,20 +79,16 @@ class _HomeState extends State<Home> {
             label: 'Settings',
             textColor: Colors.yellow,
             onPressed: () {
-              showDialog(
-                barrierDismissible: false,
-                context: context,
-                builder: (BuildContext context) {
-                  return DialogConfig(this.user);
-                },
-              );
+              //section = Section.SETTINGS;
+              title = "Settings";
+              body = SettingsPage(this.user);
             },
           ),
         ));
       }
     });
-
-    section = Section.DASHBOARD;
+    _myPage = PageController(initialPage: _pageIndex);
+    //section = Section.DASHBOARD;
     initPlatformState();
     super.initState();
   }
@@ -123,16 +129,16 @@ class _HomeState extends State<Home> {
     });
   }
 
+  PageController _myPage;
+
   @override
   Widget build(BuildContext context) {
-    Widget body;
-    String title = "Bitcoin-Cost Average";
-    switch (section) {
+    /*switch (section) {
       case Section.LOGIN:
         break;
       case Section.DASHBOARD:
         body = DashboardBitMe(
-          /*key: context.widget.key,*/
+          */ /*key: context.widget.key,*/ /*
           settings: settings,
           user: user,
         );
@@ -151,7 +157,39 @@ class _HomeState extends State<Home> {
         body = SettingsPage(this.user);
         // TODO: Handle this case.
         break;
-    }
+    }*/
+    /*switch (_pageIndex) {
+      case 0:
+        section = Section.DASHBOARD;
+        body = DashboardBitMe(
+          */ /*key: context.widget.key,*/ /*
+          settings: settings,
+          user: user,
+        );
+        //title = "Bitcoin-Cost Average";
+        break;
+      case 1:
+        section = Section.ORDERS;
+        body = OrdersPage(
+          user: this.user,
+          settings: this.settings,
+        );
+        //title = "Orders";
+        break;
+      case 3:
+        section = Section.HISTORY;
+        //title = "Settings";
+        body = HistorySelPage(this.user, this.settings);
+        break;
+      case 4:
+        section = Section.SETTINGS;
+        //title = "Settings";
+        body = SettingsPage(this.user);
+
+        // TODO: Handle this case.
+        break;
+    }*/
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBarBitMe(
@@ -159,111 +197,91 @@ class _HomeState extends State<Home> {
         scaffoldKey: _scaffoldKey,
       ),
       backgroundColor: Color(0xffF9F8FD),
-      //backgroundColor: Colors.grey,
-      drawer: DrawerBitMe(
-        onPageChange: (Section section) {
-          setState(() {
-            this.section = section;
-          });
-        },
-        scaffoldKey: _scaffoldKey,
-        user: widget.firebaseUser,
-      ),
-      body: body,
+      bottomNavigationBar: TitledBottomNavigationBar(
+          currentIndex: _pageIndex,
+          reverse: true,
+          onTap: (index) {
+            //print("jumping to $index");
+            _myPage.jumpToPage(index>=2?index-1:index);
+            setState(() {
+              _pageIndex = index;
+            });
+          },
+          items: [
+            TitledNavigationBarItem(
+              title: Text('Home'),
+              icon: Icon(
+                Icons.home,
+                color: Colors.grey,
+              ),
+            ),
+            TitledNavigationBarItem(
+              title: Text('Orders'),
+              icon: Icon(
+                Icons.list_alt_sharp,
+                color: Colors.grey,
+              ),
+            ),
+            TitledNavigationBarItem(
+              title: Text(
+                'ORDER',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.deepPurple),
+              ),
+              icon: ElevatedButton(
+                onPressed: () async {
+                  // _pageIndex = 2;
+                  await showCupertinoModalBottomSheet(
+                    context: context,
+                    useRootNavigator: true,
+                    builder: (context) => Container(
+                      //height: 400,
+                      child: CreateEditOrder(this.user),
+                    ),
+                  );
+                  user.updateUser();
+                  //_pageIndex = I;
+                },
+                child: Icon(
+                  Icons.add,
+                  size: 24,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            TitledNavigationBarItem(
+              title: Text('History'),
+              icon: Icon(
+                Icons.timeline,
+                color: Colors.grey,
+              ),
+            ),
+            TitledNavigationBarItem(
+              title: Text('Settings'),
+              icon: Icon(
+                Icons.settings_outlined,
+                color: Colors.grey,
+              ),
+            ),
+            /*TitledNavigationBarItem(
+                title: Text('Log Out'), icon: Icon(Icons.logout)),*/
+          ]),
+      body: PageView(
+          physics: NeverScrollableScrollPhysics(),
+          controller: _myPage,
+          children: <Widget>[
+            DashboardBitMe(
+              /*key: context.widget.key,*/
+              settings: settings,
+              user: user,
+            ),
+            OrdersPage(
+              user: this.user,
+              settings: this.settings,
+            ),
+            HistorySelPage(this.user, this.settings),
+            SettingsPage(this.user)
+          ]),
     );
   }
 }
-
-/*
-StreamBuilder<QuerySnapshot>(
-stream: Firestore.instance
-    .collection("users")
-.document(widget.user.uid)
-.collection("orders")
-.orderBy("active", descending: true)
-.snapshots(),
-builder: (context, querySnapshot) {
-//Map<String, double> totalBuying = Map();
-Map<String, double> totalExpending = Map();
-if (querySnapshot.hasData && settings.binanceTicker != null) {
-*/ /*if (querySnapshot.data.documents.length > 0 &&
-                settings.base_coin == null) {
-              settings.base_coin = querySnapshot.data.documents[0].data["pair"]
-                  .toString()
-                  .split("/")[1];
-            }*/ /*
-*/ /*querySnapshot.data.documents.forEach((DocumentSnapshot element) {
-              String pair = element.data["pair"].toString();
-              double amount = double.parse(element.data["amount"].toString());
-              if (element.data["active"]) {
-                if (totalBuying[pair] != null) {
-                  totalBuying[pair] += amount;
-                } else {
-                  totalBuying[pair] = amount;
-                }
-                if (totalExpending[pair.split("/")[1]] != null) {
-                  totalExpending[pair.split("/")[1]] += amount;
-                } else {
-                  totalExpending[pair.split("/")[1]] = amount;
-                }
-              }
-            });*/ /*
-*/ /*List<MyChartSectionData> data = List();
-            double total = 0;
-            totalBuying.forEach((pair, amount) {
-              if (pair.split("/")[1] == base_coin) {
-                double price = binanceTicker["BTC${pair.split("/")[1]}"];
-                double percentage;
-                if (price == null) {
-                  percentage = amount;
-                } else {
-                  percentage = amount / price;
-                }
-                total += percentage;
-              }
-            });
-            totalBuying.forEach((pair, amount) {
-              if (pair.split("/")[1] == base_coin) {
-                double price = binanceTicker["BTC${pair.split("/")[1]}"];
-                double percentage = 1;
-                if (price == null) {
-                  percentage = amount;
-                } else {
-                  percentage = amount / price;
-                }
-                //print(percentage/total);
-                data.add(MyChartSectionData(pair, percentage / total, amount));
-              }
-            });*/ /*
-
-switch (section) {
-case Section.LOGIN:
-break;
-case Section.DASHBOARD:
-body = DashboardBitMe(
-settings: settings,
-user: user,
-);
-break;
-case Section.ORDERS:
-body = OrdersPage(
-querySnapshot: querySnapshot.data,
-);
-break;
-case Section.HISTORY:
-//body = Page2Section();
-break;
-case Section.SETTINGS:
-// TODO: Handle this case.
-break;
-}
-return body;
-} else if (querySnapshot.hasError) {
-return Text(querySnapshot.error.toString());
-} else {
-return Center(
-child: CircularProgressIndicator(),
-);
-}
-},
-)*/

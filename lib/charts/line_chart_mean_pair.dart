@@ -11,12 +11,10 @@ import '../models/user_model.dart';
 class PriceAVGChartLinePair extends StatefulWidget {
   User user;
   Settings settings;
-  String pair;
   Color color;
-  double avgPrice;
+  PairData pairData;
 
-  PriceAVGChartLinePair(
-      {this.user, this.settings, this.pair, this.color, this.avgPrice});
+  PriceAVGChartLinePair({this.user, this.settings, this.pairData, this.color});
 
   @override
   State<StatefulWidget> createState() => PriceAVGChartLinePairState();
@@ -24,9 +22,8 @@ class PriceAVGChartLinePair extends StatefulWidget {
 
 class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
   //bool isShowingMainData;
-  double interval = 1000000; //intervalo de 24 horas
-  ScaleLineChart selectedScaleLineChart;
-  PairData _pairData;
+  double interval; //intervalo de 24 horas
+  //ScaleLineChart selectedScaleLineChart;
   List<FlSpot> price_spots = List();
   List<FlSpot> avg_price_spots = List();
   double xmin, xmax;
@@ -35,123 +32,24 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
   @override
   void initState() {
     super.initState();
-    interval = (1.0 * (60 * 60 * 24));
-    switch (widget.settings.scaleLineChart) {
-      case ScaleLineChart.WEEK1:
-        xmin = DateTime.now().add(Duration(days: -7)).millisecondsSinceEpoch /
-            1000;
-        break;
-      case ScaleLineChart.WEEK2:
-        xmin = DateTime.now().add(Duration(days: -14)).millisecondsSinceEpoch /
-            1000;
-        break;
-      case ScaleLineChart.MONTH1:
-        xmin = DateTime.now().add(Duration(days: -30)).millisecondsSinceEpoch /
-            1000;
-        break;
-      case ScaleLineChart.MONTH6:
-        xmin = DateTime.now().add(Duration(days: -180)).millisecondsSinceEpoch /
-            1000;
-        break;
-      case ScaleLineChart.YEAR1:
-        xmin = DateTime.now().add(Duration(days: -365)).millisecondsSinceEpoch /
-            1000;
-        break;
-    }
-    //_pairData = widget.user.pairDataItems[widget.pair];
-    //print("pairItens: ${_pairData.historyItems.length}");
+  }
+
+  void setScale() {
+    xmin = widget.pairData.historyItems.first.timestamp.seconds.toDouble();
+    xmax = widget.pairData.historyItems.last.timestamp.seconds.toDouble();
+    interval = (xmax - xmin) / 7;
   }
 
   @override
   Widget build(BuildContext context) {
-    _pairData = widget.user.pairDataItems[widget.pair];
-    price_spots = _pairData.price_spots;
-    avg_price_spots = _pairData.avg_price_spots;
-    xmax = DateTime.now().millisecondsSinceEpoch / 1000;
-    xmin = DateTime.now().add(Duration(days: -7)).millisecondsSinceEpoch / 1000;
+    price_spots = widget.pairData.price_spots;
+    avg_price_spots = widget.pairData.avg_price_spots;
+    //xmax = DateTime.now().millisecondsSinceEpoch / 1000;
+    //xmin = DateTime.now().add(Duration(days: -7)).millisecondsSinceEpoch / 1000;
     //interval = (1.0 * (60 * 60 * 24)) - 1;
-    switch (widget.settings.scaleLineChart) {
-      case ScaleLineChart.WEEK1:
-        xmin = DateTime.now().add(Duration(days: -7)).millisecondsSinceEpoch /
-            1000;
-        interval = (2.0 * (60 * 60 * 24)) - 1;
-        break;
-      case ScaleLineChart.WEEK2:
-        xmin = DateTime.now().add(Duration(days: -14)).millisecondsSinceEpoch /
-            1000;
-        interval = (4.0 * (60 * 60 * 24)) - 1;
-        break;
-      case ScaleLineChart.MONTH1:
-        xmin = DateTime.now().add(Duration(days: -30)).millisecondsSinceEpoch /
-            1000;
-        interval = (8.0 * (60 * 60 * 24)) - 1;
-        break;
-      case ScaleLineChart.MONTH6:
-        xmin = DateTime.now().add(Duration(days: -180)).millisecondsSinceEpoch /
-            1000;
-        interval = (28.0 * (60 * 60 * 24)) - 1;
-        break;
-      case ScaleLineChart.YEAR1:
-        xmin = DateTime.now().add(Duration(days: -365)).millisecondsSinceEpoch /
-            1000;
-        interval = (55.0 * (60 * 60 * 24)) - 1;
-        break;
-    }
+    setScale();
     return Column(
       children: [
-        Text(
-          "Purchase History",
-          style: TextStyle(
-              fontSize: 24,
-              color: Colors.deepPurple,
-              fontFamily: 'Arial Rounded MT Bold'),
-        ),
-        Container(
-          height: 16,
-        ),
-        Container(
-          height: 64,
-          margin: EdgeInsets.only(left: 16, right: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    Text("Average Price",textAlign: TextAlign.center,),
-                    Container(
-                      height: 16,
-                    ),
-                    DotWidget(
-                      dashColor: Colors.deepPurple,
-                      dashHeight: 2,
-                      totalWidth: 60,
-                      dashWidth: 8,
-                    )
-                  ],
-                ),
-              ),
-              Container(
-                width: 64,
-              ),
-              Expanded(
-                  child: Column(
-                children: [
-                  Text("Purchase Price",textAlign: TextAlign.center),
-                  Container(
-                    height: 16,
-                  ),
-                  DotWidget(
-                    dashColor: Colors.deepPurple,
-                    dashHeight: 2,
-                    totalWidth: 80,
-                    dashWidth: 50,
-                  )
-                ],
-              ))
-            ],
-          ),
-        ),
         Container(
           height: 200,
           padding: EdgeInsets.only(bottom: 8),
@@ -168,9 +66,6 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                               touchedBarSpots[0].x.toInt() * 1000)
                           .toDate();
                       String dateString = DateFormat('MMM d').format(date);
-
-                      //print("${touchedBarSpots[0].barIndex} - ${touchedBarSpots[0].y}");
-                      //int index = touchedBarSpots[0].barIndex;
                       LineTooltipItem _priceTooltip = LineTooltipItem(
                           "${dateString}\n",
                           TextStyle(
@@ -188,7 +83,7 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                               ),
                             ),
                             TextSpan(
-                              text: ' ${_pairData.pair.split("/")[1]}',
+                              text: ' ${widget.pairData.pair.split("/")[1]}',
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.normal,
@@ -204,7 +99,7 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                           ),
                           children: [
                             TextSpan(
-                              text: ' ${_pairData.pair.split("/")[1]}',
+                              text: ' ${widget.pairData.pair.split("/")[1]}',
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.normal,
@@ -238,7 +133,7 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
               titlesData: FlTitlesData(
                 rightTitles: SideTitles(
                   showTitles: true,
-                  reservedSize: 20,
+                  reservedSize: 0,
                   getTitles: (value) {
                     Timestamp timestamp = Timestamp.fromMillisecondsSinceEpoch(
                         (value * 1000).toInt());
@@ -251,7 +146,7 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                 bottomTitles: SideTitles(
                   showTitles: true,
                   reservedSize: 10,
-                  interval: interval,
+                  interval: interval == 0 ? 1 : interval,
                   getTextStyles: (value) => const TextStyle(
                     color: Color(0xff72719b),
                     fontWeight: FontWeight.bold,
@@ -263,12 +158,25 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                         (value * 1000).toInt());
                     String xTitle =
                         "${DateFormat('MMM d').format(timestamp.toDate())}";
+                    //print("inter: ${interval} - ${60*60*24}");
+                    if (interval < 60 * 60 * 24) {
+                      xTitle =
+                          "${DateFormat('hh:mm\nMMM d').format(timestamp.toDate())}";
+                    }
+
+                    if (timestamp.seconds ==
+                            widget.pairData.price_spots.first.x ||
+                        timestamp.seconds ==
+                            widget.pairData.price_spots.last.x) {
+                      return "";
+                    }
                     return xTitle;
                   },
                 ),
                 leftTitles: SideTitles(
-                  interval: widget.avgPrice * 0.03,
+                  interval: widget.pairData.avgPrice * 0.03,
                   showTitles: true,
+                  reservedSize: 0,
                   getTextStyles: (value) => const TextStyle(
                     color: Color(0xff75729e),
                     fontWeight: FontWeight.bold,
@@ -284,11 +192,11 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
               ),
               borderData: FlBorderData(
                   show: true,
-                  border: Border.all(color: _chartLineColor, width: 1)),
+                  border: Border.all(color: Colors.transparent, width: 1)),
               minX: xmin,
               maxX: xmax,
-              maxY: _pairData.max * 1.01,
-              minY: _pairData.min * 0.95,
+              maxY: widget.pairData.max * 1.01,
+              minY: widget.pairData.min * 0.95,
               lineBarsData: [
                 LineChartBarData(
                   spots: price_spots,
@@ -346,8 +254,69 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
           ),
         ),
         Container(
-          color: Colors.grey.shade200,
-          margin: EdgeInsets.only(top: 8),
+          //height: 64,
+          margin: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                  child: Column(
+                children: [
+                  Text(
+                    "Average Price",
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(
+                    "${doubleToValueString(widget.pairData.avgPrice)} ${widget.pairData.pair.split("/")[1]}",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.deepPurple,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Container(
+                    height: 8,
+                  ),
+                  DotWidget(
+                    dashColor: Colors.deepPurple,
+                    dashHeight: 2,
+                    totalWidth: 60,
+                    dashWidth: 8,
+                  )
+                ],
+              )),
+              Expanded(
+                  child: Column(
+                children: [
+                  Text("Price Now", textAlign: TextAlign.center),
+                  Text(
+                    "${doubleToValueString(widget.settings.binanceTicker[widget.pairData.pair.replaceAll("/", "")])} ${widget.pairData.pair.split("/")[1]}",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.deepPurple,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Container(
+                    height: 8,
+                  ),
+                  DotWidget(
+                    dashColor: Colors.deepPurple,
+                    dashHeight: 2,
+                    totalWidth: 80,
+                    dashWidth: 50,
+                  )
+                ],
+              ))
+            ],
+          ),
+        ),
+       Card(
+          color: Colors.white,elevation: 6,
+          /*decoration: BoxDecoration(
+              color: Colors.grey.shade200,
+              borderRadius: BorderRadius.all(Radius.circular(16.0))),*/
+          margin: EdgeInsets.symmetric(horizontal: 8,vertical: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -356,14 +325,15 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                     backgroundColor:
                         ScaleLineChart.WEEK1 == widget.settings.scaleLineChart
                             ? MaterialStateProperty.all<Color>(
-                                Colors.deepPurple.withOpacity(0.2))
+                                Colors.deepPurple.withOpacity(0.2),
+                              )
                             : null,
                   ),
                   onPressed: () {
                     this.setState(() {
                       widget.settings
                           .updateScaleLineChart(ScaleLineChart.WEEK1);
-                      interval = (2.0 * (60 * 60 * 24)) - 1;
+                      //interval = (2.0 * (60 * 60 * 24)) - 1;
                       widget.user.forceUpdateHistoryData(7);
                     });
                   },
@@ -379,7 +349,7 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                 onPressed: () {
                   this.setState(() {
                     widget.settings.updateScaleLineChart(ScaleLineChart.WEEK2);
-                    interval = (4.0 * (60 * 60 * 24)) - 1;
+                    //interval = (4.0 * (60 * 60 * 24)) - 1;
                     widget.user.forceUpdateHistoryData(14);
                   });
                 },
@@ -396,7 +366,7 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                 onPressed: () {
                   this.setState(() {
                     widget.settings.updateScaleLineChart(ScaleLineChart.MONTH1);
-                    interval = (8.0 * (60 * 60 * 24)) - 1;
+                    //interval = (8.0 * (60 * 60 * 24)) - 1;
                     widget.user.forceUpdateHistoryData(30);
                   });
                 },
@@ -413,7 +383,7 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                 onPressed: () {
                   this.setState(() {
                     widget.settings.updateScaleLineChart(ScaleLineChart.MONTH6);
-                    interval = (28.0 * (60 * 60 * 24)) - 1;
+                    //interval = (28.0 * (60 * 60 * 24)) - 1;
                     widget.user.forceUpdateHistoryData(180);
                   });
                 },
@@ -431,7 +401,7 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                     this.setState(() {
                       widget.settings
                           .updateScaleLineChart(ScaleLineChart.YEAR1);
-                      interval = (60.0 * (60 * 60 * 24)) - 1;
+                      //interval = (60.0 * (60 * 60 * 24)) - 1;
                       widget.user.forceUpdateHistoryData(365);
                     });
                   },

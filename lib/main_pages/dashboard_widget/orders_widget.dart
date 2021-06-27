@@ -2,7 +2,7 @@ import 'package:Bit.Me/charts/line_chart_mean.dart';
 import 'package:Bit.Me/models/history_model.dart';
 import 'package:Bit.Me/models/settings_model.dart';
 import 'package:Bit.Me/models/user_model.dart';
-import 'package:Bit.Me/page/pairdetail_page.dart';
+import 'package:Bit.Me/bkp/pairdetail_page.dart';
 import 'package:Bit.Me/tools.dart';
 import 'package:Bit.Me/widgets/weekindicator.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +42,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
           padding: EdgeInsets.only(top: 16),
           child: Row(
             children: [
-              IconButton(
+              /*IconButton(
                   onPressed: () async {
                     await showDialog(
                       context: context,
@@ -52,14 +52,9 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                     );
                     widget.user.updateUser();
                   },
-                  icon: Icon(Icons.add_circle)),
-              IconButton(
-                  onPressed: () async {
-                    //var history = await widget.user.getHistoryData(7);
-                  },
-                  icon: Icon(Icons.terrain)),
+                  icon: Icon(Icons.add_circle)),*/
               Padding(
-                padding: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
+                padding: EdgeInsets.only(left: 16, right: 0, top: 0, bottom: 0),
                 child: Text(
                   "Orders",
                   style: TextStyle(

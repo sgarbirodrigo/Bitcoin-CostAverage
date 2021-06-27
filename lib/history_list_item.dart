@@ -66,17 +66,22 @@ class _HistoryItemListState extends State<HistoryItemList> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                  "Price: ${doubleToValueString(widget.historyItem.response.price)} ${widget.historyItem.response.symbol.split("/")[1]}",
+                                  "Bought: +${widget.historyItem.response.filled} ${widget.historyItem.response.symbol.split("/")[0]}",
                                   style: TextStyle(
-                                      color: Colors.black.withOpacity(0.6),
+                                      //color: Colors.black.withOpacity(0.6),
                                       fontSize: 16,
                                       fontWeight: FontWeight.w400)),
                               Text(
-                                  "+${widget.historyItem.response.filled} ${widget.historyItem.response.symbol.split("/")[0]}",
+                                  "Price: ${doubleToValueString(widget.historyItem.response.average)} ${widget.historyItem.response.symbol.split("/")[1]}",
                                   style: TextStyle(
-                                      color: Colors.black.withOpacity(0.6),
+                                      //color: Colors.black.withOpacity(0.6),
                                       fontSize: 16,
-                                      fontWeight: FontWeight.w400))
+                                      fontWeight: FontWeight.w400)),
+
+                              Text('Fee: ${widget.historyItem.response.fee.cost} ${widget.historyItem.response.fee.currency}',textAlign: TextAlign.left,style:TextStyle(
+                                  color: Colors.black.withOpacity(0.6),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400)),
                             ],
                           )
                         : Text("Swipe left for more details",
@@ -135,7 +140,7 @@ class _HistoryItemListState extends State<HistoryItemList> {
             ],
           ),
         ),
-        secondaryActions: [
+        /*secondaryActions: [
           IconSlideAction(
             caption: 'Details',
             color: Colors.blue,
@@ -146,11 +151,18 @@ class _HistoryItemListState extends State<HistoryItemList> {
                 barrierDismissible: false, // user must tap button!
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text('Binance Response:'),
+                    title: Text('Details:'),
                     content: SingleChildScrollView(
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text('${success ? JsonEncoder.withIndent('  ').convert(widget.historyItem.response.toJson()):widget.historyItem.error}'),
+                          Text('Date: ${DateTime.fromMillisecondsSinceEpoch(widget.historyItem.response.timestamp)}',textAlign: TextAlign.left,),
+                          Text('Pair: ${widget.historyItem.order.pair}',textAlign: TextAlign.left),
+                          Text('Price: ${widget.historyItem.response.average}',textAlign: TextAlign.left),
+                          Text('Fee: ${widget.historyItem.response.fee.cost} ${widget.historyItem.response.fee.currency}',textAlign: TextAlign.left),
+                          Text('Quantity: ${widget.historyItem.response.filled} ${widget.historyItem.response.symbol}',textAlign: TextAlign.left),
+                          //Text('${success ? JsonEncoder.withIndent('  ').convert(widget.historyItem.response.toJson()):widget.historyItem.error}'),
                         ],
                       ),
                     ),
@@ -167,7 +179,7 @@ class _HistoryItemListState extends State<HistoryItemList> {
               );
             },
           ),
-        ],
+        ],*/
       ),
     );
   }

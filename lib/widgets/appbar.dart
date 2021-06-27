@@ -1,3 +1,4 @@
+import 'package:Bit.Me/external/authService.dart';
 import 'package:Bit.Me/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -41,14 +42,20 @@ class _AppBarBitMeState extends State<AppBarBitMe> {
                 color: Colors.white,
               ),
               onPressed: () => Navigator.of(context).pop(),
-            ): IconButton(
+            ): Icon(null)),
+          Positioned(
+            top: 0,
+            bottom: 0,
+            right: 0,
+            child:IconButton(
               icon: Icon(
-                Icons.dehaze_rounded,
+                Icons.logout,
                 color: Colors.white,
               ),
-              onPressed: () => widget.scaffoldKey.currentState.openDrawer(),
-            ),
+              onPressed: () => AuthService().signOut(),
+            )
           ),
+
           /*Positioned(
             top: 0,
             bottom: 0,

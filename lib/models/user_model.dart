@@ -54,7 +54,6 @@ class PairData {
   List<FlSpot> avg_price_spots = List();
   bool isLoaded = false;
 
-  PairData();
 
   PairData addHistoryItem(HistoryItem historyItem) {
     this.historyItems.add(historyItem);

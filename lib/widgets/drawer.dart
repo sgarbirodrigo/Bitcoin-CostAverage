@@ -72,7 +72,7 @@ class _DrawerBitMeState extends State<DrawerBitMe> {
               color: Colors.deepPurple,
             ),
             title: Text(
-              'Dashboard',
+              'Home',
               style: _drawerItemStyle,
             ),
             onTap: () {

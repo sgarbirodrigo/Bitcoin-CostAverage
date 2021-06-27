@@ -57,8 +57,8 @@ class _SettingsPageState extends State<SettingsPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              height: 300,
-              width: 300,
+              height: 200,
+              width: 200,
               //padding: EdgeInsets.only(bottom: ),
               child: _readingQRCode
                   ? QRViewExample((Barcode barcode) {
