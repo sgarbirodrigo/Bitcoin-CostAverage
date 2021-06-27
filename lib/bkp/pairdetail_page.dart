@@ -62,9 +62,12 @@ class _PairDetailPageState extends State<PairDetailPage> {
         timespan_name = "last year";
         break;
     }
-    TextStyle _valueStyle = TextStyle(color: Colors.deepPurple, fontSize: 16);
-    TextStyle _headerStyle =
-        TextStyle(color: Colors.black.withOpacity(0.6), fontSize: 14);
+    double appreciation =
+        (((widget.settings.binanceTicker[pairData.pair.replaceAll("/", "")] *
+            pairData.coinAccumulated) /
+            pairData.totalExpended) -
+            1) *
+            100;
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBarBitMe(
@@ -152,11 +155,9 @@ class _PairDetailPageState extends State<PairDetailPage> {
                     RichText(
                       text: TextSpan(
                         text:
-                            "${pairData.percentage_variation.toStringAsFixed(2)}% (${doubleToValueString((widget.settings.binanceTicker[pairData.pair.replaceAll("/", "")] * pairData.coinAccumulated) - pairData.totalExpended)} ${pairData.pair.split("/")[1]})",
+                        "${(appreciation).toStringAsFixed(2)}% (${doubleToValueString((widget.settings.binanceTicker[pairData.pair.replaceAll("/", "")] * pairData.coinAccumulated) - pairData.totalExpended)} ${pairData.pair.split("/")[1]})",
                         style: TextStyle(
-                            color: pairData.percentage_variation < 0
-                                ? Colors.red.shade300
-                                : Colors.green.shade300,
+                            color: appreciation < 0 ? Color(0xffA96B6B) : Color(0xff69A67C),
                             fontSize: 16,
                             fontWeight: FontWeight.w500),
                         children: [
