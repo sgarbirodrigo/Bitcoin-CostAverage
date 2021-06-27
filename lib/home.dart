@@ -11,11 +11,14 @@ import 'package:Bit.Me/widgets/drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:introduction_screen/introduction_screen.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:titled_navigation_bar/titled_navigation_bar.dart';
 import 'CreateEditOrder.dart';
+import 'IntroductionConnectPage.dart';
+import 'IntroductionPage.dart';
 import 'dialog_config.dart';
 import 'history_page.dart';
 import 'history_selector_coin.dart';
@@ -35,6 +38,7 @@ enum Section { LOGIN, DASHBOARD, ORDERS, HISTORY, SETTINGS }
 
 class _HomeState extends State<Home> {
   Settings settings;
+
   //Section section;
   User user;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -133,156 +137,112 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    /*switch (section) {
-      case Section.LOGIN:
-        break;
-      case Section.DASHBOARD:
-        body = DashboardBitMe(
-          */ /*key: context.widget.key,*/ /*
-          settings: settings,
-          user: user,
-        );
-        title = "Bitcoin-Cost Average";
-        break;
-      case Section.ORDERS:
-        body = OrdersPage(this.user);
-        title = "Orders";
-        break;
-      case Section.HISTORY:
-        body = HistoryPage(this.user);
-        title = "History";
-        break;
-      case Section.SETTINGS:
-        title = "Settings";
-        body = SettingsPage(this.user);
-        // TODO: Handle this case.
-        break;
-    }*/
-    /*switch (_pageIndex) {
-      case 0:
-        section = Section.DASHBOARD;
-        body = DashboardBitMe(
-          */ /*key: context.widget.key,*/ /*
-          settings: settings,
-          user: user,
-        );
-        //title = "Bitcoin-Cost Average";
-        break;
-      case 1:
-        section = Section.ORDERS;
-        body = OrdersPage(
-          user: this.user,
-          settings: this.settings,
-        );
-        //title = "Orders";
-        break;
-      case 3:
-        section = Section.HISTORY;
-        //title = "Settings";
-        body = HistorySelPage(this.user, this.settings);
-        break;
-      case 4:
-        section = Section.SETTINGS;
-        //title = "Settings";
-        body = SettingsPage(this.user);
-
-        // TODO: Handle this case.
-        break;
-    }*/
-
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBarBitMe(
-        title: title,
-        scaffoldKey: _scaffoldKey,
-      ),
-      backgroundColor: Color(0xffF9F8FD),
-      bottomNavigationBar: TitledBottomNavigationBar(
-          currentIndex: _pageIndex,
-          reverse: true,
-          onTap: (index) {
-            //print("jumping to $index");
-            _myPage.jumpToPage(index>=1?index-1:index);
-            setState(() {
-              _pageIndex = index;
-            });
-          },
-          items: [
-            TitledNavigationBarItem(
-              title: Text(
-                'ORDER',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.deepPurple),
-              ),
-              icon: ElevatedButton(
-                onPressed: () async {
-                  // _pageIndex = 2;
-                  await showCupertinoModalBottomSheet(
-                    context: context,
-                    useRootNavigator: true,
-                    builder: (context) => Container(
-                      //height: 400,
-                      child: CreateEditOrder(this.user),
-                    ),
-                  );
-                  user.updateUser();
-                  //_pageIndex = I;
+    if (user.userData != null) {
+      if (user.userData.hasIntroduced) {
+        if (user.userData.hasConnected) {
+          return Scaffold(
+            key: _scaffoldKey,
+            appBar: AppBarBitMe(
+              title: title,
+              scaffoldKey: _scaffoldKey,
+            ),
+            backgroundColor: Color(0xffF9F8FD),
+            bottomNavigationBar: TitledBottomNavigationBar(
+                currentIndex: _pageIndex,
+                reverse: true,
+                onTap: (index) {
+                  //print("jumping to $index");
+                  _myPage.jumpToPage(index >= 1 ? index - 1 : index);
+                  setState(() {
+                    _pageIndex = index;
+                  });
                 },
-                child: Icon(
-                  Icons.add,
-                  size: 24,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            TitledNavigationBarItem(
-              title: Text('Home'),
-              icon: Icon(
-                Icons.home,
-                color: Colors.grey,
-              ),
-            ),
-            TitledNavigationBarItem(
-              title: Text('Orders'),
-              icon: Icon(
-                Icons.list_alt_sharp,
-                color: Colors.grey,
-              ),
-            ),
-
-            /*TitledNavigationBarItem(
-              title: Text('History'),
-              icon: Icon(
-                Icons.timeline,
-                color: Colors.grey,
-              ),
-            ),*/
-            TitledNavigationBarItem(
-              title: Text('Settings'),
-              icon: Icon(
-                Icons.settings_outlined,
-                color: Colors.grey,
-              ),
-            ),
-            /*TitledNavigationBarItem(
+                items: [
+                  TitledNavigationBarItem(
+                    title: Text(
+                      'ORDER',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.deepPurple),
+                    ),
+                    icon: ElevatedButton(
+                      onPressed: () async {
+                        // _pageIndex = 2;
+                        await showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          useRootNavigator: true,
+                          builder: (context) => Container(
+                            //height: 400,
+                            child: Padding(
+                                child: CreateEditOrder(this.user),
+                                padding: MediaQuery.of(context).viewInsets),
+                          ),
+                        );
+                        user.updateUser();
+                        //_pageIndex = I;
+                      },
+                      child: Icon(
+                        Icons.add,
+                        size: 24,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  TitledNavigationBarItem(
+                    title: Text('Home'),
+                    icon: Icon(
+                      Icons.home,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  TitledNavigationBarItem(
+                    title: Text('Orders'),
+                    icon: Icon(
+                      Icons.list_alt_sharp,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  TitledNavigationBarItem(
+                    title: Text('Settings'),
+                    icon: Icon(
+                      Icons.settings_outlined,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  /*TitledNavigationBarItem(
                 title: Text('Log Out'), icon: Icon(Icons.logout)),*/
-          ]),
-      body: PageView(
-          physics: NeverScrollableScrollPhysics(),
-          controller: _myPage,
-          children: <Widget>[
-            DashboardBitMe(
-              /*key: context.widget.key,*/
-              settings: settings,
-              user: user,
-            ),
-            OrdersPage(
-              user: this.user,
-              settings: this.settings,
-            ),
-            //HistorySelPage(this.user, this.settings),
-            SettingsPage(this.user)
-          ]),
-    );
+                ]),
+            body: PageView(
+                physics: NeverScrollableScrollPhysics(),
+                controller: _myPage,
+                children: <Widget>[
+                  DashboardBitMe(
+                    /*key: context.widget.key,*/
+                    settings: settings,
+                    user: user,
+                  ),
+                  OrdersPage(
+                    user: this.user,
+                    settings: this.settings,
+                  ),
+                  //HistorySelPage(this.user, this.settings),
+                  SettingsPage(this.user)
+                ]),
+          );
+        } else {
+          return IntroductionConnectPage(this.user);
+        }
+      } else {
+        return IntroductionPage(this.user);
+      }
+    } else {
+      return Scaffold(
+        body: SafeArea(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      );
+    }
   }
 }

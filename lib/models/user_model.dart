@@ -23,14 +23,26 @@ class UserData {
   String private_key;
   bool active;
   String uid;
+  bool hasIntroduced;
+  bool hasConnected;
+  bool hasRunFirstWizzardOrder;
   Map<String, OrderItem> orders;
 
   UserData.fromJson(Map<String, dynamic> jsonx) {
     email = jsonx['email'];
+    hasIntroduced = jsonx['hasIntroduced'] ?? false;
+    hasConnected = jsonx['hasConnected'] ?? false;
+
+    hasRunFirstWizzardOrder = jsonx['hasRunFirstWizzardOrder'] ?? false;
     lastUpdateTimestamp = jsonx['lastUpdateTimestamp'];
     active = jsonx['active'];
     public_key = jsonx['public_key'];
     private_key = jsonx['private_key'];
+    if (public_key != null && private_key != null) {
+      if (public_key.isNotEmpty && private_key.isNotEmpty) {
+        hasConnected = true;
+      }
+    }
     uid = jsonx['uid'];
     orders = new Map();
     (jsonx['orders'] as Map).forEach((key, value) {
@@ -53,7 +65,6 @@ class PairData {
   List<FlSpot> price_spots = List();
   List<FlSpot> avg_price_spots = List();
   bool isLoaded = false;
-
 
   PairData addHistoryItem(HistoryItem historyItem) {
     this.historyItems.add(historyItem);
@@ -205,6 +216,7 @@ class User {
     this.isUpdatingHistory = false;
     this.onUserDataUpdate(this);
   }
+
 /*
 
   void forceUpdateHistoryData2(int daysToConsider) {

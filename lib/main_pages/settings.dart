@@ -44,10 +44,10 @@ class _SettingsPageState extends State<SettingsPage> {
       }
     });
   }
-
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
+
     return SafeArea(
         child: Container(
       padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),

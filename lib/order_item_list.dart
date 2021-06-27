@@ -4,7 +4,6 @@ import 'package:Bit.Me/widgets/weekindicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'EditOrderDialog.dart';
 import 'bkp/pairdetail_page.dart';
@@ -307,18 +306,20 @@ class _OrderItemListState extends State<OrderItemList> {
         ),
       ),
       onTap: () async {
-        await showCupertinoModalBottomSheet(
+        await showModalBottomSheet(
           context: context,
           useRootNavigator: true,
+          isScrollControlled: true,
           builder: (context) => Container(
-            //height: 400,
-            child: CreateEditOrder(
-              widget.user,
-              orderItem: widget.user.userData.orders.values.toList()[index],
+            child: Padding(
+              padding: MediaQuery.of(context).viewInsets,
+              child: CreateEditOrder(
+                widget.user,
+                orderItem: widget.user.userData.orders.values.toList()[index],
+              ),
             ),
           ),
         );
-
         widget.user.updateUser();
       },
     );

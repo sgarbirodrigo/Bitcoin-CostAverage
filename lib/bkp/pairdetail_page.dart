@@ -207,7 +207,101 @@ class _PairDetailPageState extends State<PairDetailPage> {
                               ),
                             ),
                     ),
-
+                    Card(
+                      color: Colors.white,elevation: 6,
+                      margin: EdgeInsets.symmetric(horizontal: 4,vertical: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          TextButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                ScaleLineChart.WEEK1 == widget.settings.scaleLineChart
+                                    ? MaterialStateProperty.all<Color>(
+                                  Colors.deepPurple.withOpacity(0.2),
+                                )
+                                    : null,
+                              ),
+                              onPressed: () {
+                                this.setState(() {
+                                  widget.settings
+                                      .updateScaleLineChart(ScaleLineChart.WEEK1);
+                                  //interval = (2.0 * (60 * 60 * 24)) - 1;
+                                  this.user.forceUpdateHistoryData(7);
+                                });
+                              },
+                              child: Text("1W")),
+                          TextButton(
+                            style: ButtonStyle(
+                              backgroundColor:
+                              ScaleLineChart.WEEK2 == widget.settings.scaleLineChart
+                                  ? MaterialStateProperty.all<Color>(
+                                  Colors.deepPurple.withOpacity(0.2))
+                                  : null,
+                            ),
+                            onPressed: () {
+                              this.setState(() {
+                                widget.settings.updateScaleLineChart(ScaleLineChart.WEEK2);
+                                //interval = (4.0 * (60 * 60 * 24)) - 1;
+                                this.user.forceUpdateHistoryData(14);
+                              });
+                            },
+                            child: Text("2W"),
+                          ),
+                          TextButton(
+                            style: ButtonStyle(
+                              backgroundColor:
+                              ScaleLineChart.MONTH1 == widget.settings.scaleLineChart
+                                  ? MaterialStateProperty.all<Color>(
+                                  Colors.deepPurple.withOpacity(0.2))
+                                  : null,
+                            ),
+                            onPressed: () {
+                              this.setState(() {
+                                widget.settings.updateScaleLineChart(ScaleLineChart.MONTH1);
+                                //interval = (8.0 * (60 * 60 * 24)) - 1;
+                                this.user.forceUpdateHistoryData(30);
+                              });
+                            },
+                            child: Text("1M"),
+                          ),
+                          TextButton(
+                            style: ButtonStyle(
+                              backgroundColor:
+                              ScaleLineChart.MONTH6 == widget.settings.scaleLineChart
+                                  ? MaterialStateProperty.all<Color>(
+                                  Colors.deepPurple.withOpacity(0.2))
+                                  : null,
+                            ),
+                            onPressed: () {
+                              this.setState(() {
+                                widget.settings.updateScaleLineChart(ScaleLineChart.MONTH6);
+                                //interval = (28.0 * (60 * 60 * 24)) - 1;
+                                this.user.forceUpdateHistoryData(180);
+                              });
+                            },
+                            child: Text("6M"),
+                          ),
+                          TextButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                ScaleLineChart.YEAR1 == widget.settings.scaleLineChart
+                                    ? MaterialStateProperty.all<Color>(
+                                    Colors.deepPurple.withOpacity(0.2))
+                                    : null,
+                              ),
+                              onPressed: () {
+                                this.setState(() {
+                                  widget.settings
+                                      .updateScaleLineChart(ScaleLineChart.YEAR1);
+                                  //interval = (60.0 * (60 * 60 * 24)) - 1;
+                                  this.user.forceUpdateHistoryData(365);
+                                });
+                              },
+                              child: Text("1Y"))
+                        ],
+                      ),
+                    ),
                     Expanded(
                         child: ListView.builder(
                             scrollDirection: Axis.vertical,

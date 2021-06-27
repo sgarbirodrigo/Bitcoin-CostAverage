@@ -40,7 +40,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
       mainAxisSize: MainAxisSize.max,
       children: [
         Container(
-          padding: EdgeInsets.only(top: 16),
+          padding: EdgeInsets.only(top: 16,bottom: 8),
           child: Row(
             children: [
               /*IconButton(
@@ -55,9 +55,9 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                   },
                   icon: Icon(Icons.add_circle)),*/
               Padding(
-                padding: EdgeInsets.only(left: 16, right: 0, top: 0, bottom: 0),
-                child: Text(
-                  "Orders",
+                padding: EdgeInsets.only(left: 16, right: 0, top: 0, bottom:0),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start,children: [Text(
+                  "Active Orders",
                   style: TextStyle(
                     fontFamily: 'Arial Rounded MT Bold',
                     fontSize: 24,
@@ -71,7 +71,22 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                       )
                     ],
                   ),
-                ),
+                ),Text(
+                  "Executed on the chosen days at 11 PM.",
+                  style: TextStyle(
+                    fontFamily: 'Arial',
+                    fontSize:12,
+                    fontWeight: FontWeight.w100,
+                    color: Colors.black.withOpacity(0.7),
+                    shadows: <Shadow>[
+                      Shadow(
+                        offset: Offset(0.5, 0.5),
+                        blurRadius: 4,
+                        color: Color.fromARGB(4, 0, 0, 0),
+                      )
+                    ],
+                  ),
+                )],),
               ),
               Expanded(child: Container()),
               Padding(
@@ -147,7 +162,13 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
+                    if(widget.user.userData.orders.values.toList()[index].active){
                       return OrderItemList(index, widget.user, widget.settings);
+                    }else{
+                      return Container();
+                    }
+
+
                     })
                 : Container(
                     child: Center(
