@@ -39,7 +39,7 @@ class _HomeState extends State<Home> {
   User user;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   bool entitlementIsActive = false;
-  int _pageIndex = 0;
+  int _pageIndex = 1;
   Widget body;
   String title = "Bitcoin-Cost Average";
 
@@ -87,7 +87,7 @@ class _HomeState extends State<Home> {
         ));
       }
     });
-    _myPage = PageController(initialPage: _pageIndex);
+    _myPage = PageController(initialPage: 0);
     //section = Section.DASHBOARD;
     initPlatformState();
     super.initState();
@@ -202,26 +202,12 @@ class _HomeState extends State<Home> {
           reverse: true,
           onTap: (index) {
             //print("jumping to $index");
-            _myPage.jumpToPage(index>=2?index-1:index);
+            _myPage.jumpToPage(index>=1?index-1:index);
             setState(() {
               _pageIndex = index;
             });
           },
           items: [
-            TitledNavigationBarItem(
-              title: Text('Home'),
-              icon: Icon(
-                Icons.home,
-                color: Colors.grey,
-              ),
-            ),
-            TitledNavigationBarItem(
-              title: Text('Orders'),
-              icon: Icon(
-                Icons.list_alt_sharp,
-                color: Colors.grey,
-              ),
-            ),
             TitledNavigationBarItem(
               title: Text(
                 'ORDER',
@@ -250,12 +236,27 @@ class _HomeState extends State<Home> {
               ),
             ),
             TitledNavigationBarItem(
+              title: Text('Home'),
+              icon: Icon(
+                Icons.home,
+                color: Colors.grey,
+              ),
+            ),
+            TitledNavigationBarItem(
+              title: Text('Orders'),
+              icon: Icon(
+                Icons.list_alt_sharp,
+                color: Colors.grey,
+              ),
+            ),
+
+            /*TitledNavigationBarItem(
               title: Text('History'),
               icon: Icon(
                 Icons.timeline,
                 color: Colors.grey,
               ),
-            ),
+            ),*/
             TitledNavigationBarItem(
               title: Text('Settings'),
               icon: Icon(
@@ -279,7 +280,7 @@ class _HomeState extends State<Home> {
               user: this.user,
               settings: this.settings,
             ),
-            HistorySelPage(this.user, this.settings),
+            //HistorySelPage(this.user, this.settings),
             SettingsPage(this.user)
           ]),
     );

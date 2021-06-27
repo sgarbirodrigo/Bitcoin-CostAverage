@@ -58,19 +58,20 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
               lineTouchData: LineTouchData(
                 touchTooltipData: LineTouchTooltipData(
                     fitInsideHorizontally: true,
-                    fitInsideVertically: true,
+                    //fitInsideVertically: true,
                     /*showOnTopOfTheChartBoxArea: true,*/
-                    tooltipBgColor: Colors.grey,
+                    tooltipBgColor: Colors.black,
+                    maxContentWidth: 256,
                     getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
                       DateTime date = Timestamp.fromMillisecondsSinceEpoch(
                               touchedBarSpots[0].x.toInt() * 1000)
                           .toDate();
-                      String dateString = DateFormat('MMM d').format(date);
+                      String dateString = DateFormat('MMM d - hh:mm').format(date);
                       LineTooltipItem _priceTooltip = LineTooltipItem(
                           "${dateString}\n",
                           TextStyle(
                             color: Colors.white,
-                            fontSize: 10,
+                            fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                           children: [
@@ -78,14 +79,14 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                               text:
                                   '${"Price: "} ${doubleToValueString(touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 0 : 1].y)}',
                               style: TextStyle(
-                                fontSize: 10,
+                                fontSize: 16,
                                 fontWeight: FontWeight.normal,
                               ),
                             ),
                             TextSpan(
                               text: ' ${widget.pairData.pair.split("/")[1]}',
                               style: TextStyle(
-                                fontSize: 10,
+                                fontSize: 16,
                                 fontWeight: FontWeight.normal,
                               ),
                             ),
@@ -94,14 +95,14 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                       LineTooltipItem _avgTooltip = LineTooltipItem(
                           "AVG: ${doubleToValueString(touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 1 : 0].y)}",
                           TextStyle(
-                            fontSize: 10,
+                            fontSize: 16,
                             fontWeight: FontWeight.normal,
                           ),
                           children: [
                             TextSpan(
                               text: ' ${widget.pairData.pair.split("/")[1]}',
                               style: TextStyle(
-                                fontSize: 10,
+                                fontSize: 16,
                                 fontWeight: FontWeight.normal,
                               ),
                             )
@@ -201,7 +202,7 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                 LineChartBarData(
                   spots: price_spots,
                   isCurved: true,
-                  curveSmoothness: 0.2,
+                  curveSmoothness:0,
                   colors: [
                     widget.color,
                   ],
