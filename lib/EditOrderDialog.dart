@@ -14,6 +14,7 @@ import 'models/user_model.dart';
 class EditOrderDialog extends StatefulWidget {
   OrderItem orderItem;
   User user;
+
   EditOrderDialog(this.orderItem, this.user);
 
   @override
@@ -86,50 +87,11 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                     child: Stack(
                       children: [
                         Center(
-                          child: Container(
-                            padding: EdgeInsets.only(top: 16, bottom: 16),
-                            child: Text(widget.orderItem.pair,
-                                style: TextStyle(fontSize: 24)),
-                          )
-                          /*SearchableDropdown.single(
-                            icon: null,
-                            displayClearIcon: false,
-                            selectedValueWidgetFn: (value) {
-                              return Container(
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(value),
-                                    Icon(Icons.arrow_drop_down)
-                                  ],
-                                ),
-                              );
-                            },
-                            underline: Container(
-                              color: Colors.blue,
-                            ),
-                            iconSize: 36,
-                            style: TextStyle(fontSize: 22, color: Colors.black),
-                            items: pair.data.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                            value: _selectedText,
-                            hint: "Select a pair",
-                            searchHint: "Select a pair",
-                            onChanged: (value) {
-                              setState(() {
-                                //_formKey.currentState.validate();
-                                _selectedText = value;
-                                print(listOfSymbols.keys.toString());
-                              });
-                            },
-                            isExpanded: true,
-                          )*/
-                          ,
-                        ),
+                            child: Container(
+                          padding: EdgeInsets.only(top: 16, bottom: 16),
+                          child: Text(widget.orderItem.pair,
+                              style: TextStyle(fontSize: 24)),
+                        )),
                         Positioned(
                           left: 4,
                           top: 0,
@@ -238,7 +200,7 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                     height: 16,
                   ),
                   Text(
-                        "Minimum amount: ${listOfSymbols[widget.orderItem.pair.toString().replaceAll("/", "")].filters[3].minNotional.toString()} ${widget.orderItem.pair.split("/")[1]}",
+                    "Minimum amount: ${listOfSymbols[widget.orderItem.pair.toString().replaceAll("/", "")].filters[3].minNotional.toString()} ${widget.orderItem.pair.split("/")[1]}",
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.black, fontSize: 16),
                   ),
@@ -296,10 +258,11 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                                       onPressed: () {
                                         Firestore.instance
                                             .collection("users")
-                                            .document(widget.user.firebaseUser.uid)
+                                            .document(
+                                                widget.user.firebaseUser.uid)
                                             .updateData({
                                           "orders.${widget.orderItem.pair.replaceAll("/", "_")}":
-                                          FieldValue.delete()
+                                              FieldValue.delete()
                                         }).then((value) {
                                           Navigator.of(context).pop("deleted");
                                         });

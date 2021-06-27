@@ -1,8 +1,10 @@
+import 'package:Bit.Me/CreateEditOrder.dart';
 import 'package:Bit.Me/tools.dart';
 import 'package:Bit.Me/widgets/weekindicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'EditOrderDialog.dart';
 import 'bkp/pairdetail_page.dart';
@@ -305,14 +307,18 @@ class _OrderItemListState extends State<OrderItemList> {
         ),
       ),
       onTap: () async {
-        await showDialog(
+        await showCupertinoModalBottomSheet(
           context: context,
-          builder: (BuildContext context) {
-            return EditOrderDialog(
-                widget.user.userData.orders.values.toList()[index],
-                widget.user);
-          },
+          useRootNavigator: true,
+          builder: (context) => Container(
+            //height: 400,
+            child: CreateEditOrder(
+              widget.user,
+              orderItem: widget.user.userData.orders.values.toList()[index],
+            ),
+          ),
         );
+
         widget.user.updateUser();
       },
     );

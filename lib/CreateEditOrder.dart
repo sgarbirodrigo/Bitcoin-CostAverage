@@ -2,6 +2,7 @@ import 'package:Bit.Me/models/order_model.dart';
 import 'package:Bit.Me/tools.dart';
 import 'package:Bit.Me/widgets/weekindicator_editor.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -16,7 +17,9 @@ import 'models/user_model.dart';
 class CreateEditOrder extends StatefulWidget {
   User user;
 
-  CreateEditOrder(this.user);
+  CreateEditOrder(this.user, {this.orderItem});
+
+  OrderItem orderItem;
 
   @override
   State<StatefulWidget> createState() {
@@ -28,7 +31,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
   String _selectedPair = "BTC/USDT";
   Map<String, BinanceSymbol> listOfSymbols;
   TextEditingController _amountController = TextEditingController();
-  Schedule schedule = Schedule();
+  Schedule schedule;
 
   Future<List<String>> fetchBinancePairList() async {
     final response =
@@ -57,7 +60,13 @@ class CreateEditOrderState extends State<CreateEditOrder> {
 
   @override
   void initState() {
-    _amountController.text = 0.toString();
+    if (widget.orderItem != null) {
+      _amountController.text = widget.orderItem.amount.toString();
+      this.schedule = widget.orderItem.schedule;
+    } else {
+      _amountController.text = 0.toString();
+      this.schedule = Schedule();
+    }
   }
 
   @override
@@ -76,79 +85,172 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    //width: 200,
-                    child: SearchableDropdown.single(
-                      icon: null,
-                      displayClearIcon: false,
-                      selectedValueWidgetFn: (value) {
-                        return Container(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(width: 8,),
-                              Text(value),
-                              Icon(Icons.arrow_drop_down),
-                              Expanded(
-                                child: Container(),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(Icons.close_sharp)),
+                      widget.orderItem == null
+                          ? Expanded(
+                              child: SearchableDropdown.single(
+                              icon: null,
+                              displayClearIcon: false,
+                              selectedValueWidgetFn: (value) {
+                                return Row(
+                                  //mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      value,
+                                    ),
+                                    Icon(
+                                      Icons.arrow_drop_down,
+                                      size: 36,
+                                    ),
+                                  ],
+                                );
+                              },
+                              underline: Container(
+                                color: Theme.of(context).primaryColor,
                               ),
-                              TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text("Cancel")),
-                              Container(width: 16,),
-                              ElevatedButton(
-                                onPressed: () {
-                                  if (_formKey.currentState.validate()) {
-                                    OrderItem newOrder = OrderItem(
-                                      active: true,
-                                      amount: _selectedAmount,
-                                      exchange: "Binance",
-                                      pair: _selectedPair,
-                                      schedule: this.schedule,
-                                      createdTimestamp: Timestamp.now(),
-                                    );
-                                    Firestore.instance
-                                        .collection("users")
-                                        .document(widget.user.firebaseUser.uid)
-                                        .updateData({
-                                      "orders.${newOrder.pair.replaceAll("/", "_")}":
-                                          newOrder.toJson()
-                                    }).then((value) {
-                                      Navigator.pop(context);
-                                    });
-                                  }
-                                },
-                                child: Text("CREATE"),
-                              )
-                            ],
-                          ),
-                        );
-                      },
-                      underline: Container(
-                        color: Theme.of(context).primaryColor,
+                              iconSize: 36,
+                              style:
+                                  TextStyle(fontSize: 22, color: Colors.black),
+                              items: pair.data.map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                              value: _selectedPair,
+                              hint: "Select a pair",
+                              searchHint: "Select a pair",
+                              onChanged: (value) {
+                                setState(() {
+                                  //_formKey.currentState.validate();
+                                  _selectedPair = value;
+                                  print(listOfSymbols.keys.toString());
+                                });
+                              },
+                              isExpanded: true,
+                            ))
+                          : Expanded(
+                              child: Container(
+                                padding: EdgeInsets.only(top: 16, bottom: 16),
+                                child: Text(widget.orderItem.pair,
+                                    style: TextStyle(fontSize: 24)),
+                              ),
+                            ),
+                      Container(
+                        width: 16,
                       ),
-                      iconSize: 36,
-                      style: TextStyle(fontSize: 22, color: Colors.black),
-                      items: pair.data.map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      value: _selectedPair,
-                      hint: "Select a pair",
-                      searchHint: "Select a pair",
-                      onChanged: (value) {
-                        setState(() {
-                          //_formKey.currentState.validate();
-                          _selectedPair = value;
-                          print(listOfSymbols.keys.toString());
-                        });
-                      },
-                      isExpanded: true,
-                    ),
+                      widget.orderItem != null
+                          ? ElevatedButton(
+                              onPressed: () async {
+                                String result = await showDialog<String>(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  // user must tap button!
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Delete order'),
+                                      content: SingleChildScrollView(
+                                        child: Column(
+                                          children: <Widget>[
+                                            Text(
+                                                'Are you sure you want to delete this order?'),
+                                          ],
+                                        ),
+                                      ),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: Text('Confirm'),
+                                          onPressed: () {
+                                            Firestore.instance
+                                                .collection("users")
+                                                .document(widget
+                                                    .user.firebaseUser.uid)
+                                                .updateData({
+                                              "orders.${widget.orderItem.pair.replaceAll("/", "_")}":
+                                                  FieldValue.delete()
+                                            }).then((value) {
+                                              Navigator.of(context)
+                                                  .pop("deleted");
+                                            });
+                                          },
+                                        ),
+                                        TextButton(
+                                          child: Text('Cancel'),
+                                          onPressed: () {
+                                            Navigator.of(context)
+                                                .pop("canceled");
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                                if (result == "deleted") {
+                                  Navigator.of(context).pop();
+                                }
+                                widget.user.updateUser();
+                              },
+                              child: Text("DELETE"),
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all(Colors.red)),
+                            )
+                          : Container(),
+                      widget.orderItem != null
+                          ? Container(
+                              width: 16,
+                            )
+                          : Container(),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState.validate()) {
+                            if (widget.orderItem == null) {
+                              OrderItem newOrder = OrderItem(
+                                active: true,
+                                amount: _selectedAmount,
+                                exchange: "Binance",
+                                pair: _selectedPair,
+                                schedule: this.schedule,
+                                createdTimestamp: Timestamp.now(),
+                              );
+                              Firestore.instance
+                                  .collection("users")
+                                  .document(widget.user.firebaseUser.uid)
+                                  .updateData({
+                                "orders.${newOrder.pair.replaceAll("/", "_")}":
+                                    newOrder.toJson()
+                              }).then((value) {
+                                Navigator.pop(context);
+                              });
+                            } else {
+                              widget.orderItem.updatedTimestamp =
+                                  Timestamp.now();
+                              Firestore.instance
+                                  .collection("users")
+                                  .document(widget.user.firebaseUser.uid)
+                                  .updateData({
+                                "orders.${widget.orderItem.pair.replaceAll("/", "_")}":
+                                    widget.orderItem.toJson()
+                              }).then((value) {
+                                Navigator.pop(context);
+                              });
+                            }
+                          }
+                        },
+                        child: Text(
+                            widget.orderItem == null ? "CREATE" : "UPDATE"),
+                      ),
+                      Container(
+                        width: 12,
+                      ),
+                    ],
                   ),
                   Container(
                     height: 1,
@@ -194,7 +296,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                         _amountController.selection =
                             TextSelection.fromPosition(TextPosition(
                                 offset: _amountController.text.length));
-                       /* setState(() {
+                        /* setState(() {
 
                         });*/
                       },
@@ -256,7 +358,6 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                       style: TextStyle(color: Colors.black),
                     ),
                   ),
-
                 ],
               ),
             );
@@ -265,42 +366,22 @@ class CreateEditOrderState extends State<CreateEditOrder> {
             height: 128,
             /*width: 64,*/
             child: Center(
-              child: Column(mainAxisSize: MainAxisSize.min,children: [CircularProgressIndicator(),Container(height: 16,),Text("Loading available pairs...")],),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(),
+                  Container(
+                    height: 16,
+                  ),
+                  Text(widget.orderItem != null
+                      ? "Loading..."
+                      : "Loading available pairs...")
+                ],
+              ),
             ),
           );
         },
       )),
     );
-    /*return AlertDialog(
-      title: Text("Create order:"),
-      content: ,
-      actions: <Widget>[
-        FlatButton(
-          child: Text("Cancel"),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        FlatButton(
-          child: Text("CREATE"),
-          onPressed: () {
-            if (_formKey.currentState.validate()) {
-              Firestore.instance
-                  .collection("users")
-                  .document("userTest")
-                  .collection("orders")
-                  .add({
-                "active": true,
-                "amount": _selectedAmount,
-                "exchange": "binance",
-                "pair": _selectedText,
-                "user": "userTest",
-                "createdTimestamp":Timestamp.now()
-              });
-            }
-          },
-        ),
-      ],
-    );*/
   }
 }
