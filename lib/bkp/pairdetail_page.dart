@@ -4,6 +4,7 @@ import 'package:Bit.Me/models/order_model.dart';
 import 'package:Bit.Me/models/settings_model.dart';
 import 'package:Bit.Me/models/user_model.dart';
 import 'package:Bit.Me/tools.dart';
+import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:Bit.Me/widgets/appbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -317,7 +318,7 @@ class _PairDetailPageState extends State<PairDetailPage> {
                 )
               : Center(child: Text("No order has been executed yet."))
           : Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicatorMy(),
             ),
     );
   }

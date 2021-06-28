@@ -13,9 +13,7 @@ class _AuthenticationState extends State<Authentication> {
   final GlobalKey<ScaffoldState> _authScaffoldKey = GlobalKey<ScaffoldState>();
   PageController authPageController =
       PageController(keepPage: true, initialPage: 1);
-
   int page = 1;
-  
   // No Internet Connection SnackBar
   SnackBar networkErrorSnackBar = SnackBar(
     content: Row(

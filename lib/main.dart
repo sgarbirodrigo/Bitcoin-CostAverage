@@ -1,9 +1,14 @@
 
+import 'package:Bit.Me/contants.dart';
+import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'initializer.dart';
+import 'auth_pages/authentication.dart';
+import 'external/authService.dart';
+import 'home.dart';
 void main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
       statusBarColor: Colors.deepPurple, // Color for Android
@@ -13,26 +18,27 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    //FlutterStatusbarcolor.setStatusBarColor(Colors.white);
     return MaterialApp(
-      title: 'Bit.Cost.Average',
+      title: AppLanguage().appTitle,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.deepPurple,
       ),
-      home: Initializer(),
+      home: StreamBuilder<FirebaseUser>(
+        stream: AuthService().authStateChanges(),
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            return Home(firebaseUser: snapshot.data);
+          } else if (snapshot.hasData == false &&
+              snapshot.connectionState == ConnectionState.active) {
+            return Authentication();
+          } else {
+            return CircularProgressIndicatorMy();
+          }
+        },
+      ),
     );
   }
 }

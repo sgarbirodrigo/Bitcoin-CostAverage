@@ -1,4 +1,5 @@
 import 'package:Bit.Me/bkp/CreateOrderDialog.dart';
+import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -283,7 +284,7 @@ class _BalanceWidgetState extends State<BalanceWidget> {
                   )
                 ],
               ),
-            )):Center(child: CircularProgressIndicator(),)
+            )):Center(child: CircularProgressIndicatorMy(),)
       ],
     );
   }

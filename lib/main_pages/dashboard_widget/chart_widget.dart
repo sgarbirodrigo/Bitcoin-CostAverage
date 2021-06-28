@@ -1,6 +1,7 @@
 import 'package:Bit.Me/bkp/dialog_config.dart';
 import 'package:Bit.Me/models/settings_model.dart';
 import 'package:Bit.Me/tools.dart';
+import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -202,7 +203,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                           child: Container(
                             width: 169,
                             height: 169,
-                            child: CircularProgressIndicator(),
+                            child: CircularProgressIndicatorMy(),
                           ),
                         ),
                   widget.user.userTotalExpendingAmount[

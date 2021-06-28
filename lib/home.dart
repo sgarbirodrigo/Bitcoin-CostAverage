@@ -7,6 +7,7 @@ import 'package:Bit.Me/main_pages/settings.dart';
 import 'package:Bit.Me/models/settings_model.dart';
 import 'package:Bit.Me/models/user_model.dart';
 import 'package:Bit.Me/purchase/paywall.dart';
+import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:Bit.Me/widgets/appbar.dart';
 import 'package:Bit.Me/widgets/drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -244,7 +245,7 @@ class _HomeState extends State<Home> {
       return Scaffold(
         body: SafeArea(
           child: Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicatorMy(),
           ),
         ),
       );

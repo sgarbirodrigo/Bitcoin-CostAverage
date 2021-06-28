@@ -1,5 +1,6 @@
 import 'package:Bit.Me/external/BinanceSymbolModel.dart';
 import 'package:Bit.Me/tools.dart';
+import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:Bit.Me/widgets/weekindicator_editor.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -321,7 +322,7 @@ class EditOrderDialogState extends State<EditOrderDialog> {
             height: 64,
             width: 64,
             child: Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicatorMy(),
             ),
           );
         },

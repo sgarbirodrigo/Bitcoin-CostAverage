@@ -1,6 +1,7 @@
 import 'package:Bit.Me/main_pages/dashboard_widget/orders_widget.dart';
 import 'package:Bit.Me/models/settings_model.dart';
 import 'package:Bit.Me/models/user_model.dart';
+import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'dashboard_widget/chart_widget.dart';
@@ -37,7 +38,7 @@ class _DashboardBitMeState extends State<DashboardBitMe> {
       );
     } else {
       return Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicatorMy(),
       );
     }
   }

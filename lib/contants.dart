@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+
 /*
 List<Color> colorsList = [
   Color(0xff845bef),
@@ -54,8 +55,8 @@ const apiKey = 'bwzpyaCedynvkCMJndIPRCGLWesrHflv';
 const entitlementID = 'premium';
 
 //TO DO: add your subscription terms and conditions
-const footerText = "Don't forget to add your subscription terms and conditions.";
-
+const footerText =
+    "Don't forget to add your subscription terms and conditions.";
 
 // UI Colors
 const kColorBar = Colors.black;
@@ -113,3 +114,22 @@ const userInputDecoration = InputDecoration(
     borderRadius: BorderRadius.all(Radius.circular(kButtonRadius)),
   ),
 );
+
+enum AppLanguages { EN, PT_BR }
+
+class AppLanguage {
+  String appTitle = "Bitcoin Cost Average";
+  AppLanguages _selectedIdiom;
+
+  AppLanguage({AppLanguages language = AppLanguages.EN}) {
+    _selectedIdiom = language;
+    switch (language) {
+      case AppLanguages.EN:
+        break;
+      case AppLanguages.PT_BR:
+        break;
+      default:
+        break;
+    }
+  }
+}

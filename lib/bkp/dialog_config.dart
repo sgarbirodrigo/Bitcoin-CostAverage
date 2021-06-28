@@ -1,3 +1,4 @@
+import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -173,7 +174,7 @@ class DialogConfigState extends State<DialogConfig> {
                 height: 64,
                 width: 64,
                 child: Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicatorMy(),
                 ),
               );
             }
