@@ -9,9 +9,9 @@ import 'dart:convert';
 
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 
-import 'external/BinanceSymbolModel.dart';
-import 'models/schedule_model.dart';
-import 'models/user_model.dart';
+import '../external/BinanceSymbolModel.dart';
+import '../models/schedule_model.dart';
+import '../models/user_model.dart';
 
 class CreateOrderDialog extends StatefulWidget {
   User user;

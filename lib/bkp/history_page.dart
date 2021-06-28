@@ -3,11 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'charts/line_chart_mean.dart';
-import 'charts/line_chart_mean_pair.dart';
-import 'history_list_item.dart';
-import 'models/settings_model.dart';
-import 'models/user_model.dart';
+import '../charts/line_chart_mean.dart';
+import '../charts/line_chart_mean_pair.dart';
+import '../list_item/history_list_item.dart';
+import '../models/settings_model.dart';
+import '../models/user_model.dart';
 
 class HistoryPage extends StatefulWidget {
   Settings settings;

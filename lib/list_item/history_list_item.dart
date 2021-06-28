@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 
-import 'models/history_model.dart';
+import '../models/history_model.dart';
 
 class HistoryItemList extends StatefulWidget {
   HistoryItemList({Key key, this.historyItem, this.userUid})

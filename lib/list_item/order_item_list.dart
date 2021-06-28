@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import 'EditOrderDialog.dart';
-import 'bkp/pairdetail_page.dart';
-import 'charts/line_chart_mean.dart';
-import 'models/history_model.dart';
-import 'models/settings_model.dart';
-import 'models/user_model.dart';
+import '../bkp/EditOrderDialog.dart';
+import '../bkp/pairdetail_page.dart';
+import '../charts/line_chart_mean.dart';
+import '../models/history_model.dart';
+import '../models/settings_model.dart';
+import '../models/user_model.dart';
 
 class OrderItemList extends StatefulWidget {
   int index;

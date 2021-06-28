@@ -60,7 +60,8 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                     fitInsideHorizontally: true,
                     //fitInsideVertically: true,
                     /*showOnTopOfTheChartBoxArea: true,*/
-                    tooltipBgColor: Colors.black,
+                    //tooltipBgColor: Colors.black45,
+                    tooltipBgColor: Color(0xff434343),
                     maxContentWidth: 256,
                     getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
                       DateTime date = Timestamp.fromMillisecondsSinceEpoch(
@@ -93,7 +94,7 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                           ]);
 
                       LineTooltipItem _avgTooltip = LineTooltipItem(
-                          "AVG: ${doubleToValueString(touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 1 : 0].y)}",
+                          "Average: ${doubleToValueString(touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 1 : 0].y)}",
                           TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.normal,

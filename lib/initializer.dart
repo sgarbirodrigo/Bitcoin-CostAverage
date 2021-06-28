@@ -14,6 +14,7 @@ class Initializer extends StatelessWidget {
         if (snapshot.hasData) {
           // isLoggedIn
           FirebaseUser user = snapshot.data;
+
           return Home(firebaseUser: user);
         } else if (snapshot.hasData == false &&
             snapshot.connectionState == ConnectionState.active) {

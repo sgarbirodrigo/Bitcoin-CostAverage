@@ -1,12 +1,12 @@
-import 'package:Bit.Me/history_page.dart';
+import 'package:Bit.Me/bkp/history_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'main_pages/dashboard.dart';
-import 'main_pages/settings.dart';
-import 'models/settings_model.dart';
-import 'models/user_model.dart';
-import 'orders_Page.dart';
+import '../main_pages/dashboard.dart';
+import '../main_pages/settings.dart';
+import '../models/settings_model.dart';
+import '../models/user_model.dart';
+import '../main_pages/orders_Page.dart';
 
 class HistorySelPage extends StatefulWidget {
   Settings settings;

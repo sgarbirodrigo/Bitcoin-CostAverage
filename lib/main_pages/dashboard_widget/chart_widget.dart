@@ -1,4 +1,4 @@
-import 'package:Bit.Me/dialog_config.dart';
+import 'package:Bit.Me/bkp/dialog_config.dart';
 import 'package:Bit.Me/models/settings_model.dart';
 import 'package:Bit.Me/tools.dart';
 import 'package:fl_chart/fl_chart.dart';

@@ -9,9 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../../CreateOrderDialog.dart';
-import '../../EditOrderDialog.dart';
-import '../../order_item_list.dart';
+import '../../bkp/CreateOrderDialog.dart';
+import '../../bkp/EditOrderDialog.dart';
+import '../../list_item/order_item_list.dart';
 
 class OrdersWidget extends StatefulWidget {
   User user;
@@ -72,7 +72,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                     ],
                   ),
                 ),Text(
-                  "Executed on the chosen days at 11 PM.",
+                  "Executed on the selected days at 11 PM.",
                   style: TextStyle(
                     fontFamily: 'Arial',
                     fontSize:12,

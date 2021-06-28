@@ -10,7 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import '../history_list_item.dart';
+import '../list_item/history_list_item.dart';
 import '../charts/line_chart_mean_pair.dart';
 
 class PairDetailPage extends StatefulWidget {

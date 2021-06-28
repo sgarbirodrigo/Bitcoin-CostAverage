@@ -1,5 +1,6 @@
 import 'package:Bit.Me/external/authService.dart';
 import 'package:Bit.Me/models/user_model.dart';
+import 'package:Bit.Me/purchase/paywall.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -23,6 +24,7 @@ class _AppBarBitMeState extends State<AppBarBitMe> {
       child: Container(
         padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
         child: Stack(children: [
+
           Center(
             child: Text(
               widget.title,
@@ -44,16 +46,16 @@ class _AppBarBitMeState extends State<AppBarBitMe> {
               onPressed: () => Navigator.of(context).pop(),
             ): Icon(null)),
           Positioned(
-            top: 0,
-            bottom: 0,
-            right: 0,
-            child:IconButton(
-              icon: Icon(
-                Icons.logout,
-                color: Colors.white,
-              ),
-              onPressed: () => AuthService().signOut(),
-            )
+              top: 0,
+              bottom: 0,
+              right: 0,
+              child:IconButton(
+                icon: Icon(
+                  Icons.logout,
+                  color: Colors.white,
+                ),
+                onPressed: () => AuthService().signOut(),
+              )
           ),
 
           /*Positioned(

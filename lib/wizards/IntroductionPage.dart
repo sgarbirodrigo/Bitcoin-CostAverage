@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'models/user_model.dart';
+import '../models/user_model.dart';
 
 class IntroductionPage extends StatefulWidget {
   User user;
