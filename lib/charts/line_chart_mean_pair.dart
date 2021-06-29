@@ -67,7 +67,8 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                       DateTime date = Timestamp.fromMillisecondsSinceEpoch(
                               touchedBarSpots[0].x.toInt() * 1000)
                           .toDate();
-                      String dateString = DateFormat('MMM d - hh:mm').format(date);
+                      String dateString =
+                          DateFormat('MMM d - hh:mm').format(date);
                       LineTooltipItem _priceTooltip = LineTooltipItem(
                           "${dateString}\n",
                           TextStyle(
@@ -128,7 +129,7 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                 getDrawingVerticalLine: (value) {
                   return FlLine(
                     color: _chartLineColor,
-                    strokeWidth: 1,
+                    strokeWidth: 4,
                   );
                 },
               ),
@@ -150,7 +151,7 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                   reservedSize: 10,
                   interval: interval == 0 ? 1 : interval,
                   getTextStyles: (value) => const TextStyle(
-                    color: Color(0xff72719b),
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 12,
                   ),
@@ -203,19 +204,20 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                 LineChartBarData(
                   spots: price_spots,
                   isCurved: true,
-                  curveSmoothness:0,
+                  curveSmoothness: 0.3,
                   colors: [
                     widget.color,
                   ],
-                  barWidth: 2,
+                  barWidth: 4,
                   isStrokeCapRound: true,
                   dotData: FlDotData(
                       show: true,
                       getDotPainter: (spot, percent, barData, index) {
                         return FlDotCirclePainter(
-                          radius: 2,
-                          color: widget.color,
-                          strokeWidth: 0,
+                          radius: 4,
+                          color: Colors.deepPurple,
+                          strokeWidth: 2,
+                          strokeColor: widget.color,
                           //trokeColor: Colors.green
                         );
                       }),
@@ -255,7 +257,7 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
             swapAnimationDuration: Duration(milliseconds: 500),
           ),
         ),
-        Container(
+        /*Container(
           //height: 64,
           margin: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
           child: Row(
@@ -267,20 +269,21 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                   Text(
                     "Average Price",
                     textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white),
                   ),
                   Text(
                     "${doubleToValueString(widget.pairData.avgPrice)} ${widget.pairData.pair.split("/")[1]}",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontSize: 20,
-                        color: Colors.deepPurple,
+                        color: Colors.white,
                         fontWeight: FontWeight.bold),
                   ),
                   Container(
                     height: 8,
                   ),
                   DotWidget(
-                    dashColor: Colors.deepPurple,
+                    dashColor: widget.color,
                     dashHeight: 2,
                     totalWidth: 60,
                     dashWidth: 8,
@@ -290,20 +293,24 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
               Expanded(
                   child: Column(
                 children: [
-                  Text("Price Now", textAlign: TextAlign.center),
+                  Text(
+                    "Price Now",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white),
+                  ),
                   Text(
                     "${doubleToValueString(widget.settings.binanceTicker[widget.pairData.pair.replaceAll("/", "")])} ${widget.pairData.pair.split("/")[1]}",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontSize: 20,
-                        color: Colors.deepPurple,
+                        color: Colors.white,
                         fontWeight: FontWeight.bold),
                   ),
                   Container(
                     height: 8,
                   ),
                   DotWidget(
-                    dashColor: Colors.deepPurple,
+                    dashColor: widget.color,
                     dashHeight: 2,
                     totalWidth: 80,
                     dashWidth: 50,
@@ -312,8 +319,7 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
               ))
             ],
           ),
-        ),
-
+        )*/
         AnimatedContainer(
             height: widget.user.isUpdatingHistory ? 4 : 0,
             duration: Duration(milliseconds: 250),

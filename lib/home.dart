@@ -203,7 +203,7 @@ class _HomeState extends State<Home> {
                   /*TitledNavigationBarItem(
                 title: Text('Log Out'), icon: Icon(Icons.logout)),*/
                 ]),
-            floatingActionButton: FloatingActionButton(
+            /*floatingActionButton: FloatingActionButton(
               onPressed: () {
                 IconButton(
                   icon: Icon(
@@ -217,7 +217,7 @@ class _HomeState extends State<Home> {
                   },
                 );
               },
-            ),
+            ),*/
             body: PageView(
                 physics: NeverScrollableScrollPhysics(),
                 controller: _myPage,

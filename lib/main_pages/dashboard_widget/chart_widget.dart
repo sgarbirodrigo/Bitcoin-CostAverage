@@ -175,8 +175,10 @@ class _ChartWidgetState extends State<ChartWidget> {
                                 centerSpaceRadius: 84,
                                 sections: List.generate(data.length, (i) {
                                   final isTouched = i == touchedIndex;
-                                  final fontSize = isTouched ? 20.0 : 16.0;
-                                  final radius = isTouched ? 62.0 : 48.0;
+                                  //final fontSize = isTouched ? 20.0 : 16.0;
+                                 // final radius = isTouched ? 62.0 : 48.0;
+                                  final radius=48.0;
+                                  final fontSize = 16.0;
                                   final Color sectionColor = colorsList[i];
                                   return PieChartSectionData(
                                     badgePositionPercentageOffset:

@@ -30,7 +30,7 @@ class _HistoryItemListState extends State<HistoryItemList> {
     return Container(
       decoration: BoxDecoration(
           border: Border(
-            top: BorderSide( //                    <--- top side
+            bottom: BorderSide( //                    <--- top side
               color: Colors.black.withOpacity(0.2),
               width: 0.5,
             ),
