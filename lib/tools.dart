@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 String doubleToValueString(double amount) {
   int numberOfDecimals = 7;
   int integerPart = amount.toInt();
@@ -11,12 +13,17 @@ String doubleToValueString(double amount) {
   double trucatedFloatingPart =
       double.parse(floatingPart.toStringAsFixed(numberOfDecimals));
 
-  double formattedNumber = double.parse((trucatedFloatingPart + integerPart).toStringAsFixed(numberOfDecimals));
+  double formattedNumber = double.parse(
+      (trucatedFloatingPart + integerPart).toStringAsFixed(numberOfDecimals));
   return formattedNumber.toString();
 }
 
 double getValueVariation(double price, double avg) {
   double result = avg / price;
-  result = 1- result;
+  result = 1 - result;
   return (result * 100);
+}
+
+String getCurrencySymbolFromCode(String currencyCode) {
+  return NumberFormat.simpleCurrency(name: currencyCode).currencySymbol;
 }

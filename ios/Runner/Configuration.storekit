@@ -1,0 +1,53 @@
+{
+  "identifier" : "BFFEDCFF",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "BC7E7BF5",
+      "localizations" : [
+
+      ],
+      "name" : "BCA_subscriptions",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "0.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "9EA4D867",
+          "introductoryOffer" : {
+            "internalID" : "72E569E9",
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P2W"
+          },
+          "localizations" : [
+            {
+              "description" : "",
+              "displayName" : "",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.racooney.bit.me",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "monthly_hodler_btc",
+          "subscriptionGroupID" : "BC7E7BF5",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 1,
+    "minor" : 1
+  }
+}

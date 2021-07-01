@@ -70,7 +70,7 @@ class _ChartWidgetState extends State<ChartWidget> {
     double legendHeight = 42;
     data = convertUserData(widget.user);
     /*print(
-        "selected ${widget.settings.base_pair} -${widget.settings.base_coin}  ");
+        "selected ${widget.settings.base_pair} -${widget.settings.getBaseCoin()}  ");
     print(
         "exp ${widget.user.userTotalExpendingAmount}");*/
     return AnimatedContainer(
@@ -209,7 +209,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                           ),
                         ),
                   widget.user.userTotalExpendingAmount[
-                              widget.settings.base_coin] !=
+                              widget.settings.getBaseCoin()] !=
                           null
                       ? Center(
                           child: Container(
@@ -241,7 +241,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                                 FittedBox(
                                   fit: BoxFit.fitWidth,
                                   child: Text(
-                                    "${doubleToValueString(widget.user.userTotalExpendingAmount[widget.settings.base_coin] * _multiplier)} ${widget.settings.base_coin}",
+                                    "${doubleToValueString(widget.user.userTotalExpendingAmount[widget.settings.getBaseCoin()] * _multiplier)} ${widget.settings.getBaseCoin()}",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontFamily: 'Arial',
@@ -403,11 +403,11 @@ class _ChartWidgetState extends State<ChartWidget> {
                               // padding: EdgeInsets.symmetric(horizontal: 12),
                               decoration: BoxDecoration(
                                 //color: Color(0xffF7F8F9),
-                                color: coins[index] == widget.settings.base_coin
+                                color: coins[index] == widget.settings.getBaseCoin()
                                     ? Colors.deepPurple.shade50
                                     : Color(0xffF7F8F9),
                                 border: coins[index] ==
-                                        widget.settings.base_coin
+                                        widget.settings.getBaseCoin()
                                     ? Border(
                                         top: BorderSide(
                                             color: Colors.deepPurple, width: 4),
@@ -429,7 +429,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                                   Padding(
                                     padding: EdgeInsets.only(
                                         top: coins[index] ==
-                                                widget.settings.base_coin
+                                                widget.settings.getBaseCoin()
                                             ? 4
                                             : 8),
                                     child: Text(
@@ -476,7 +476,7 @@ class _ChartWidgetState extends State<ChartWidget> {
       List<MyChartSectionData> data = List();
       double total = 0;
       user.userTotalBuyingAmount.forEach((pair, amount) {
-        if (pair.split("/")[1] == widget.settings.base_coin) {
+        if (pair.split("/")[1] == widget.settings.getBaseCoin()) {
           double price =
               widget.settings.binanceTicker["BTC${pair.split("/")[1]}"];
           double percentage;
@@ -489,7 +489,7 @@ class _ChartWidgetState extends State<ChartWidget> {
         }
       });
       user.userTotalBuyingAmount.forEach((pair, amount) {
-        if (pair.split("/")[1] == widget.settings.base_coin) {
+        if (pair.split("/")[1] == widget.settings.getBaseCoin()) {
           double price =
               widget.settings.binanceTicker["BTC${pair.split("/")[1]}"];
           double percentage = 1;

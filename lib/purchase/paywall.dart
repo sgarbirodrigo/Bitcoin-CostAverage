@@ -25,10 +25,10 @@ class _PaywallState extends State<Paywall> {
               decoration: BoxDecoration(
                   color: kColorBar,
                   borderRadius:
-                  BorderRadius.vertical(top: Radius.circular(25.0))),
+                      BorderRadius.vertical(top: Radius.circular(25.0))),
               child: Center(
                   child:
-                  Text('✨ Magic Weather Premium', style: kTitleTextStyle)),
+                      Text('✨ Magic Weather Premium', style: kTitleTextStyle)),
             ),
             Padding(
               padding: const EdgeInsets.only(
@@ -51,9 +51,9 @@ class _PaywallState extends State<Paywall> {
                       onTap: () async {
                         try {
                           PurchaserInfo purchaserInfo =
-                          await Purchases.purchasePackage(
-                              myProductList[index]);
-                         /* entitlementIsActive = purchaserInfo
+                              await Purchases.purchasePackage(
+                                  myProductList[index]);
+                          /* entitlementIsActive = purchaserInfo
                               .entitlements.all[entitlementID].isActive;*/
                         } catch (e) {
                           print(e);
@@ -83,7 +83,7 @@ class _PaywallState extends State<Paywall> {
                   top: 32, bottom: 16, left: 16.0, right: 16.0),
               child: Container(
                 child: Text(
-                  footerText,
+                  "",
                   style: kDescriptionTextStyle,
                 ),
                 width: double.infinity,

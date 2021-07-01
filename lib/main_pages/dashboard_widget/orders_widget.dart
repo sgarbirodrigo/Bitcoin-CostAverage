@@ -27,11 +27,28 @@ class OrdersWidget extends StatefulWidget {
 
 class _OrdersWidgetState extends State<OrdersWidget> {
   List<String> scaleNames = ["1W", "2W", "1M", "6M", "1Y"];
-  String btnText = "1W";
+  String btnText;
 
   @override
   void initState() {
     super.initState();
+    switch(widget.settings.scaleLineChart){
+      case ScaleLineChart.WEEK1:
+        btnText = scaleNames[0];
+        break;
+      case ScaleLineChart.WEEK2:
+        btnText = scaleNames[1];
+        break;
+      case ScaleLineChart.MONTH1:
+        btnText = scaleNames[2];
+        break;
+      case ScaleLineChart.MONTH6:
+        btnText = scaleNames[3];
+        break;
+      case ScaleLineChart.YEAR1:
+        btnText = scaleNames[4];
+        break;
+    }
   }
 
   @override

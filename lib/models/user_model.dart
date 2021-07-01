@@ -269,7 +269,7 @@ class User {
     });
 
     if (this.userData != null) {
-      this.userData.orders.forEach((dynamic pair, dynamic element) {
+      this.userData.orders.forEach((String pair, OrderItem element) {
         double amount = double.parse(element.amount.toString());
         if (element.active) {
           int multiplier = 0;

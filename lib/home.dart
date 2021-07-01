@@ -7,11 +7,13 @@ import 'package:Bit.Me/main_pages/settings.dart';
 import 'package:Bit.Me/models/settings_model.dart';
 import 'package:Bit.Me/models/user_model.dart';
 import 'package:Bit.Me/purchase/paywall.dart';
+import 'package:Bit.Me/purchase/paywall_bca.dart';
 import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:Bit.Me/widgets/appbar.dart';
 import 'package:Bit.Me/widgets/drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,7 +46,7 @@ class _HomeState extends State<Home> {
   //Section section;
   User user;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
-  bool entitlementIsActive = false;
+  //bool entitlementIsActive = false;
   int _pageIndex = 1;
   Widget body;
   String title = "Bitcoin-Cost Average";
@@ -63,7 +65,6 @@ class _HomeState extends State<Home> {
       if (this.settings.base_pair == null &&
           this.user.userData != null &&
           this.user.userData.orders.length > 0) {
-        //print("opa ${this.user.userTotalBuyingAmount.keys.toList()[0]}");
         settings
             .updateBasePair(this.user.userTotalBuyingAmount.keys.toList()[0]);
       }
@@ -71,55 +72,40 @@ class _HomeState extends State<Home> {
     });
     _myPage = PageController(initialPage: 0);
     //section = Section.DASHBOARD;
-    initPlatformState();
-    loadPurchase();
+    validateSubscription();
+
     super.initState();
   }
-
-  void loadPurchase() async {
-    try {
-      Offerings offerings = await Purchases.getOfferings();
-      if (offerings.current != null &&
-          offerings.current.availablePackages.isNotEmpty) {
-        // Display packages for sale
-      }
-    } on PlatformException catch (e) {
-      // optional error handling
-    }
-  }
-
-  Offerings offerings;
-
-  Future<void> initPlatformState() async {
-    print("starting purchases");
-    //await Purchases.setDebugLogsEnabled(true);
-    print("set debug purchases");
+  PurchaserInfo purchaserInfo;
+  Future<void> validateSubscription() async {
     await Purchases.setup(apiKey,
         appUserId: this.user.firebaseUser.uid, observerMode: false);
-    print("started purchases");
-    PurchaserInfo purchaserInfo = await Purchases.getPurchaserInfo();
+    this.purchaserInfo = await Purchases.getPurchaserInfo();
     print("0 purchaserInfo: ${purchaserInfo.activeSubscriptions}");
-    if (purchaserInfo.activeSubscriptions.length > 0) {
+    /*if (purchaserInfo.activeSubscriptions.length > 0) {
       print("have");
     } else {
-      offerings = await Purchases.getOfferings();
-      print("offerings: ${offerings}");
+      //offerings = await Purchases.getOfferings();
       if (offerings.current != null &&
           offerings.current.availablePackages.isNotEmpty) {
-        offerings.all.forEach((key, value) {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => PaywallMy(
+                  offering: offerings.current,
+                )));
+        *//*offerings.all.forEach((key, value) {
           print("key: ${key} - value: ${value}");
-        });
+        });*//*
       }
-    }
-    /*Purchases.addPurchaserInfoUpdateListener((purchaserInfo) async {
-      //appData.appUserID = await Purchases.appUserID;
+    }*/
+    Purchases.addPurchaserInfoUpdateListener((purchaserInfo) async {
+      print("app userID: ${await Purchases.appUserID}");
       PurchaserInfo purchaserInfo = await Purchases.getPurchaserInfo();
       print("purchaserInfo: ${purchaserInfo.activeSubscriptions}");
-      (purchaserInfo.entitlements.all[entitlementID] != null &&
+     /* (purchaserInfo.entitlements.all[entitlementID] != null &&
               purchaserInfo.entitlements.all[entitlementID].isActive)
           ? entitlementIsActive = true
-          : entitlementIsActive = false;
-    });*/
+          : entitlementIsActive = false;*/
+    });
   }
 
   PageController _myPage;
@@ -128,82 +114,83 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     if (user.userData != null) {
       if (user.userData.hasIntroduced) {
-        if (user.userData.hasConnected) {
-          return Scaffold(
-            key: _scaffoldKey,
-            appBar: AppBarBitMe(
-              title: title,
-              scaffoldKey: _scaffoldKey,
-            ),
-            backgroundColor: Color(0xffF9F8FD),
-            bottomNavigationBar: TitledBottomNavigationBar(
-                currentIndex: _pageIndex,
-                reverse: true,
-                onTap: (index) {
-                  if (index != 0) {
-                    //print("jumping to $index");
-                    _myPage.jumpToPage(index >= 1 ? index - 1 : index);
-                    setState(() {
-                      _pageIndex = index;
-                    });
-                  }
-                },
-                items: [
-                  TitledNavigationBarItem(
-                    title: Text(
-                      '',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.deepPurple),
-                    ),
-                    icon: ElevatedButton(
-                      onPressed: () async {
-                        // _pageIndex = 2;
-                        await showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          useRootNavigator: true,
-                          builder: (context) => Container(
-                            //height: 400,
-                            child: Padding(
-                                child: CreateEditOrder(this.user),
-                                padding: MediaQuery.of(context).viewInsets),
-                          ),
-                        );
-                        user.updateUser();
-                        //_pageIndex = I;
-                      },
-                      child: Icon(
-                        Icons.add,
-                        size: 24,
-                        color: Colors.white,
+        if(user.userData.active && purchaserInfo.activeSubscriptions.length>0){
+          if (user.userData.hasConnected) {
+            return Scaffold(
+              key: _scaffoldKey,
+              appBar: AppBarBitMe(
+                title: title,
+                scaffoldKey: _scaffoldKey,
+              ),
+              backgroundColor: Color(0xffF9F8FD),
+              bottomNavigationBar: TitledBottomNavigationBar(
+                  currentIndex: _pageIndex,
+                  reverse: true,
+                  onTap: (index) {
+                    if (index != 0) {
+                      //print("jumping to $index");
+                      _myPage.jumpToPage(index >= 1 ? index - 1 : index);
+                      setState(() {
+                        _pageIndex = index;
+                      });
+                    }
+                  },
+                  items: [
+                    TitledNavigationBarItem(
+                      title: Text(
+                        '',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.deepPurple),
+                      ),
+                      icon: ElevatedButton(
+                        onPressed: () async {
+                          // _pageIndex = 2;
+                          await showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            useRootNavigator: true,
+                            builder: (context) => Container(
+                              //height: 400,
+                              child: Padding(
+                                  child: CreateEditOrder(this.user),
+                                  padding: MediaQuery.of(context).viewInsets),
+                            ),
+                          );
+                          user.updateUser();
+                          //_pageIndex = I;
+                        },
+                        child: Icon(
+                          Icons.add,
+                          size: 24,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                  ),
-                  TitledNavigationBarItem(
-                    title: Text('Home'),
-                    icon: Icon(
-                      Icons.home,
-                      color: Colors.grey,
+                    TitledNavigationBarItem(
+                      title: Text('Home'),
+                      icon: Icon(
+                        Icons.home,
+                        color: Colors.grey,
+                      ),
                     ),
-                  ),
-                  TitledNavigationBarItem(
-                    title: Text('Orders'),
-                    icon: Icon(
-                      Icons.list_alt_sharp,
-                      color: Colors.grey,
+                    TitledNavigationBarItem(
+                      title: Text('Orders'),
+                      icon: Icon(
+                        Icons.list_alt_sharp,
+                        color: Colors.grey,
+                      ),
                     ),
-                  ),
-                  TitledNavigationBarItem(
-                    title: Text('Settings'),
-                    icon: Icon(
-                      Icons.settings_outlined,
-                      color: Colors.grey,
+                    TitledNavigationBarItem(
+                      title: Text('Settings'),
+                      icon: Icon(
+                        Icons.settings_outlined,
+                        color: Colors.grey,
+                      ),
                     ),
-                  ),
-                  /*TitledNavigationBarItem(
+                    /*TitledNavigationBarItem(
                 title: Text('Log Out'), icon: Icon(Icons.logout)),*/
-                ]),
-            /*floatingActionButton: FloatingActionButton(
+                  ]),
+              /*floatingActionButton: FloatingActionButton(
               onPressed: () {
                 IconButton(
                   icon: Icon(
@@ -218,25 +205,57 @@ class _HomeState extends State<Home> {
                 );
               },
             ),*/
-            body: PageView(
-                physics: NeverScrollableScrollPhysics(),
-                controller: _myPage,
-                children: <Widget>[
-                  DashboardBitMe(
-                    /*key: context.widget.key,*/
-                    settings: settings,
-                    user: user,
+              body: PageView(
+                  physics: NeverScrollableScrollPhysics(),
+                  controller: _myPage,
+                  children: <Widget>[
+                    DashboardBitMe(
+                      /*key: context.widget.key,*/
+                      settings: settings,
+                      user: user,
+                    ),
+                    OrdersPage(
+                      user: this.user,
+                      settings: this.settings,
+                    ),
+                    //HistorySelPage(this.user, this.settings),
+                    SettingsPage(this.user)
+                  ]),
+            );
+          } else {
+            return ConnectToBinancePage(this.user);
+          }
+        }else{
+          return FutureBuilder(
+            future: Purchases.getOfferings(),
+            builder: (context,AsyncSnapshot<Offerings> offerings) {
+              if(offerings.hasData){
+                if (offerings.data.current != null &&
+                    offerings.data.current.availablePackages.isNotEmpty) {
+                  return PaywallMy(
+                    offering: offerings.data.current,
+                  );
+                }else{
+                  return Scaffold(
+                    body: SafeArea(
+                      child: Center(
+                        child: CircularProgressIndicatorMy(),
+                      ),
+                    ),
+                  );
+                }
+              }else{
+                return Scaffold(
+                  body: SafeArea(
+                    child: Center(
+                      child: CircularProgressIndicatorMy(),
+                    ),
                   ),
-                  OrdersPage(
-                    user: this.user,
-                    settings: this.settings,
-                  ),
-                  //HistorySelPage(this.user, this.settings),
-                  SettingsPage(this.user)
-                ]),
+                );
+              }
+
+            },
           );
-        } else {
-          return IntroductionConnectPage(this.user);
         }
       } else {
         return IntroductionPage(this.user);

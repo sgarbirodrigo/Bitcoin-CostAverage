@@ -12,18 +12,18 @@ import 'package:url_launcher/url_launcher.dart';
 import '../external/binance_api.dart';
 import '../models/user_model.dart';
 
-class IntroductionConnectPage extends StatefulWidget {
+class ConnectToBinancePage extends StatefulWidget {
   User user;
 
-  IntroductionConnectPage(this.user);
+  ConnectToBinancePage(this.user);
 
   @override
   State<StatefulWidget> createState() {
-    return _IntroductionConnectPageState();
+    return _ConnectToBinancePageState();
   }
 }
 
-class _IntroductionConnectPageState extends State<IntroductionConnectPage> {
+class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
   final introKey = GlobalKey<IntroductionScreenState>();
   final _formKey = GlobalKey<FormState>();
   int _selectedStatus = 0;

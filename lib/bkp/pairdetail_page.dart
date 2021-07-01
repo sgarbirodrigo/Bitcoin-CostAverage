@@ -5,8 +5,6 @@ import 'package:Bit.Me/models/settings_model.dart';
 import 'package:Bit.Me/models/user_model.dart';
 import 'package:Bit.Me/tools.dart';
 import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
-import 'package:Bit.Me/widgets/appbar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -31,6 +29,7 @@ class _PairDetailPageState extends State<PairDetailPage> {
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   PairData pairData;
   User user;
+  double appreciation;
 
   @override
   void initState() {
@@ -39,13 +38,21 @@ class _PairDetailPageState extends State<PairDetailPage> {
         this.user = user;
         //widget.settings.updateBasePair(user.userData.orders.values.toList()[0].pair.toString());
         pairData = this.user.pairDataItems[widget.orderItem.pair];
+        if (pairData != null) {
+          appreciation = (((widget.settings.binanceTicker[
+                              pairData.pair.replaceAll("/", "")] *
+                          pairData.coinAccumulated) /
+                      pairData.totalExpended) -
+                  1) *
+              100;
+        }
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    String timespan_name = "";
+    /*String timespan_name = "";
     switch (widget.settings.scaleLineChart) {
       case ScaleLineChart.WEEK1:
         timespan_name = "last week";
@@ -63,12 +70,7 @@ class _PairDetailPageState extends State<PairDetailPage> {
         timespan_name = "last year";
         break;
     }
-    double appreciation =
-        (((widget.settings.binanceTicker[pairData.pair.replaceAll("/", "")] *
-                        pairData.coinAccumulated) /
-                    pairData.totalExpended) -
-                1) *
-            100;
+*/
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.deepPurple,
@@ -424,7 +426,8 @@ class _PairDetailPageState extends State<PairDetailPage> {
                               ),
                             ],
                           )),
-                      /*Card(
+                      /*
+                      Card(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(0),
@@ -456,7 +459,8 @@ class _PairDetailPageState extends State<PairDetailPage> {
                             ],
                           ),
                         ),
-                      ),*/
+                      )
+                      */
                       Expanded(
                           child: Card(
                         /*shape: RoundedRectangleBorder(
@@ -481,7 +485,63 @@ class _PairDetailPageState extends State<PairDetailPage> {
                       ))
                     ],
                   )
-                : Center(child: Text("No order has been executed yet."))
+                : Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: 4, top: 8, right: 16),
+                        child: Row(
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                Icons.arrow_back_outlined,
+                                color: Colors.white,
+                                size: 36,
+                              ),
+                              onPressed: () => Navigator.of(context).pop(),
+                            ),
+                            Container(
+                              width: 12,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "${pairData.pair}",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      color: Colors.white,
+                                      fontFamily: 'Arial Rounded MT Bold'),
+                                ),
+                                Text(
+                                  "${widget.settings.binanceTicker[pairData.pair.replaceAll("/", "")]}",
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.white,
+                                      fontFamily: 'Arial',
+                                      fontWeight: FontWeight.w100),
+                                )
+                              ],
+                            ),
+                            Expanded(
+                              child: Container(),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          child: Center(
+                            child: Text(
+                              "No order has been executed yet.",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 18),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  )
             : Center(
                 child: CircularProgressIndicatorMy(),
               ),

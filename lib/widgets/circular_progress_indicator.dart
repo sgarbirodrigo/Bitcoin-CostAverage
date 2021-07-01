@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class CircularProgressIndicatorMy extends StatefulWidget {
+  Color color;
+
+  CircularProgressIndicatorMy({this.color});
+
   @override
   State<StatefulWidget> createState() {
     return _CircularProgressIndicatorMyState();
