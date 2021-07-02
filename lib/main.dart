@@ -1,4 +1,3 @@
-
 import 'package:Bit.Me/contants.dart';
 import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,10 +8,12 @@ import 'package:flutter/services.dart';
 import 'auth_pages/authentication.dart';
 import 'external/authService.dart';
 import 'home.dart';
+
 void main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-      statusBarColor: Colors.deepPurple, // Color for Android
-      statusBarBrightness: Brightness.dark, // Dark == white status bar -- for IOS.
+    statusBarColor: Colors.deepPurple, // Color for Android
+    statusBarBrightness:
+        Brightness.dark, // Dark == white status bar -- for IOS.
   ));
   runApp(MyApp());
 }

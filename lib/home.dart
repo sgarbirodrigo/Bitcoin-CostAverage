@@ -105,7 +105,7 @@ class _HomeState extends State<Home> {
       this.purchaserInfo = await Purchases.getPurchaserInfo();
       print("purchaserInfo: ${purchaserInfo.activeSubscriptions}");
       //this.user.updateUser();
-      setState(() {});
+      if(mounted)setState(() {});
       /* (purchaserInfo.entitlements.all[entitlementID] != null &&
               purchaserInfo.entitlements.all[entitlementID].isActive)
           ? entitlementIsActive = true
@@ -115,10 +115,11 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    //print("userdata: ${user.userData}");
     if (user.userData != null) {
       if (user.userData.hasIntroduced) {
         if (purchaserInfo.activeSubscriptions.length > 0) {
-          print("subs: ${purchaserInfo.activeSubscriptions.length}");
+          //print("subs: ${purchaserInfo.activeSubscriptions.length}");
           if (user.userData.hasConnected) {
             return Scaffold(
               key: _scaffoldKey,
@@ -154,6 +155,13 @@ class _HomeState extends State<Home> {
                       icon: ElevatedButton(
                         onPressed: () async {
                           // _pageIndex = 2;
+                          await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Dialog(child: CreateEditOrder(this.user));
+                            },
+                          );/*
+                          widget.user.updateUser();
                           await showModalBottomSheet(
                             context: context,
                             isScrollControlled: true,
@@ -163,7 +171,7 @@ class _HomeState extends State<Home> {
                                   child: CreateEditOrder(this.user),
                                   padding: MediaQuery.of(context).viewInsets),
                             ),
-                          );
+                          );*/
                           user.updateUser();
                           //_pageIndex = I;
                         },
@@ -234,7 +242,7 @@ class _HomeState extends State<Home> {
             return ConnectToBinancePage(this.user);
           }
         } else {
-          print("0-subs: ${purchaserInfo.activeSubscriptions.length>0}");
+          //print("0-subs: ${purchaserInfo.activeSubscriptions.length>0}");
           return FutureBuilder(
             future: Purchases.getOfferings(),
             builder: (context, AsyncSnapshot<Offerings> offerings) {

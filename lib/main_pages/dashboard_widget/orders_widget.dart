@@ -32,7 +32,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
   @override
   void initState() {
     super.initState();
-    switch(widget.settings.scaleLineChart){
+    switch (widget.settings.scaleLineChart) {
       case ScaleLineChart.WEEK1:
         btnText = scaleNames[0];
         break;
@@ -57,7 +57,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
       mainAxisSize: MainAxisSize.max,
       children: [
         Container(
-          padding: EdgeInsets.only(top: 16,bottom: 8),
+          padding: EdgeInsets.only(top: 16, bottom: 8),
           child: Row(
             children: [
               /*IconButton(
@@ -72,38 +72,44 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                   },
                   icon: Icon(Icons.add_circle)),*/
               Padding(
-                padding: EdgeInsets.only(left: 16, right: 0, top: 0, bottom:0),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start,children: [Text(
-                  "Active Orders",
-                  style: TextStyle(
-                    fontFamily: 'Arial Rounded MT Bold',
-                    fontSize: 24,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.black,
-                    shadows: <Shadow>[
-                      Shadow(
-                        offset: Offset(0.5, 0.5),
-                        blurRadius: 4,
-                        color: Color.fromARGB(4, 0, 0, 0),
-                      )
-                    ],
-                  ),
-                ),Text(
-                  "Executed on the selected days at 11 PM.",
-                  style: TextStyle(
-                    fontFamily: 'Arial',
-                    fontSize:12,
-                    fontWeight: FontWeight.w100,
-                    color: Colors.black.withOpacity(0.7),
-                    shadows: <Shadow>[
-                      Shadow(
-                        offset: Offset(0.5, 0.5),
-                        blurRadius: 4,
-                        color: Color.fromARGB(4, 0, 0, 0),
-                      )
-                    ],
-                  ),
-                )],),
+                padding: EdgeInsets.only(left: 16, right: 0, top: 0, bottom: 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Active Orders",
+                      style: TextStyle(
+                        fontFamily: 'Arial Rounded MT Bold',
+                        fontSize: 24,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black,
+                        shadows: <Shadow>[
+                          Shadow(
+                            offset: Offset(0.5, 0.5),
+                            blurRadius: 4,
+                            color: Color.fromARGB(4, 0, 0, 0),
+                          )
+                        ],
+                      ),
+                    ),
+                    Text(
+                      "Executed on the selected days at 11 PM.",
+                      style: TextStyle(
+                        fontFamily: 'Arial',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w100,
+                        color: Colors.black.withOpacity(0.7),
+                        shadows: <Shadow>[
+                          Shadow(
+                            offset: Offset(0.5, 0.5),
+                            blurRadius: 4,
+                            color: Color.fromARGB(4, 0, 0, 0),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
               Expanded(child: Container()),
               Padding(
@@ -161,38 +167,39 @@ class _OrdersWidgetState extends State<OrdersWidget> {
             duration: Duration(milliseconds: 250),
             child: LinearProgressIndicator()),
         Container(
-            decoration: BoxDecoration(
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 10.0,
-                  offset: Offset(0.0, 0.0),
-                )
-              ],
-              color: Colors.white,
-            ),
-            //height: 300,
-            child: widget.user.userData.orders.length > 0
-                ? ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    itemCount: widget.user.userData.orders.length,
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                    if(widget.user.userData.orders.values.toList()[index].active){
+          decoration: BoxDecoration(
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10.0,
+                offset: Offset(0.0, 0.0),
+              )
+            ],
+            color: Colors.white,
+          ),
+          //height: 300,
+          child: widget.user.userData.orders.length > 0
+              ? ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  itemCount: widget.user.userData.orders.length,
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    if (widget.user.userData.orders.values
+                        .toList()[index]
+                        .active) {
                       return OrderItemList(index, widget.user, widget.settings);
-                    }else{
+                    } else {
                       return Container();
                     }
-
-
-                    })
-                : Container(
-                    child: Center(
-                      child: Text(
-                          "Here you will be able to view all the orders that are being executed daily."),
-                    ),
-                  )),
+                  })
+              : Container(height: 200,padding: EdgeInsets.symmetric(horizontal: 16,vertical: 16),
+                  child: Center(
+                    child: Text(
+                        "Here you will be able to view all the orders that are being executed daily.",textAlign: TextAlign.center,style: TextStyle(fontSize: 18)),
+                  ),
+                ),
+        ),
       ],
     );
   }

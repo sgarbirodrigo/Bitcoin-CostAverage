@@ -198,7 +198,7 @@ class _OrdersPageState extends State<OrdersPage> {
                     : Container(
                         child: Center(
                           child: Text(
-                              "Here you will be able to view all the orders that are being executed daily."),
+                              "Here you will be able to manage your orders.",style: TextStyle(fontSize: 18),),
                         ),
                       ))),
       ],

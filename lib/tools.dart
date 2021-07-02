@@ -13,7 +13,7 @@ String doubleToValueString(double amount, {int decimal = 8}) {
   }
 
   double finalNumber = getTruncatedNumber(amount, precision: numberOfDecimals);
-  print("amount: ${amount} - dec:${decimal} - final: ${finalNumber}");
+  //print("amount: ${amount} - dec:${decimal} - final: ${finalNumber}");
   return finalNumber.toStringAsFixed(decimal);
 }
 

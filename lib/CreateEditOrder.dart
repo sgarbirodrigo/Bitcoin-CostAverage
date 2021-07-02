@@ -29,12 +29,22 @@ class CreateEditOrder extends StatefulWidget {
 }
 
 class CreateEditOrderState extends State<CreateEditOrder> {
-  String _selectedPair = "";
+  String _selectedPair = "BTC/USDT";
   Map<String, BinanceSymbol> listOfSymbols;
   TextEditingController _amountController = TextEditingController();
   Schedule schedule;
   final _formKey = GlobalKey<FormState>();
   List<String> pairs;
+
+  bool validatePairString(String pair) {
+    if (pair == null) {
+      return false;
+    }
+    if (pair.isEmpty) {
+      return false;
+    }
+    return true;
+  }
 
   Future<List<String>> fetchBinancePairList() async {
     final response =
@@ -53,9 +63,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
       listOfSymbols.keys.forEach((element) {
         this.pairs.add(listOfSymbols[element].mySymbol);
       });
-      setState(() {
-
-      });
+      setState(() {});
     } else {
       throw Exception('Failed to load pairs');
     }
@@ -78,7 +86,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
     print("selected:${_selectedPair}");
     double _selectedAmount = 0;
     return SafeArea(
-      child: this.pairs!=null && this.pairs.isNotEmpty
+      child: this.pairs != null && this.pairs.isNotEmpty
           ? Form(
               key: _formKey,
               child: Column(
@@ -264,7 +272,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                           prefixIconConstraints:
                               BoxConstraints(minWidth: 0, minHeight: 0),
                           suffix: Text(
-                            _selectedPair.isNotEmpty
+                            validatePairString(_selectedPair)
                                 ? _selectedPair.split("/")[1]
                                 : "",
                             style: TextStyle(
@@ -302,20 +310,16 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                         if (value == null || value.isEmpty) {
                           return 'Please enter some value';
                         }
-                        if (_selectedPair != null) {
-                          if (_selectedPair.isNotEmpty) {
-                            double valueDouble =
-                                double.parse(value.replaceAll(",", "."));
-                            double minDouble = double.parse(listOfSymbols[
-                                    _selectedPair
-                                        .toString()
-                                        .replaceAll("/", "")]
-                                .filters[3]
-                                .minNotional
-                                .toString());
-                            if (valueDouble < minDouble) {
-                              return 'Must be bigger than the minimum amount';
-                            }
+                        if (validatePairString(_selectedPair)) {
+                          double valueDouble =
+                              double.parse(value.replaceAll(",", "."));
+                          double minDouble = double.parse(listOfSymbols[
+                                  _selectedPair.toString().replaceAll("/", "")]
+                              .filters[3]
+                              .minNotional
+                              .toString());
+                          if (valueDouble < minDouble) {
+                            return 'Must be bigger than the minimum amount';
                           }
                         }
                         _selectedAmount =
@@ -328,9 +332,9 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                     height: 16,
                   ),
                   Text(
-                    _selectedPair.isNotEmpty
-                        ? "Minimum amount: ${listOfSymbols[_selectedPair.toString().replaceAll("/", "")].filters[3].minNotional.toString()} ${_selectedPair.split("/")[1]}"
-                        : "Minimum Amount: ...",
+                    validatePairString(_selectedPair)
+                            ? "Minimum amount: ${listOfSymbols[_selectedPair.toString().replaceAll("/", "")].filters[3].minNotional.toString()} ${_selectedPair.split("/")[1]}"
+                            : "Minimum Amount: ...",
                     style: TextStyle(color: Colors.black),
                   ),
                   Container(
@@ -348,8 +352,8 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                     padding: EdgeInsets.only(top: 16, bottom: 16),
                     child: Text(
                       double.parse(_amountController.text) >= 0 &&
-                              _selectedPair.isNotEmpty
-                          ? "Weekly expense: ${returnCurrencyCorrectedNumber(_selectedPair.split("/")[1],double.parse(_amountController.text) * this.schedule.getMultiplier())}"
+                          validatePairString(_selectedPair)
+                          ? "Weekly expense: ${returnCurrencyCorrectedNumber(_selectedPair.split("/")[1], double.parse(_amountController.text) * this.schedule.getMultiplier())}"
                           : "Weekly expense: ...",
                       style: TextStyle(color: Colors.black),
                     ),

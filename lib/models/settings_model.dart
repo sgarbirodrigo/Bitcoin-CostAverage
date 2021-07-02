@@ -39,6 +39,7 @@ class Settings {
 
   ScaleLineChart _getScale() {
     ScaleLineChart scale = ScaleLineChart.WEEK1;
+    //TODO delete the shared preferences when logout
     switch (this.preferences.getString(_scale_line_preference)) {
       case "WEEK1":
         scale = ScaleLineChart.WEEK1;

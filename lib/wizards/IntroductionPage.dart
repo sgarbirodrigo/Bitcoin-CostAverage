@@ -36,6 +36,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
       imagePadding: EdgeInsets.zero,
     );
     return IntroductionScreen(
+      globalBackgroundColor: Colors.white,
       showNextButton: false,
       showSkipButton: true,
       skip: TextButton(
@@ -44,7 +45,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
               .collection("users")
               .document(widget.user.firebaseUser.uid)
               .updateData({"hasIntroduced": true}).then((value) {
-            Navigator.of(context).pop();
+            //Navigator.of(context).pop();
             widget.user.updateUser();
           });
         },

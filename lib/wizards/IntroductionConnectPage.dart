@@ -68,7 +68,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
     );
     print("index $index");
     return IntroductionScreen(
-      showNextButton: false,
+      showNextButton: false,globalBackgroundColor: Colors.white,
       showSkipButton: false,
       //freeze: this.index==4,
       showDoneButton: false,

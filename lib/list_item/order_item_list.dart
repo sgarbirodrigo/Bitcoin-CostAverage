@@ -38,7 +38,7 @@ class _OrderItemListState extends State<OrderItemList> {
         widget.user.userData.orders.values.toList()[widget.index];
     PairData _pairData = widget.user.pairDataItems[_orderItem.pair];
     //print("_pairData: ${_pairData}");
-    if (_pairData != null) {
+    if (_pairData != null &&widget.settings.binanceTicker!=null) {
       appreciation =
           (((widget.settings.binanceTicker[_pairData.pair.replaceAll("/", "")] *
                           _pairData.coinAccumulated) /

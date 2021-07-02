@@ -45,9 +45,11 @@ class UserData {
     }
     uid = jsonx['uid'];
     orders = new Map();
-    (jsonx['orders'] as Map).forEach((key, value) {
-      orders[key] = OrderItem.fromJson(Map<String, dynamic>.from(value));
-    });
+    if(jsonx['orders']!=null) {
+      (jsonx['orders'] as Map).forEach((key, value) {
+        orders[key] = OrderItem.fromJson(Map<String, dynamic>.from(value));
+      });
+    }
   }
 }
 
@@ -139,7 +141,6 @@ class User {
         break;
     }
   }
-
   void updateUser() {
     FirestoreDB.getUserData(this.firebaseUser.uid).then((UserData userdata) {
       this.userData = userdata;
@@ -159,6 +160,17 @@ class User {
         onCreate: (Database db, int version) async {
       await db.execute(
           'CREATE TABLE History (id TEXT PRIMARY KEY,timestamp INTEGER, amount REAL, pair TEXT,result TEXT,rawFirestore TEXT)');
+    });
+    FirebaseAuth.instance.onAuthStateChanged.listen((firebaseUser) async {
+      if(firebaseUser==null){
+        Database database = await openDatabase(path, version: dbVersion,
+            onCreate: (Database db, int version) async {
+              await db.execute(
+                  'CREATE TABLE History (id TEXT PRIMARY KEY,timestamp INTEGER, amount REAL, pair TEXT,result TEXT,rawFirestore TEXT)');
+            });
+        //database.close();
+        database.rawDelete("DELETE FROM History");
+      }
     });
     List<Map<String, dynamic>> db_query = await database
         .rawQuery('SELECT * FROM History ORDER BY timestamp DESC');

@@ -69,10 +69,10 @@ class _ChartWidgetState extends State<ChartWidget> {
   Widget build(BuildContext context) {
     double legendHeight = 42;
     data = convertUserData(widget.user);
-    /*print(
-        "selected ${widget.settings.base_pair} -${widget.settings.getBaseCoin()}  ");
     print(
-        "exp ${widget.user.userTotalExpendingAmount}");*/
+        "selected ${widget.settings.base_pair} - ${widget.settings.getBaseCoin()}  ");
+    print(
+        "exp ${widget.user.userTotalExpendingAmount}");
     return AnimatedContainer(
       key: _animatedKey,
       duration: Duration(seconds: 2),
