@@ -152,7 +152,7 @@ class _PaywallMyState extends State<PaywallMy> {
                             widget.offering.availablePackages[entry])
                         .then((purchaseInfo) {
                       print("purchaser info: $purchaseInfo");
-                      //setState(() => this.isPaying = false);
+                      setState(() => this.isPaying = false);
                     }).catchError((error) {
                       setState(() => this.isPaying = false);
                     });

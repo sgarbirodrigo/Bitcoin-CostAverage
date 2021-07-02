@@ -2,7 +2,7 @@ import 'package:Bit.Me/charts/line_chart_mean.dart';
 import 'package:Bit.Me/models/history_model.dart';
 import 'package:Bit.Me/models/settings_model.dart';
 import 'package:Bit.Me/models/user_model.dart';
-import 'package:Bit.Me/bkp/pairdetail_page.dart';
+import 'package:Bit.Me/main_pages/pairdetail_page.dart';
 import 'package:Bit.Me/tools.dart';
 import 'package:Bit.Me/widgets/weekindicator.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +11,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../bkp/CreateOrderDialog.dart';
 import '../bkp/EditOrderDialog.dart';
+import '../contants.dart';
 import '../list_item/order_item_list.dart';
 
 class OrdersPage extends StatefulWidget {
@@ -178,13 +179,13 @@ class _OrdersPageState extends State<OrdersPage> {
                           Color _selectedColor;
                           switch (order_status) {
                             case ORDER_STATUS.RUNNING:
-                              _selectedColor = Color(0xff69A67C);
+                              _selectedColor = greenAppColor;
                               break;
                             case ORDER_STATUS.PAUSED:
                               _selectedColor = Colors.grey.withOpacity(0.8);
                               break;
                             case ORDER_STATUS.ERROR:
-                              _selectedColor = Color(0xffA96B6B);
+                              _selectedColor = redAppColor;
                               break;
                             default:
                               _selectedColor = Colors.grey.withOpacity(0.8);

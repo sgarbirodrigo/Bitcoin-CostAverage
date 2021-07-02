@@ -176,8 +176,8 @@ class _ChartWidgetState extends State<ChartWidget> {
                                 sections: List.generate(data.length, (i) {
                                   final isTouched = i == touchedIndex;
                                   //final fontSize = isTouched ? 20.0 : 16.0;
-                                 // final radius = isTouched ? 62.0 : 48.0;
-                                  final radius=48.0;
+                                  // final radius = isTouched ? 62.0 : 48.0;
+                                  final radius = 48.0;
                                   final fontSize = 16.0;
                                   final Color sectionColor = colorsList[i];
                                   return PieChartSectionData(
@@ -241,7 +241,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                                 FittedBox(
                                   fit: BoxFit.fitWidth,
                                   child: Text(
-                                    "${doubleToValueString(widget.user.userTotalExpendingAmount[widget.settings.getBaseCoin()] * _multiplier)} ${widget.settings.getBaseCoin()}",
+                                    "${returnCurrencyCorrectedNumber(widget.settings.getBaseCoin(), widget.user.userTotalExpendingAmount[widget.settings.getBaseCoin()] * _multiplier)}",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontFamily: 'Arial',
@@ -333,7 +333,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                                     children: <TextSpan>[
                                       TextSpan(
                                         text:
-                                            '${doubleToValueString(data[index].amount * _multiplier)} ${data[index].pair.split("/")[1]}',
+                                            '${returnCurrencyCorrectedNumber(data[index].pair.split("/")[1],data[index].amount * _multiplier)}',
                                         style: TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.bold),
@@ -403,7 +403,8 @@ class _ChartWidgetState extends State<ChartWidget> {
                               // padding: EdgeInsets.symmetric(horizontal: 12),
                               decoration: BoxDecoration(
                                 //color: Color(0xffF7F8F9),
-                                color: coins[index] == widget.settings.getBaseCoin()
+                                color: coins[index] ==
+                                        widget.settings.getBaseCoin()
                                     ? Colors.deepPurple.shade50
                                     : Color(0xffF7F8F9),
                                 border: coins[index] ==
@@ -433,7 +434,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                                             ? 4
                                             : 8),
                                     child: Text(
-                                      "${coins[index]}",
+                                      "${returnCurrencyName(coins[index])}",
                                       style: TextStyle(
                                           fontFamily: 'Arial',
                                           fontSize: 24,
@@ -451,7 +452,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                                   ),*/
                                   Text(
                                     widget.user.balance != null
-                                        ? "${doubleToValueString(widget.user.balance.balancesMapped[coins[index]])} ${coins[index]}"
+                                        ? "${returnCurrencyCorrectedNumber(coins[index],widget.user.balance.balancesMapped[coins[index]])}"
                                         : "...",
                                     style: TextStyle(
                                         color: Colors.black,

@@ -1,13 +1,17 @@
 import 'package:Bit.Me/CreateEditOrder.dart';
+import 'package:Bit.Me/models/order_model.dart';
 import 'package:Bit.Me/tools.dart';
+import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:Bit.Me/widgets/weekindicator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../bkp/EditOrderDialog.dart';
-import '../bkp/pairdetail_page.dart';
+import '../main_pages/pairdetail_page.dart';
 import '../charts/line_chart_mean.dart';
+import '../contants.dart';
 import '../models/history_model.dart';
 import '../models/settings_model.dart';
 import '../models/user_model.dart';
@@ -26,17 +30,27 @@ class OrderItemList extends StatefulWidget {
 }
 
 class _OrderItemListState extends State<OrderItemList> {
+  double appreciation;
+
   @override
   Widget build(BuildContext context) {
-    //print("pair: ${widget.user.userData.orders.values.toList()[index].pair}");
-    /*print(
-                          "test${widget.user.userData.orders.values.toList()[index]}");*/
-    PairData _pairData = widget.user.pairDataItems[
-        widget.user.userData.orders.values.toList()[widget.index].pair];
+    OrderItem _orderItem =
+        widget.user.userData.orders.values.toList()[widget.index];
+    PairData _pairData = widget.user.pairDataItems[_orderItem.pair];
     //print("_pairData: ${_pairData}");
+    if (_pairData != null) {
+      appreciation =
+          (((widget.settings.binanceTicker[_pairData.pair.replaceAll("/", "")] *
+                          _pairData.coinAccumulated) /
+                      _pairData.totalExpended) -
+                  1) *
+              100;
+    } else {
+      appreciation = 0;
+    }
     ORDER_STATUS order_status;
     //bool hasProfit = (_variation ?? 0) > 0;
-    if (widget.user.userData.orders.values.toList()[widget.index].active) {
+    if (_orderItem.active) {
       order_status = ORDER_STATUS.RUNNING;
     } else {
       order_status = ORDER_STATUS.PAUSED;
@@ -49,13 +63,13 @@ class _OrderItemListState extends State<OrderItemList> {
     Color _selectedColor;
     switch (order_status) {
       case ORDER_STATUS.RUNNING:
-        _selectedColor = Color(0xff69A67C);
+        _selectedColor = greenAppColor;
         break;
       case ORDER_STATUS.PAUSED:
         _selectedColor = Colors.grey.withOpacity(0.8);
         break;
       case ORDER_STATUS.ERROR:
-        _selectedColor = Color(0xffA96B6B);
+        _selectedColor = redAppColor;
         break;
       default:
         _selectedColor = Colors.grey.withOpacity(0.8);
@@ -67,9 +81,7 @@ class _OrderItemListState extends State<OrderItemList> {
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => PairDetailPage(
-                  widget.user.userData.orders.values.toList()[widget.index],
-                  widget.user.firebaseUser,
-                  widget.settings)));
+                  _orderItem, widget.user.firebaseUser, widget.settings)));
         },
         child: Container(
           height: 72,
@@ -114,7 +126,7 @@ class _OrderItemListState extends State<OrderItemList> {
                       child: RichText(
                         text: TextSpan(
                             text:
-                                '- ${doubleToValueString(widget.user.userData.orders.values.toList()[widget.index].amount)} ${widget.user.userData.orders.values.toList()[widget.index].pair.split("/")[1]}',
+                                '- ${returnCurrencyCorrectedNumber(_orderItem.pair.split("/")[1], _orderItem.amount)} ',
                             style: TextStyle(color: _selectedColor, fontSize: 14),
                             children: [
                               TextSpan(
@@ -145,13 +157,13 @@ class _OrderItemListState extends State<OrderItemList> {
                       )
                     : Container(
                         child: Text(
-                          "Not enough data to show.",
+                          "Not enough data to show on the selected period.",
                           textAlign: TextAlign.center,
                         ),
                       ),
               ),
               Container(
-                width: 128,
+                width: 130,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -160,10 +172,11 @@ class _OrderItemListState extends State<OrderItemList> {
                     Padding(
                       padding: EdgeInsets.only(top: 0),
                       child: Text(
-                        widget.settings.binanceTicker != null &&
+                        getAppreciationConverted(appreciation),
+                        /*widget.settings.binanceTicker != null &&
                                 _pairData != null
                             ? "${_pairData.percentage_variation.toStringAsFixed(2)} % "
-                            : "...",
+                            : "...",*/
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontFamily: 'Arial',
@@ -171,9 +184,9 @@ class _OrderItemListState extends State<OrderItemList> {
                             //fontWeight: FontWeight.w400,
                             color: Colors.deepPurple
                             /*color: hasProfit
-                                              ? */ /*Color(0xff69A67C)*/ /*
+                                              ? */ /*greenAppColor*/ /*
 
-                                              : */ /*Color(0xffA96B6B)*/),
+                                              : */ /*redAppColor*/),
                       ),
                     ),
                     /*Container(
@@ -183,28 +196,11 @@ class _OrderItemListState extends State<OrderItemList> {
                       padding: EdgeInsets.only(top: 0, bottom: 4),
                       child: Text(
                           _pairData != null
-                              ? '+${doubleToValueString(_pairData.coinAccumulated)} ${_pairData.pair.split("/")[0]}'
+                              ? '+${returnCurrencyCorrectedNumber(_pairData.pair.split("/")[0], _pairData.coinAccumulated)}'
                               : "...",
                           style: TextStyle(
                               color: Colors.deepPurple, fontSize: 16)),
                     ),
-                    /*Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.deepPurple.withOpacity(0.7),
-                                      */ /*color: hasProfit
-                                            ? Color(0xff69A67C)
-                                            : Color(0xffA96B6B),*/ /*
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(4))),
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 6, vertical: 2),
-                                  child: Text(
-                                    'AVG: ${doubleToValueString(_pairData.avgPrice)} ${_pairData.pair.split("/")[1]}',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 12),
-                                  ),
-                                ),*/
                   ],
                 ),
               ),
@@ -212,37 +208,7 @@ class _OrderItemListState extends State<OrderItemList> {
           ),
         ),
       ),
-      actions: ORDER_STATUS.ERROR == order_status
-          ? [
-              IconSlideAction(
-                iconWidget: Container(
-                  color: _selectedColor,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        _pairData.historyItems.last.error ?? "",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white, fontSize: 10),
-                      )
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  /*showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return EditOrderDialog(
-                                        widget.user.userData.orders.values.toList()[widget.index],
-                                        widget.user.firebasUser.uid);
-                                  },
-                                );*/
-                },
-              )
-            ]
-          : [],
+      actions: [getChangeActive(_pairData, _orderItem)],
       secondaryActions: _pairData != null && _pairData.historyItems.length > 0
           ? [
               MyIconActionEdit(widget.index),
@@ -321,6 +287,61 @@ class _OrderItemListState extends State<OrderItemList> {
           ),
         );
         widget.user.updateUser();
+      },
+    );
+  }
+
+  bool isActivityChanging = false;
+
+  IconSlideAction getChangeActive(PairData pairData, OrderItem orderItem) {
+    bool isActive = orderItem.active;
+    return IconSlideAction(
+      iconWidget: Container(
+        color: isActive ? redAppColor : greenAppColor,
+        child: Column(
+          //crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            isActivityChanging
+                ? Container(
+                    height: 16,
+                    width: 16,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 1,
+                      ),
+                    ),
+                  )
+                : Icon(
+                    isActive ? Icons.pause : Icons.play_arrow_outlined,
+                    color: Colors.white,
+                  ),
+            Container(
+              height: 4,
+            ),
+            Text(
+              isActive ? "Pause" : "Activate",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white, fontSize: 16),
+            )
+          ],
+        ),
+      ),
+      onTap: () {
+        setState(() {
+          isActivityChanging = true;
+        });
+        Firestore.instance
+            .collection("users")
+            .document(widget.user.firebaseUser.uid)
+            .updateData({
+          "orders.${orderItem.pair.replaceAll("/", "_")}.active": !isActive
+        }).then((value) {
+          isActivityChanging = false;
+          widget.user.updateUser();
+        });
       },
     );
   }

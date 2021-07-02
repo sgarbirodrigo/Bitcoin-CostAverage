@@ -65,7 +65,6 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
       }
 
       price_spots.addAll(_pairData.price_spots);
-
     } else {
       int spots_missing = 0;
       switch (widget.settings.scaleLineChart) {
@@ -159,14 +158,7 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
                       children: [
                         TextSpan(
                           text:
-                              '${"Price: "} ${doubleToValueString(touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 0 : 1].y)}',
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                        TextSpan(
-                          text: ' ${_pairData.pair.split("/")[1]}',
+                              '${"Price: "}  ${returnCurrencyCorrectedNumber(_pairData.pair.split("/")[1], touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 0 : 1].y)}',
                           style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.normal,
@@ -175,20 +167,12 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
                       ]);
 
                   LineTooltipItem _avgTooltip = LineTooltipItem(
-                      "AVG: ${doubleToValueString(touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 1 : 0].y)}",
-                      TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.normal,
-                      ),
-                      children: [
-                        TextSpan(
-                          text: ' ${_pairData.pair.split("/")[1]}',
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        )
-                      ]);
+                    "AVG:  ${returnCurrencyCorrectedNumber(_pairData.pair.split("/")[1], touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 1 : 0].y)}",
+                    TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  );
 
                   return [_priceTooltip, _avgTooltip];
                 }),

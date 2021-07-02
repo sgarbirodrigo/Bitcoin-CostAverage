@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 
 import '../charts/line_chart_mean.dart';
 import '../charts/line_chart_mean_pair.dart';
+import '../contants.dart';
 import '../list_item/history_list_item.dart';
 import '../models/settings_model.dart';
 import '../models/user_model.dart';
@@ -184,7 +185,7 @@ class _HistoryPageState extends State<HistoryPage> {
           textAlign: TextAlign.center,
         ),
         Text(
-          "+ ${doubleToValueString(widget.pairData.coinAccumulated)} ${widget.pairData.pair.split("/")[0]}",
+          "+${returnCurrencyCorrectedNumber(widget.pairData.pair.split("/")[0],widget.pairData.coinAccumulated)}",
           textAlign: TextAlign.center,
           style: TextStyle(
               fontSize: 20,
@@ -205,7 +206,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   textAlign: TextAlign.center,
                 ),
                 Text(
-                  "${doubleToValueString(widget.pairData.totalExpended)} ${widget.pairData.pair.split("/")[1]}",
+                  "${returnCurrencyCorrectedNumber(widget.pairData.pair.split("/")[1],widget.pairData.totalExpended)}",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 20,
@@ -225,7 +226,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   textAlign: TextAlign.center,
                 ),
                 Text(
-                  "${doubleToValueString(widget.settings.binanceTicker[widget.pairData.pair.replaceAll("/", "")] * widget.pairData.coinAccumulated)} ${widget.pairData.pair.split("/")[1]}",
+                  "${returnCurrencyCorrectedNumber(widget.pairData.pair.split("/")[1],widget.settings.binanceTicker[widget.pairData.pair.replaceAll("/", "")] * widget.pairData.coinAccumulated)}",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 20,
@@ -242,9 +243,9 @@ class _HistoryPageState extends State<HistoryPage> {
         RichText(
           text: TextSpan(
             text:
-                "${(appreciation).toStringAsFixed(2)}% (${doubleToValueString((widget.settings.binanceTicker[widget.pairData.pair.replaceAll("/", "")] * widget.pairData.coinAccumulated) - widget.pairData.totalExpended)} ${widget.pairData.pair.split("/")[1]})",
+                "${(appreciation).toStringAsFixed(2)}% (${returnCurrencyCorrectedNumber(widget.pairData.pair.split("/")[1],(widget.settings.binanceTicker[widget.pairData.pair.replaceAll("/", "")] * widget.pairData.coinAccumulated) - widget.pairData.totalExpended)})",
             style: TextStyle(
-                color: appreciation < 0 ? Color(0xffA96B6B) : Color(0xff69A67C),
+                color: appreciation < 0 ? redAppColor : greenAppColor,
                 fontSize: 18,
                 fontWeight: FontWeight.bold),
             children: [

@@ -42,10 +42,11 @@ enum Section { LOGIN, DASHBOARD, ORDERS, HISTORY, SETTINGS }
 
 class _HomeState extends State<Home> {
   Settings settings;
-
+  PageController _myPage;
   //Section section;
   User user;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   //bool entitlementIsActive = false;
   int _pageIndex = 1;
   Widget body;
@@ -76,7 +77,9 @@ class _HomeState extends State<Home> {
 
     super.initState();
   }
+
   PurchaserInfo purchaserInfo;
+
   Future<void> validateSubscription() async {
     await Purchases.setup(apiKey,
         appUserId: this.user.firebaseUser.uid, observerMode: false);
@@ -92,29 +95,30 @@ class _HomeState extends State<Home> {
             builder: (context) => PaywallMy(
                   offering: offerings.current,
                 )));
-        *//*offerings.all.forEach((key, value) {
+        */ /*offerings.all.forEach((key, value) {
           print("key: ${key} - value: ${value}");
-        });*//*
+        });*/ /*
       }
     }*/
     Purchases.addPurchaserInfoUpdateListener((purchaserInfo) async {
       print("app userID: ${await Purchases.appUserID}");
-      PurchaserInfo purchaserInfo = await Purchases.getPurchaserInfo();
+      this.purchaserInfo = await Purchases.getPurchaserInfo();
       print("purchaserInfo: ${purchaserInfo.activeSubscriptions}");
-     /* (purchaserInfo.entitlements.all[entitlementID] != null &&
+      //this.user.updateUser();
+      setState(() {});
+      /* (purchaserInfo.entitlements.all[entitlementID] != null &&
               purchaserInfo.entitlements.all[entitlementID].isActive)
           ? entitlementIsActive = true
           : entitlementIsActive = false;*/
     });
   }
 
-  PageController _myPage;
-
   @override
   Widget build(BuildContext context) {
     if (user.userData != null) {
       if (user.userData.hasIntroduced) {
-        if(user.userData.active && purchaserInfo.activeSubscriptions.length>0){
+        if (purchaserInfo.activeSubscriptions.length > 0) {
+          print("subs: ${purchaserInfo.activeSubscriptions.length}");
           if (user.userData.hasConnected) {
             return Scaffold(
               key: _scaffoldKey,
@@ -133,6 +137,11 @@ class _HomeState extends State<Home> {
                       setState(() {
                         _pageIndex = index;
                       });
+                    }else{
+                      setState(() {
+                        _pageIndex = _pageIndex;
+                      });
+                      return;
                     }
                   },
                   items: [
@@ -148,9 +157,8 @@ class _HomeState extends State<Home> {
                           await showModalBottomSheet(
                             context: context,
                             isScrollControlled: true,
-                            useRootNavigator: true,
+                            useRootNavigator: false,
                             builder: (context) => Container(
-                              //height: 400,
                               child: Padding(
                                   child: CreateEditOrder(this.user),
                                   padding: MediaQuery.of(context).viewInsets),
@@ -225,17 +233,18 @@ class _HomeState extends State<Home> {
           } else {
             return ConnectToBinancePage(this.user);
           }
-        }else{
+        } else {
+          print("0-subs: ${purchaserInfo.activeSubscriptions.length>0}");
           return FutureBuilder(
             future: Purchases.getOfferings(),
-            builder: (context,AsyncSnapshot<Offerings> offerings) {
-              if(offerings.hasData){
+            builder: (context, AsyncSnapshot<Offerings> offerings) {
+              if (offerings.hasData) {
                 if (offerings.data.current != null &&
                     offerings.data.current.availablePackages.isNotEmpty) {
                   return PaywallMy(
                     offering: offerings.data.current,
                   );
-                }else{
+                } else {
                   return Scaffold(
                     body: SafeArea(
                       child: Center(
@@ -244,7 +253,7 @@ class _HomeState extends State<Home> {
                     ),
                   );
                 }
-              }else{
+              } else {
                 return Scaffold(
                   body: SafeArea(
                     child: Center(
@@ -253,7 +262,6 @@ class _HomeState extends State<Home> {
                   ),
                 );
               }
-
             },
           );
         }

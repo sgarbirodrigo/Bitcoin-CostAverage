@@ -2,6 +2,8 @@ import 'package:Bit.Me/models/schedule_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../contants.dart';
+
 enum ORDER_STATUS { RUNNING, PAUSED, ERROR }
 
 class WeekIndicator extends StatefulWidget {
@@ -30,13 +32,13 @@ class _WeekIndicatorState extends State<WeekIndicator> {
   Widget build(BuildContext context) {
     switch(widget.order_status){
       case ORDER_STATUS.RUNNING:
-        _selectedColor = Color(0xff69A67C);
+        _selectedColor = greenAppColor;
         break;
       case ORDER_STATUS.PAUSED:
         _selectedColor = Colors.grey.withOpacity(0.8);
         break;
       case ORDER_STATUS.ERROR:
-        _selectedColor =  Color(0xffA96B6B);
+        _selectedColor =  redAppColor;
         break;
       default:
         _selectedColor = Colors.grey.withOpacity(0.8);

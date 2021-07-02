@@ -215,7 +215,7 @@ class CreateOrderDialogState extends State<CreateOrderDialog> {
                     ),
                     child: Text(
                       double.parse(_amountController.text) >= 0
-                          ? "Weekly expense: ${doubleToValueString(double.parse(_amountController.text) * this.schedule.getMultiplier())} ${_selectedPair.split("/")[1]}"
+                          ? "Weekly expense: ${returnCurrencyCorrectedNumber(_selectedPair.split("/")[1],double.parse(_amountController.text) * this.schedule.getMultiplier())}"
                           : "Weekly expense: ...",
                       style: TextStyle(color: Colors.black),
                     ),

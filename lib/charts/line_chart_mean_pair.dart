@@ -23,31 +23,68 @@ class PriceAVGChartLinePair extends StatefulWidget {
 class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
   //bool isShowingMainData;
   double interval; //intervalo de 24 horas
-  //ScaleLineChart selectedScaleLineChart;
   List<FlSpot> price_spots = List();
   List<FlSpot> avg_price_spots = List();
-  double xmin, xmax;
+  double xmin, xmax, ymin, ymax, avgPrice_interval;
   Color _chartLineColor = Colors.deepPurple.withOpacity(1);
 
   @override
   void initState() {
     super.initState();
   }
-
-  void setScale() {
-    xmin = widget.pairData.historyItems.first.timestamp.seconds.toDouble();
-    xmax = widget.pairData.historyItems.last.timestamp.seconds.toDouble();
+  void fillLineChart() {
+    if (widget.pairData == null){
+      price_spots.clear();
+      avg_price_spots.clear();
+      int spots_missing = 0;
+      switch (widget.settings.scaleLineChart) {
+        case ScaleLineChart.WEEK1:
+          spots_missing = 7;
+          break;
+        case ScaleLineChart.WEEK2:
+          spots_missing = 14;
+          break;
+        case ScaleLineChart.MONTH1:
+          spots_missing = 30;
+          break;
+        case ScaleLineChart.MONTH6:
+          spots_missing = 180;
+          break;
+        case ScaleLineChart.YEAR1:
+          spots_missing = 365;
+          break;
+      }
+      price_spots.add(FlSpot(
+          Timestamp.fromMillisecondsSinceEpoch(DateTime.now()
+                  .add(Duration(days: -spots_missing))
+                  .millisecondsSinceEpoch)
+              .seconds
+              .toDouble(),
+          1.toDouble()));
+      price_spots.add(FlSpot(Timestamp.now().seconds.toDouble(), 1.toDouble()));
+      ymax;
+      ymin;
+      xmin = Timestamp.fromMillisecondsSinceEpoch(DateTime.now()
+              .add(Duration(days: -spots_missing))
+              .millisecondsSinceEpoch)
+          .seconds
+          .toDouble();
+      xmax = Timestamp.now().seconds.toDouble();
+    } else {
+      price_spots = widget.pairData.price_spots;
+      avg_price_spots = widget.pairData.avg_price_spots;
+      avgPrice_interval = widget.pairData.avgPrice;
+      xmin = widget.pairData.historyItems.first.timestamp.seconds.toDouble();
+      xmax = widget.pairData.historyItems.last.timestamp.seconds.toDouble();
+      ymax =  widget.pairData.max!=null ?widget.pairData.max * 1.10:null;
+      ymin = widget.pairData.min !=null? widget.pairData.min * 0.95:null;
+    }
     interval = (xmax - xmin) / 7;
   }
 
   @override
   Widget build(BuildContext context) {
-    price_spots = widget.pairData.price_spots;
-    avg_price_spots = widget.pairData.avg_price_spots;
-    //xmax = DateTime.now().millisecondsSinceEpoch / 1000;
-    //xmin = DateTime.now().add(Duration(days: -7)).millisecondsSinceEpoch / 1000;
-    //interval = (1.0 * (60 * 60 * 24)) - 1;
-    setScale();
+    fillLineChart();
     return Column(
       children: [
         Container(
@@ -79,14 +116,7 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                           children: [
                             TextSpan(
                               text:
-                                  '${"Price: "} ${doubleToValueString(touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 0 : 1].y)}',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                            TextSpan(
-                              text: ' ${widget.pairData.pair.split("/")[1]}',
+                                  '${"Price: "}  ${returnCurrencyCorrectedNumber(widget.pairData.pair.split("/")[1], touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 0 : 1].y)}',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.normal,
@@ -95,20 +125,12 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                           ]);
 
                       LineTooltipItem _avgTooltip = LineTooltipItem(
-                          "Average: ${doubleToValueString(touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 1 : 0].y)}",
-                          TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.normal,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: ' ${widget.pairData.pair.split("/")[1]}',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            )
-                          ]);
+                        "Average: ${returnCurrencyCorrectedNumber(widget.pairData.pair.split("/")[1], touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 1 : 0].y)}",
+                        TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      );
 
                       return [_priceTooltip, _avgTooltip];
                     }),
@@ -157,6 +179,9 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                   ),
                   margin: 12,
                   getTitles: (value) {
+                    if (widget.pairData==null) {
+                      return "";
+                    }
                     Timestamp timestamp = Timestamp.fromMillisecondsSinceEpoch(
                         (value * 1000).toInt());
                     String xTitle =
@@ -176,8 +201,8 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                     return xTitle;
                   },
                 ),
-                leftTitles: SideTitles(
-                  interval: widget.pairData.avgPrice * 0.03,
+                leftTitles: avgPrice_interval!=null && avgPrice_interval!=0 ?SideTitles(
+                  interval: avgPrice_interval * 0.03,
                   showTitles: true,
                   reservedSize: 0,
                   getTextStyles: (value) => const TextStyle(
@@ -191,17 +216,17 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                   },
                   margin: 0,
                   //reservedSize: 84,
-                ),
+                ):null,
               ),
               borderData: FlBorderData(
                   show: true,
                   border: Border.all(color: Colors.transparent, width: 1)),
               minX: xmin,
               maxX: xmax,
-              maxY: widget.pairData.max * 1.01,
-              minY: widget.pairData.min * 0.95,
+              maxY: ymax,
+              minY: ymin,
               lineBarsData: [
-                LineChartBarData(
+                price_spots!=null?LineChartBarData(
                   spots: price_spots,
                   isCurved: true,
                   curveSmoothness: 0.3,
@@ -233,8 +258,8 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                   ),
                   /*gradientTo: Offset(0, 0),
           gradientFrom: Offset(0, 0),*/
-                ),
-                LineChartBarData(
+                ):null,
+                avg_price_spots!=null?LineChartBarData(
                   spots: avg_price_spots,
                   isCurved: true,
                   curveSmoothness: 0.2,
@@ -250,76 +275,13 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                   belowBarData: BarAreaData(
                       //show: true,
                       ),
-                )
+                ):null
               ],
             ),
             swapAnimationCurve: Curves.linear,
             swapAnimationDuration: Duration(milliseconds: 500),
           ),
         ),
-        /*Container(
-          //height: 64,
-          margin: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                  child: Column(
-                children: [
-                  Text(
-                    "Average Price",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  Text(
-                    "${doubleToValueString(widget.pairData.avgPrice)} ${widget.pairData.pair.split("/")[1]}",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  Container(
-                    height: 8,
-                  ),
-                  DotWidget(
-                    dashColor: widget.color,
-                    dashHeight: 2,
-                    totalWidth: 60,
-                    dashWidth: 8,
-                  )
-                ],
-              )),
-              Expanded(
-                  child: Column(
-                children: [
-                  Text(
-                    "Price Now",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  Text(
-                    "${doubleToValueString(widget.settings.binanceTicker[widget.pairData.pair.replaceAll("/", "")])} ${widget.pairData.pair.split("/")[1]}",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  Container(
-                    height: 8,
-                  ),
-                  DotWidget(
-                    dashColor: widget.color,
-                    dashHeight: 2,
-                    totalWidth: 80,
-                    dashWidth: 50,
-                  )
-                ],
-              ))
-            ],
-          ),
-        )*/
         AnimatedContainer(
             height: widget.user.isUpdatingHistory ? 4 : 0,
             duration: Duration(milliseconds: 250),

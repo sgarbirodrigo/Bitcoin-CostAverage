@@ -15,6 +15,8 @@ List<Color> colorsList = [
   Color(0xff7AC142),
   Color(0xff007CC3)
 ];*/
+const greenAppColor = Color(0xff69A67C);
+const redAppColor = Color(0xffA96B6B);
 const List<Color> colorsList = [
   Color(0xff3366cc),
   Color(0xffdc3912),

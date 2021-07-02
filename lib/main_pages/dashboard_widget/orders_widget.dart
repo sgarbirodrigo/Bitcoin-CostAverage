@@ -2,7 +2,7 @@ import 'package:Bit.Me/charts/line_chart_mean.dart';
 import 'package:Bit.Me/models/history_model.dart';
 import 'package:Bit.Me/models/settings_model.dart';
 import 'package:Bit.Me/models/user_model.dart';
-import 'package:Bit.Me/bkp/pairdetail_page.dart';
+import 'package:Bit.Me/main_pages/pairdetail_page.dart';
 import 'package:Bit.Me/tools.dart';
 import 'package:Bit.Me/widgets/weekindicator.dart';
 import 'package:flutter/material.dart';

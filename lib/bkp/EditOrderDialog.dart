@@ -224,7 +224,7 @@ class EditOrderDialogState extends State<EditOrderDialog> {
                     ),
                     child: Text(
                       double.parse(_amountController.text) >= 0
-                          ? "Weekly expense: ${doubleToValueString(double.parse(_amountController.text) * widget.orderItem.schedule.getMultiplier())} ${widget.orderItem.pair.split("/")[1]}"
+                          ? "Weekly expense: ${returnCurrencyCorrectedNumber(widget.orderItem.pair.split("/")[1],double.parse(_amountController.text) * widget.orderItem.schedule.getMultiplier())}"
                           : "Weekly expense: ...",
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.black),
