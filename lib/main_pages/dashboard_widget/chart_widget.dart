@@ -1,4 +1,4 @@
-import 'package:Bit.Me/bkp/dialog_config.dart';
+
 import 'package:Bit.Me/models/settings_model.dart';
 import 'package:Bit.Me/tools.dart';
 import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
@@ -38,8 +38,8 @@ class MyChartSectionData {
 }
 
 class ChartWidget extends StatefulWidget {
-  Settings settings;
-  final User user;
+  SettingsApp settings;
+  final UserManager user;
 
   ChartWidget(this.user, this.settings);
 
@@ -402,7 +402,7 @@ class _ChartWidgetState extends State<ChartWidget> {
     );
   }
 
-  List<MyChartSectionData> convertUserData(User user) {
+  List<MyChartSectionData> convertUserData(UserManager user) {
     try {
       List<MyChartSectionData> data = List();
       double total = 0;

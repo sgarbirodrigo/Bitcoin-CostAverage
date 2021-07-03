@@ -7,7 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../models/user_model.dart';
 
 class IntroductionPage extends StatefulWidget {
-  User user;
+  UserManager user;
 
   IntroductionPage(this.user);
 
@@ -41,10 +41,10 @@ class _IntroductionPageState extends State<IntroductionPage> {
       showSkipButton: true,
       skip: TextButton(
         onPressed: () {
-          Firestore.instance
+          FirebaseFirestore.instance
               .collection("users")
-              .document(widget.user.firebaseUser.uid)
-              .updateData({"hasIntroduced": true}).then((value) {
+              .doc(widget.user.firebaseUser.uid)
+              .update({"hasIntroduced": true}).then((value) {
             //Navigator.of(context).pop();
             widget.user.updateUser();
           });
@@ -94,10 +94,10 @@ class _IntroductionPageState extends State<IntroductionPage> {
       done:
           const Text("Connect", style: TextStyle(fontWeight: FontWeight.w600)),
       onDone: () {
-        Firestore.instance
+        FirebaseFirestore.instance
             .collection("users")
-            .document(widget.user.firebaseUser.uid)
-            .updateData({"hasIntroduced": true}).then((value) {
+            .doc(widget.user.firebaseUser.uid)
+            .update({"hasIntroduced": true}).then((value) {
           Navigator.of(context).pop();
           widget.user.updateUser();
         });

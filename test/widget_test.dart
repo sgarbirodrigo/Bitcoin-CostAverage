@@ -20,7 +20,7 @@ void main() {
 
   test('db test', ()async{
     // Get a location using getDatabasesPath
-     var userHistory = await User.getHistoryData();
+     var userHistory = await UserManager.getHistoryData();
      expect(userHistory,1);
   });
   test('Future.value() returns the value', () async {

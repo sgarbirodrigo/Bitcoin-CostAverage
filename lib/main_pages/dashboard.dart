@@ -7,8 +7,8 @@ import 'package:flutter/widgets.dart';
 import 'dashboard_widget/chart_widget.dart';
 
 class DashboardBitMe extends StatefulWidget {
-  final User user;
-  final Settings settings;
+  final UserManager user;
+  final SettingsApp settings;
 
   const DashboardBitMe({this.user, this.settings});
 
@@ -31,7 +31,7 @@ class _DashboardBitMeState extends State<DashboardBitMe> {
             children: [
               ChartWidget(widget.user, widget.settings),
               OrdersWidget(user: widget.user, settings: widget.settings),
-              /*OrdersWidget(user: widget.user, settings: widget.settings)*/
+              /*OrdersWidget(user: widget.user, SettingsApp: widget.settings)*/
             ],
           ),
         ),

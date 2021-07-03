@@ -2,16 +2,16 @@ import 'package:Bit.Me/charts/line_chart_mean.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../external/binance_api.dart';
 
-class Settings {
+class SettingsApp {
   Map<String, double> binanceTicker;
   String base_pair;
   ScaleLineChart scaleLineChart;
-  final Function(Settings newSettings) _updateWidgets;
+  final Function(SettingsApp newSettingsApp) _updateWidgets;
   SharedPreferences preferences;
   String _base_pair_preference = "base_pair";
   String _scale_line_preference = "scale_line";
 
-  Settings(this._updateWidgets) {
+  SettingsApp(this._updateWidgets) {
     scaleLineChart = ScaleLineChart.WEEK1;
     SharedPreferences.getInstance().then((value) {
       preferences = value;

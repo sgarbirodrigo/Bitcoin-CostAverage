@@ -16,7 +16,7 @@ import 'models/schedule_model.dart';
 import 'models/user_model.dart';
 
 class CreateEditOrder extends StatefulWidget {
-  User user;
+  UserManager user;
 
   CreateEditOrder(this.user, {this.orderItem});
 
@@ -47,8 +47,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
   }
 
   Future<List<String>> fetchBinancePairList() async {
-    final response =
-        await http.get(Uri.https("api.binance.com", "api/v3/exchangeInfo"));
+    final response = await http.get(Uri.https("api.binance.com", "api/v3/exchangeInfo"));
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
       // then parse the JSON.
@@ -56,8 +55,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
       List symbols = jsonDecode(response.body)["symbols"];
       listOfSymbols = Map();
       symbols.forEach((element) {
-        listOfSymbols[BinanceSymbol.fromJson(element).symbol] =
-            BinanceSymbol.fromJson(element);
+        listOfSymbols[BinanceSymbol.fromJson(element).symbol] = BinanceSymbol.fromJson(element);
       });
       this.pairs = List();
       listOfSymbols.keys.forEach((element) {
@@ -123,8 +121,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                                 color: Theme.of(context).primaryColor,
                               ),
                               iconSize: 36,
-                              style:
-                                  TextStyle(fontSize: 22, color: Colors.black),
+                              style: TextStyle(fontSize: 22, color: Colors.black),
                               items: this.pairs.map((String value) {
                                 //print("value-data: $value");
                                 return DropdownMenuItem<String>(
@@ -145,8 +142,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                           : Expanded(
                               child: Container(
                                 padding: EdgeInsets.only(top: 16, bottom: 16),
-                                child: Text(widget.orderItem.pair,
-                                    style: TextStyle(fontSize: 24)),
+                                child: Text(widget.orderItem.pair, style: TextStyle(fontSize: 24)),
                               ),
                             ),
                       Container(
@@ -165,8 +161,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                                       content: SingleChildScrollView(
                                         child: Column(
                                           children: <Widget>[
-                                            Text(
-                                                'Are you sure you want to delete this order?'),
+                                            Text('Are you sure you want to delete this order?'),
                                           ],
                                         ),
                                       ),
@@ -174,24 +169,18 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                                         TextButton(
                                           child: Text('Confirm'),
                                           onPressed: () {
-                                            Firestore.instance
+                                            FirebaseFirestore.instance
                                                 .collection("users")
-                                                .document(widget
-                                                    .user.firebaseUser.uid)
-                                                .updateData({
-                                              "orders.${widget.orderItem.pair.replaceAll("/", "_")}":
-                                                  FieldValue.delete()
-                                            }).then((value) {
-                                              Navigator.of(context)
-                                                  .pop("deleted");
+                                                .doc(widget.user.firebaseUser.uid)
+                                                .update({"orders.${widget.orderItem.pair.replaceAll("/", "_")}": FieldValue.delete()}).then((value) {
+                                              Navigator.of(context).pop("deleted");
                                             });
                                           },
                                         ),
                                         TextButton(
                                           child: Text('Cancel'),
                                           onPressed: () {
-                                            Navigator.of(context)
-                                                .pop("canceled");
+                                            Navigator.of(context).pop("canceled");
                                           },
                                         ),
                                       ],
@@ -204,9 +193,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                                 widget.user.updateUser();
                               },
                               child: Text("DELETE"),
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all(Colors.red)),
+                              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.red)),
                             )
                           : Container(),
                       widget.orderItem != null
@@ -226,32 +213,24 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                                 schedule: this.schedule,
                                 createdTimestamp: Timestamp.now(),
                               );
-                              Firestore.instance
+                              FirebaseFirestore.instance
                                   .collection("users")
-                                  .document(widget.user.firebaseUser.uid)
-                                  .updateData({
-                                "orders.${newOrder.pair.replaceAll("/", "_")}":
-                                    newOrder.toJson()
-                              }).then((value) {
+                                  .doc(widget.user.firebaseUser.uid)
+                                  .update({"orders.${newOrder.pair.replaceAll("/", "_")}": newOrder.toJson()}).then((value) {
                                 Navigator.pop(context);
                               });
                             } else {
-                              widget.orderItem.updatedTimestamp =
-                                  Timestamp.now();
-                              Firestore.instance
+                              widget.orderItem.updatedTimestamp = Timestamp.now();
+                              FirebaseFirestore.instance
                                   .collection("users")
-                                  .document(widget.user.firebaseUser.uid)
-                                  .updateData({
-                                "orders.${widget.orderItem.pair.replaceAll("/", "_")}":
-                                    widget.orderItem.toJson()
-                              }).then((value) {
+                                  .doc(widget.user.firebaseUser.uid)
+                                  .update({"orders.${widget.orderItem.pair.replaceAll("/", "_")}": widget.orderItem.toJson()}).then((value) {
                                 Navigator.pop(context);
                               });
                             }
                           }
                         },
-                        child: Text(
-                            widget.orderItem == null ? "CREATE" : "UPDATE"),
+                        child: Text(widget.orderItem == null ? "CREATE" : "UPDATE"),
                       ),
                       Container(
                         width: 12,
@@ -269,41 +248,29 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                       controller: _amountController,
                       decoration: InputDecoration(
                           isDense: true,
-                          prefixIconConstraints:
-                              BoxConstraints(minWidth: 0, minHeight: 0),
+                          prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
                           suffix: Text(
-                            validatePairString(_selectedPair)
-                                ? _selectedPair.split("/")[1]
-                                : "",
-                            style: TextStyle(
-                                color: Theme.of(context).primaryColor),
+                            validatePairString(_selectedPair) ? _selectedPair.split("/")[1] : "",
+                            style: TextStyle(color: Theme.of(context).primaryColor),
                           ),
                           //hintText: "Amount",
                           labelText: "Amount to invest",
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context).primaryColor,
-                                width: 1.0),
+                            borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context).primaryColor,
-                                width: 1.0),
+                            borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
                           )),
-                      keyboardType:
-                          TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: TextInputType.numberWithOptions(decimal: true),
                       inputFormatters: <TextInputFormatter>[
                         //FilteringTextInputFormatter.allow(filterPattern)
                       ],
                       onChanged: (value) {
                         _amountController.text = value.replaceAll(",", ".");
                         if (_amountController.text.contains(".")) {
-                          _amountController.text =
-                              "${_amountController.text.split(".")[0]}.${_amountController.text.split(".")[1]}";
+                          _amountController.text = "${_amountController.text.split(".")[0]}.${_amountController.text.split(".")[1]}";
                         }
-                        _amountController.selection =
-                            TextSelection.fromPosition(TextPosition(
-                                offset: _amountController.text.length));
+                        _amountController.selection = TextSelection.fromPosition(TextPosition(offset: _amountController.text.length));
                       },
                       // The validator receives the text that the user has entered.
                       validator: (value) {
@@ -311,19 +278,13 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                           return 'Please enter some value';
                         }
                         if (validatePairString(_selectedPair)) {
-                          double valueDouble =
-                              double.parse(value.replaceAll(",", "."));
-                          double minDouble = double.parse(listOfSymbols[
-                                  _selectedPair.toString().replaceAll("/", "")]
-                              .filters[3]
-                              .minNotional
-                              .toString());
+                          double valueDouble = double.parse(value.replaceAll(",", "."));
+                          double minDouble = double.parse(listOfSymbols[_selectedPair.toString().replaceAll("/", "")].filters[3].minNotional.toString());
                           if (valueDouble < minDouble) {
                             return 'Must be bigger than the minimum amount';
                           }
                         }
-                        _selectedAmount =
-                            double.parse(value.replaceAll(",", "."));
+                        _selectedAmount = double.parse(value.replaceAll(",", "."));
                         return null;
                       },
                     ),
@@ -333,8 +294,8 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                   ),
                   Text(
                     validatePairString(_selectedPair)
-                            ? "Minimum amount: ${listOfSymbols[_selectedPair.toString().replaceAll("/", "")].filters[3].minNotional.toString()} ${_selectedPair.split("/")[1]}"
-                            : "Minimum Amount: ...",
+                        ? "Minimum amount: ${listOfSymbols[_selectedPair.toString().replaceAll("/", "")].filters[3].minNotional.toString()} ${_selectedPair.split("/")[1]}"
+                        : "Minimum Amount: ...",
                     style: TextStyle(color: Colors.black),
                   ),
                   Container(
@@ -351,8 +312,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                   Padding(
                     padding: EdgeInsets.only(top: 16, bottom: 16),
                     child: Text(
-                      double.parse(_amountController.text) >= 0 &&
-                          validatePairString(_selectedPair)
+                      double.parse(_amountController.text) >= 0 && validatePairString(_selectedPair)
                           ? "Weekly expense: ${returnCurrencyCorrectedNumber(_selectedPair.split("/")[1], double.parse(_amountController.text) * this.schedule.getMultiplier())}"
                           : "Weekly expense: ...",
                       style: TextStyle(color: Colors.black),
@@ -372,9 +332,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                     Container(
                       height: 16,
                     ),
-                    Text(widget.orderItem != null
-                        ? "Loading..."
-                        : "Loading available pairs...")
+                    Text(widget.orderItem != null ? "Loading..." : "Loading available pairs...")
                   ],
                 ),
               ),

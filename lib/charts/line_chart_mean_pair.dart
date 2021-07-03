@@ -9,8 +9,8 @@ import '../models/settings_model.dart';
 import '../models/user_model.dart';
 
 class PriceAVGChartLinePair extends StatefulWidget {
-  User user;
-  Settings settings;
+  UserManager user;
+  SettingsApp settings;
   Color color;
   PairData pairData;
 

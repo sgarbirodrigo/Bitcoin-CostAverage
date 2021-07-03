@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:Bit.Me/main_pages/settings.dart';
 import 'package:Bit.Me/external/qr_code.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +11,7 @@ import '../external/binance_api.dart';
 import '../models/user_model.dart';
 
 class ConnectToBinancePage extends StatefulWidget {
-  User user;
+  UserManager user;
 
   ConnectToBinancePage(this.user);
 
@@ -39,16 +37,16 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
   void initState() {
     privatekey_controller = TextEditingController();
     publickey_controller = TextEditingController();
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection("users")
-        .document(widget.user.firebaseUser.uid)
+        .doc(widget.user.firebaseUser.uid)
         .get()
         .then((DocumentSnapshot userSnapshot) {
-      if (userSnapshot.data != null) {
-        publickey_controller.text = userSnapshot.data["public_key"];
+      if (userSnapshot.data() != null) {
+        publickey_controller.text = UserData.fromJson(userSnapshot.data()).public_key;
       }
-      if (userSnapshot.data != null) {
-        privatekey_controller.text = userSnapshot.data["private_key"];
+      if (userSnapshot.data() != null) {
+        privatekey_controller.text = UserData.fromJson(userSnapshot.data()).private_key;
       }
     });
   }
@@ -235,7 +233,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                         ),
                         onTap: () {
                           launch(
-                              'https://www.binance.com/en/my/settings/api-management');
+                              'https://www.binance.com/en/my/SettingsApp/api-management');
                         },
                       ),
                       Container(
@@ -329,10 +327,10 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                                   if (await areUserKeysNewCorrect(
                                       privatekey_controller.text,
                                       publickey_controller.text)) {
-                                    Firestore.instance
+                                    FirebaseFirestore.instance
                                         .collection("users")
-                                        .document(widget.user.firebaseUser.uid)
-                                        .updateData({
+                                        .doc(widget.user.firebaseUser.uid)
+                                        .update({
                                       "private_key": privatekey_controller.text,
                                       "public_key": publickey_controller.text,
                                       "hasConnected": true,

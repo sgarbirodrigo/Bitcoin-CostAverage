@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../bkp/EditOrderDialog.dart';
 import '../main_pages/pairdetail_page.dart';
 import '../charts/line_chart_mean.dart';
 import '../contants.dart';
@@ -18,8 +17,8 @@ import '../models/user_model.dart';
 
 class OrderItemList extends StatefulWidget {
   int index;
-  User user;
-  Settings settings;
+  UserManager user;
+  SettingsApp settings;
 
   OrderItemList(this.index, this.user, this.settings);
 
@@ -333,10 +332,10 @@ class _OrderItemListState extends State<OrderItemList> {
         setState(() {
           isActivityChanging = true;
         });
-        Firestore.instance
+        FirebaseFirestore.instance
             .collection("users")
-            .document(widget.user.firebaseUser.uid)
-            .updateData({
+            .doc(widget.user.firebaseUser.uid)
+            .update({
           "orders.${orderItem.pair.replaceAll("/", "_")}.active": !isActive
         }).then((value) {
           isActivityChanging = false;

@@ -10,7 +10,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
-  User user;
+  UserManager user;
 
   SettingsPage(this.user);
 
@@ -32,16 +32,16 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     privatekey_controller = TextEditingController();
     publickey_controller = TextEditingController();
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection("users")
-        .document(widget.user.firebaseUser.uid)
+        .doc(widget.user.firebaseUser.uid)
         .get()
         .then((DocumentSnapshot userSnapshot) {
-      if (userSnapshot.data != null) {
-        publickey_controller.text = userSnapshot.data["public_key"];
+      if (userSnapshot.data() != null) {
+        publickey_controller.text =  UserData.fromJson(userSnapshot.data()).public_key;
       }
-      if (userSnapshot.data != null) {
-        privatekey_controller.text = userSnapshot.data["private_key"];
+      if (userSnapshot.data() != null) {
+        privatekey_controller.text = UserData.fromJson(userSnapshot.data()).private_key;
       }
     });
   }
@@ -190,7 +190,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 onTap: () {
                   launch(
-                      'https://www.binance.com/en/my/settings/api-management');
+                      'https://www.binance.com/en/my/SettingsApp/api-management');
                 },
               ),
               Container(height: 8,),
@@ -272,10 +272,10 @@ class _SettingsPageState extends State<SettingsPage> {
                           if (await areUserKeysNewCorrect(
                               privatekey_controller.text,
                               publickey_controller.text)) {
-                            Firestore.instance
+                            FirebaseFirestore.instance
                                 .collection("users")
-                                .document(widget.user.firebaseUser.uid)
-                                .updateData({
+                                .doc(widget.user.firebaseUser.uid)
+                                .update({
                               "private_key": privatekey_controller.text,
                               "public_key": publickey_controller.text,
                               "lastUpdatedTimestamp": Timestamp.now()

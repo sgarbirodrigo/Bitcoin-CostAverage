@@ -1,4 +1,4 @@
-import 'package:Bit.Me/external/binance_api.dart';
+
 import 'package:Bit.Me/charts/line_chart_mean.dart';
 import 'package:Bit.Me/models/order_model.dart';
 import 'package:Bit.Me/models/settings_model.dart';
@@ -14,8 +14,8 @@ import '../charts/line_chart_mean_pair.dart';
 
 class PairDetailPage extends StatefulWidget {
   OrderItem orderItem;
-  FirebaseUser firebaseUser;
-  Settings settings;
+ User firebaseUser;
+  SettingsApp settings;
 
   PairDetailPage(this.orderItem, this.firebaseUser, this.settings);
 
@@ -28,12 +28,12 @@ class PairDetailPage extends StatefulWidget {
 class _PairDetailPageState extends State<PairDetailPage> {
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   PairData pairData;
-  User user;
+  UserManager user;
   double appreciation;
 
   @override
   void initState() {
-    user = User(widget.firebaseUser, widget.settings, (user) async {
+    user = UserManager(widget.firebaseUser, widget.settings, (user) async {
       setState(() {
         this.user = user;
         pairData = this.user.pairDataItems[widget.orderItem.pair];

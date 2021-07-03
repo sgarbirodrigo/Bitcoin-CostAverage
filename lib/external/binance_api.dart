@@ -23,7 +23,7 @@ Future<Map<String, double>> fetchBinancePairData() async {
   }
 }
 
-Future<bool> areUserKeysSavedCorrect(User user) async {
+Future<bool> areUserKeysSavedCorrect(UserManager user) async {
   if ((await getBinanceBalance(user)) != null) {
     return true;
   } else {
@@ -53,7 +53,7 @@ Future<bool> areUserKeysNewCorrect(String private_key,String public_key) async {
 }
 
 
-Future<Balance> getBinanceBalance(User user) async {
+Future<Balance> getBinanceBalance(UserManager user) async {
   UserData userData = await FirestoreDB.getUserData(user.firebaseUser.uid);
   if (userData != null) {
     if (userData.private_key != null && userData.public_key != null) {

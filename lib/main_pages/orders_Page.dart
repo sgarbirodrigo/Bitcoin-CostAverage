@@ -7,16 +7,12 @@ import 'package:Bit.Me/tools.dart';
 import 'package:Bit.Me/widgets/weekindicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-
-import '../bkp/CreateOrderDialog.dart';
-import '../bkp/EditOrderDialog.dart';
 import '../contants.dart';
 import '../list_item/order_item_list.dart';
 
 class OrdersPage extends StatefulWidget {
-  User user;
-  Settings settings;
+  UserManager user;
+  SettingsApp settings;
 
   OrdersPage({this.user, this.settings});
 

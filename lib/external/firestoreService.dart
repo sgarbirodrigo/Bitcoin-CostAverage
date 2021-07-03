@@ -6,13 +6,13 @@ class FirestoreDB{
 
   }
   static Future<UserData> getUserData(String uid) async {
-    DocumentSnapshot documentSnapshot = await Firestore.instance
+    DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
         .collection("users")
-        .document(uid)
+        .doc(uid)
         .get();
     if (documentSnapshot.exists) {
       //print("exist");
-      return UserData.fromJson(documentSnapshot.data);
+      return UserData.fromJson(documentSnapshot.data());
     } else {
       return null;
     }

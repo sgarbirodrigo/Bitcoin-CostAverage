@@ -1,4 +1,4 @@
-import 'package:Bit.Me/bkp/CreateOrderDialog.dart';
+
 import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -6,14 +6,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 
-import '../../bkp/EditOrderDialog.dart';
 import '../../contants.dart';
 import '../../models/settings_model.dart';
 import '../../models/user_model.dart';
 
 class BalanceWidget extends StatefulWidget {
-  Settings settings;
-  User user;
+  SettingsApp settings;
+  UserManager user;
 
   BalanceWidget(this.user, this.settings);
 
@@ -148,7 +147,7 @@ class _BalanceWidgetState extends State<BalanceWidget> {
                                     //_formKey.currentState.validate();
                                     _priceUnit = value;
                                     _priceValue = widget
-                                        .settings.binanceTicker[_priceUnit];
+                                        .SettingsApp.binanceTicker[_priceUnit];
                                   });
                                 },
                                 isExpanded: true,
@@ -328,10 +327,10 @@ class _BalanceWidgetState extends State<BalanceWidget> {
       onTap: () {
         */ /*Firestore.instance
               .collection("users")
-              .document("userTest")
+              .doc("userTest")
               .collection("orders")
-              .document(widget.querySnapshot.documents[index].documentID)
-              .updateData({
+              .doc(widget.querySnapshot.documents[index].documentID)
+              .update({
             "active":
             !(widget.querySnapshot.documents[index].data["active"] as bool)
           });*/ /*

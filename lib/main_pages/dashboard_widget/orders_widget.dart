@@ -9,13 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../../bkp/CreateOrderDialog.dart';
-import '../../bkp/EditOrderDialog.dart';
 import '../../list_item/order_item_list.dart';
 
 class OrdersWidget extends StatefulWidget {
-  User user;
-  Settings settings;
+  UserManager user;
+  SettingsApp settings;
 
   OrdersWidget({this.user, this.settings});
 

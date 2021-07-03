@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 class AuthService {
   final FirebaseAuth _firebaseInstance = FirebaseAuth.instance;
   final CollectionReference _usersCollection =
-      Firestore.instance.collection("users");
+     FirebaseFirestore.instance.collection("users");
 
   Map<String, String> errorMessage = {
     "email": "",
@@ -14,15 +14,15 @@ class AuthService {
   };
 
   // User State
-  Stream<FirebaseUser> authStateChanges() {
+  Stream<User> authStateChanges() {
     FirebaseAuth _firebaseInstance = FirebaseAuth.instance;
-    return _firebaseInstance.onAuthStateChanged;
+    return _firebaseInstance.authStateChanges();
   }
 
   // Current User
-  Future<FirebaseUser> currentUser() async {
+  Future<User> currentUser() async {
     FirebaseAuth _firebaseInstance = FirebaseAuth.instance;
-    return _firebaseInstance.currentUser();
+    return _firebaseInstance.currentUser;
   }
 
   // Sign Out
@@ -103,7 +103,7 @@ class AuthService {
           .then((user) {
         if (user != null) {
           // Save User Information To Database
-          _usersCollection.document(user.user.uid).setData(
+          _usersCollection.doc(user.user.uid)..set(
             {
               "email": user.user.email,
               "uid": user.user.uid,

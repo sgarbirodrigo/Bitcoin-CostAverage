@@ -104,21 +104,21 @@ class PairData {
   }
 }
 
-class User {
-  final FirebaseUser firebaseUser;
+class UserManager {
+  final User firebaseUser;
   UserData userData;
 
   /*List<OrderItem> orderItems = List();*/
   List<HistoryItem> historyItems = List();
   Map<String, double> userTotalBuyingAmount = Map();
   Map<String, double> userTotalExpendingAmount = Map();
-  Function(User user) onUserDataUpdate;
+  Function(UserManager user) onUserDataUpdate;
   Balance balance;
   Map<String, PairData> pairDataItems = Map();
-  Settings settings;
+  SettingsApp settings;
   bool isUpdatingHistory = false;
 
-  User(this.firebaseUser, this.settings, this.onUserDataUpdate) {
+  UserManager(this.firebaseUser, this.settings, this.onUserDataUpdate) {
     updateUser();
     switch (this.settings.scaleLineChart) {
       case ScaleLineChart.WEEK1:
@@ -157,7 +157,7 @@ class User {
     Database database = await openDatabase(path, version: dbVersion, onCreate: (Database db, int version) async {
       await db.execute('CREATE TABLE History (id TEXT PRIMARY KEY,timestamp INTEGER, amount REAL, pair TEXT,result TEXT,rawFirestore TEXT)');
     });
-    FirebaseAuth.instance.onAuthStateChanged.listen((firebaseUser) async {
+    FirebaseAuth.instance.authStateChanges().listen((firebaseUser) async {
       if (firebaseUser == null) {
         Database database = await openDatabase(path, version: dbVersion, onCreate: (Database db, int version) async {
           await db.execute('CREATE TABLE History (id TEXT PRIMARY KEY,timestamp INTEGER, amount REAL, pair TEXT,result TEXT,rawFirestore TEXT)');
@@ -168,12 +168,12 @@ class User {
     });
     List<Map<String, dynamic>> db_query = await database.rawQuery('SELECT * FROM History ORDER BY timestamp DESC');
 
-    Query firestoreHistoryQuery = Firestore.instance.collection("users").document(firebaseUser.uid).collection("history").orderBy("timestamp", descending: false);
+    Query firestoreHistoryQuery = FirebaseFirestore.instance.collection("users").doc(firebaseUser.uid).collection("history").orderBy("timestamp", descending: false);
     void addSnapshotToSQLDB(QuerySnapshot historySnapshots) async {
-      historySnapshots.documents.forEach((element) async {
-        HistoryItem historyItem = HistoryItem.fromJson(element.data);
+      historySnapshots.docs.forEach((element) async {
+        HistoryItem historyItem = HistoryItem.fromJson(element.data());
         await database.insert('history', {
-          'id': element.documentID,
+          'id': element.id,
           'timestamp': historyItem.timestamp.millisecondsSinceEpoch,
           'amount': historyItem.order.amount,
           'pair': historyItem.order.pair,
@@ -186,10 +186,10 @@ class User {
     if (db_query.length > 0) {
       Timestamp last_loaded_timestamp = Timestamp.fromMillisecondsSinceEpoch(db_query.first['timestamp']);
       if (last_loaded_timestamp.toDate().isBefore(DateTime.now().add(Duration(hours: -24)))) {
-        addSnapshotToSQLDB(await firestoreHistoryQuery.where('timestamp', isGreaterThan: last_loaded_timestamp).getDocuments());
+        addSnapshotToSQLDB(await firestoreHistoryQuery.where('timestamp', isGreaterThan: last_loaded_timestamp).get());
       }
     } else {
-      addSnapshotToSQLDB(await firestoreHistoryQuery.getDocuments());
+      addSnapshotToSQLDB(await firestoreHistoryQuery.get());
     }
 
     List<Map<String, dynamic>> rawQuery = await database.rawQuery('SELECT * FROM History WHERE timestamp>= ${DateTime.now().add(Duration(days: -daysToConsider)).millisecondsSinceEpoch}');
@@ -216,7 +216,7 @@ class User {
     this.onUserDataUpdate(this);
     Firestore.instance
         .collection("users")
-        .document(firebaseUser.uid)
+        .doc(firebaseUser.uid)
         .collection("history")
         .orderBy("timestamp", descending: false)
         .where(
