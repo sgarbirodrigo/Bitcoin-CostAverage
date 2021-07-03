@@ -94,7 +94,7 @@ class _ChartWidgetState extends State<ChartWidget> {
               Padding(
                 padding: EdgeInsets.only(top: 32),
                 child: Text(
-                  "Money Distribution",
+                  "Investment Distribution",
                   style: TextStyle(fontSize: 36, fontWeight: FontWeight.w600),
                 ),
               ),
@@ -399,8 +399,8 @@ class _ChartWidgetState extends State<ChartWidget> {
                             // widget.settings.base_pair_color = colorsList[0];
                           },
                           child: AnimatedContainer(
-                              width: 128,
-                              // padding: EdgeInsets.symmetric(horizontal: 12),
+                              width: 150,
+                              //padding: EdgeInsets.symmetric(horizontal: 16),
                               decoration: BoxDecoration(
                                 //color: Color(0xffF7F8F9),
                                 color: coins[index] ==

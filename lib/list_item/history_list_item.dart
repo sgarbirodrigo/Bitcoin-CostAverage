@@ -61,13 +61,13 @@ class _HistoryItemListState extends State<HistoryItemList> {
                                   "Bought: ${returnCurrencyCorrectedNumber(widget.historyItem.response.symbol.split("/")[0], widget.historyItem.response.filled)}",
                                   style: TextStyle(
                                       //color: Colors.black.withOpacity(0.6),
-                                      fontSize: 16,
+                                      fontSize: 14,
                                       fontWeight: FontWeight.w400)),
                               Text(
                                   "Price: ${returnCurrencyCorrectedNumber(widget.historyItem.response.symbol.split("/")[1], widget.historyItem.response.average)}",
                                   style: TextStyle(
                                       //color: Colors.black.withOpacity(0.6),
-                                      fontSize: 16,
+                                      fontSize: 14,
                                       fontWeight: FontWeight.w400)),
                               Text(
                                   'Fee: ${returnCurrencyCorrectedNumber(widget.historyItem.response.fee.currency, widget.historyItem.response.fee.cost)}',

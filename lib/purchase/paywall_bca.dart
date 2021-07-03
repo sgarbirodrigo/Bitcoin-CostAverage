@@ -231,6 +231,7 @@ class _PaywallMyState extends State<PaywallMy> {
       //height: 72,
       padding: EdgeInsets.only(top: 8, bottom: 16, left: 16, right: 16),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
             Icons.pages,

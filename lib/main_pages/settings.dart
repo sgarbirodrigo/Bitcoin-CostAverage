@@ -57,7 +57,7 @@ class _SettingsPageState extends State<SettingsPage> {
     },
     child: SingleChildScrollView(
       child: Container(
-        height: 680,
+        //height: 680,
         padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         child: Form(
           key: _formKey,
@@ -65,8 +65,9 @@ class _SettingsPageState extends State<SettingsPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                height: 200,
-                width: 200,
+                margin: EdgeInsets.only(bottom: 8),
+                height:MediaQuery.of(context).size.width*0.7,
+                width: MediaQuery.of(context).size.width*0.7,
                 //padding: EdgeInsets.only(bottom: ),
                 child: _readingQRCode
                     ? QRViewExample((Barcode barcode) {
@@ -192,9 +193,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       'https://www.binance.com/en/my/settings/api-management');
                 },
               ),
-              Expanded(
-                child: Container(),
-              ),
+              Container(height: 8,),
               ElevatedButton(
                 child: Container(
                   /*padding:
@@ -202,7 +201,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   child: _selectedStatus == 0
                       ? Padding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 32, vertical: 24),
+                              horizontal: 8, vertical: 8),
                           child: Text(
                             "SAVE",
                             style: TextStyle(fontSize: 18),
@@ -214,24 +213,21 @@ class _SettingsPageState extends State<SettingsPage> {
                               children: [
                                 Padding(
                                   padding: EdgeInsets.only(
-                                      left: 32, bottom: 24, top: 24, right: 24),
+                                      left: 8, bottom: 8, top: 8, right: 8),
                                   child: Text(
                                     "SAVING",
                                     style: TextStyle(fontSize: 18),
                                   ),
                                 ),
                                 Container(
-                                  height: 32,
-                                  width: 32,
+                                  height: 16,
+                                  width: 16,
                                   child: CircularProgressIndicator(
-                                    strokeWidth: 4,
+                                    strokeWidth: 1,
                                     valueColor: AlwaysStoppedAnimation<Color>(
                                         Colors.grey),
                                   ),
                                 ),
-                                Container(
-                                  width: 16,
-                                )
                               ],
                             )
                           : Row(
@@ -239,13 +235,13 @@ class _SettingsPageState extends State<SettingsPage> {
                               children: [
                                 Padding(
                                   padding: EdgeInsets.only(
-                                      left: 32, bottom: 24, top: 24, right: 16),
+                                      left:8, bottom:8, top: 8, right: 4),
                                   child: Text("SAVED",
                                       style: TextStyle(fontSize: 18)),
                                 ),
                                 Container(
                                   height: 32,
-                                  width: 32,
+                                  width: 16,
                                   child: Icon(
                                     Icons.check,
                                     color: Colors.grey,

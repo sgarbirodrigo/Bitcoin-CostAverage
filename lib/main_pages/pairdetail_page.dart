@@ -104,14 +104,14 @@ class _PairDetailPageState extends State<PairDetailPage> {
                         Text(
                           "${widget.orderItem.pair}",
                           style: TextStyle(
-                              fontSize: 24,
+                              fontSize: 22,
                               color: Colors.white,
                               fontFamily: 'Arial Rounded MT Bold'),
                         ),
                         Text(
                           "${returnCurrencyCorrectedNumber(widget.orderItem.pair.split("/")[1], widget.settings.binanceTicker[widget.orderItem.pair.replaceAll("/", "")])}",
                           style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 18,
                               color: Colors.white,
                               fontFamily: 'Arial',
                               fontWeight: FontWeight.w100),
@@ -127,7 +127,7 @@ class _PairDetailPageState extends State<PairDetailPage> {
                         Text(
                           getAppreciationConverted(appreciation),
                           style: TextStyle(
-                              fontSize: 24,
+                              fontSize: 22,
                               color: Colors.white,
                               fontFamily: 'Arial Rounded MT Bold'),
                         ),
@@ -136,7 +136,7 @@ class _PairDetailPageState extends State<PairDetailPage> {
                               ? "(${returnCurrencyCorrectedNumber(widget.orderItem.pair.split("/")[1], (widget.settings.binanceTicker[widget.orderItem.pair.replaceAll("/", "")] * pairData.coinAccumulated) - pairData.totalExpended)})"
                               : "...",
                           style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 18,
                               color: Colors.white,
                               fontFamily: 'Arial',
                               fontWeight: FontWeight.w100),
@@ -446,6 +446,7 @@ class _PairDetailPageState extends State<PairDetailPage> {
                           );
                         })
                     : Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
                         decoration: BoxDecoration(
                             border: Border(
                           bottom: BorderSide(
@@ -455,7 +456,7 @@ class _PairDetailPageState extends State<PairDetailPage> {
                         )),
                         child: Center(
                           child: Text(
-                            "You have no acquisitions on the selected period.",
+                            "You have no acquisitions on the selected period.",textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 18),
                           ),
                         )),
