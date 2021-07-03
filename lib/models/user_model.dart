@@ -45,7 +45,7 @@ class UserData {
     }
     uid = jsonx['uid'];
     orders = new Map();
-    if(jsonx['orders']!=null) {
+    if (jsonx['orders'] != null) {
       (jsonx['orders'] as Map).forEach((key, value) {
         orders[key] = OrderItem.fromJson(Map<String, dynamic>.from(value));
       });
@@ -93,12 +93,9 @@ class PairData {
       totalExpended += historyItem.response.filled * historyItem.response.price;
       avgPrice = totalExpended / coinAccumulated;
       //avgPrice =null;
-      price_spots.add(FlSpot((historyItem.timestamp.seconds).toDouble(),
-          historyItem.response.price));
-      avg_price_spots
-          .add(FlSpot((historyItem.timestamp.seconds).toDouble(), avgPrice));
-      percentage_variation =
-          getValueVariation(historyItem.response.price, avgPrice);
+      price_spots.add(FlSpot((historyItem.timestamp.seconds).toDouble(), historyItem.response.price));
+      avg_price_spots.add(FlSpot((historyItem.timestamp.seconds).toDouble(), avgPrice));
+      percentage_variation = getValueVariation(historyItem.response.price, avgPrice);
       isLoaded = true;
     } else {
       isLoaded = false;
@@ -141,6 +138,7 @@ class User {
         break;
     }
   }
+
   void updateUser() {
     FirestoreDB.getUserData(this.firebaseUser.uid).then((UserData userdata) {
       this.userData = userdata;
@@ -156,30 +154,21 @@ class User {
   void forceUpdateHistoryData(int daysToConsider) async {
     int dbVersion = 8;
     final path = join(await getDatabasesPath(), 'bca_v$dbVersion.db');
-    Database database = await openDatabase(path, version: dbVersion,
-        onCreate: (Database db, int version) async {
-      await db.execute(
-          'CREATE TABLE History (id TEXT PRIMARY KEY,timestamp INTEGER, amount REAL, pair TEXT,result TEXT,rawFirestore TEXT)');
+    Database database = await openDatabase(path, version: dbVersion, onCreate: (Database db, int version) async {
+      await db.execute('CREATE TABLE History (id TEXT PRIMARY KEY,timestamp INTEGER, amount REAL, pair TEXT,result TEXT,rawFirestore TEXT)');
     });
     FirebaseAuth.instance.onAuthStateChanged.listen((firebaseUser) async {
-      if(firebaseUser==null){
-        Database database = await openDatabase(path, version: dbVersion,
-            onCreate: (Database db, int version) async {
-              await db.execute(
-                  'CREATE TABLE History (id TEXT PRIMARY KEY,timestamp INTEGER, amount REAL, pair TEXT,result TEXT,rawFirestore TEXT)');
-            });
+      if (firebaseUser == null) {
+        Database database = await openDatabase(path, version: dbVersion, onCreate: (Database db, int version) async {
+          await db.execute('CREATE TABLE History (id TEXT PRIMARY KEY,timestamp INTEGER, amount REAL, pair TEXT,result TEXT,rawFirestore TEXT)');
+        });
         //database.close();
         database.rawDelete("DELETE FROM History");
       }
     });
-    List<Map<String, dynamic>> db_query = await database
-        .rawQuery('SELECT * FROM History ORDER BY timestamp DESC');
+    List<Map<String, dynamic>> db_query = await database.rawQuery('SELECT * FROM History ORDER BY timestamp DESC');
 
-    Query firestoreHistoryQuery = Firestore.instance
-        .collection("users")
-        .document(firebaseUser.uid)
-        .collection("history")
-        .orderBy("timestamp", descending: false);
+    Query firestoreHistoryQuery = Firestore.instance.collection("users").document(firebaseUser.uid).collection("history").orderBy("timestamp", descending: false);
     void addSnapshotToSQLDB(QuerySnapshot historySnapshots) async {
       historySnapshots.documents.forEach((element) async {
         HistoryItem historyItem = HistoryItem.fromJson(element.data);
@@ -195,33 +184,24 @@ class User {
     }
 
     if (db_query.length > 0) {
-      Timestamp last_loaded_timestamp =
-          Timestamp.fromMillisecondsSinceEpoch(db_query.first['timestamp']);
-      if (last_loaded_timestamp
-          .toDate()
-          .isBefore(DateTime.now().add(Duration(hours: -24)))) {
-        addSnapshotToSQLDB(await firestoreHistoryQuery
-            .where('timestamp', isGreaterThan: last_loaded_timestamp)
-            .getDocuments());
+      Timestamp last_loaded_timestamp = Timestamp.fromMillisecondsSinceEpoch(db_query.first['timestamp']);
+      if (last_loaded_timestamp.toDate().isBefore(DateTime.now().add(Duration(hours: -24)))) {
+        addSnapshotToSQLDB(await firestoreHistoryQuery.where('timestamp', isGreaterThan: last_loaded_timestamp).getDocuments());
       }
     } else {
       addSnapshotToSQLDB(await firestoreHistoryQuery.getDocuments());
     }
 
-    List<Map<String, dynamic>> rawQuery = await database.rawQuery(
-        'SELECT * FROM History WHERE timestamp>= ${DateTime.now().add(Duration(days: -daysToConsider)).millisecondsSinceEpoch}');
+    List<Map<String, dynamic>> rawQuery = await database.rawQuery('SELECT * FROM History WHERE timestamp>= ${DateTime.now().add(Duration(days: -daysToConsider)).millisecondsSinceEpoch}');
     historyItems.clear();
     pairDataItems.clear();
     rawQuery.forEach((element) {
-      HistoryItem historyItem =
-          HistoryItem.fromJson(json.decode(element['rawFirestore']));
+      HistoryItem historyItem = HistoryItem.fromJson(json.decode(element['rawFirestore']));
       historyItems.add(historyItem);
       if (pairDataItems[historyItem.order.pair] == null) {
-        pairDataItems[historyItem.order.pair] =
-            PairData().addHistoryItem(historyItem);
+        pairDataItems[historyItem.order.pair] = PairData().addHistoryItem(historyItem);
       } else {
-        pairDataItems[historyItem.order.pair] =
-            pairDataItems[historyItem.order.pair].addHistoryItem(historyItem);
+        pairDataItems[historyItem.order.pair] = pairDataItems[historyItem.order.pair].addHistoryItem(historyItem);
       }
     });
 
@@ -273,7 +253,6 @@ class User {
 */
 
   void _calculateUserStats() {
-
     //reset all data before reload
     userTotalBuyingAmount.keys.forEach((key) {
       userTotalBuyingAmount[key] = 0;
@@ -316,17 +295,29 @@ class User {
             userTotalBuyingAmount[element.pair] = amount * multiplier;
           }
           if (userTotalExpendingAmount[element.pair.split("/")[1]] != null) {
-            userTotalExpendingAmount[element.pair.split("/")[1]] +=
-                double.parse((amount * multiplier).toStringAsFixed(6));
+            userTotalExpendingAmount[element.pair.split("/")[1]] += double.parse((amount * multiplier).toStringAsFixed(6));
           } else {
-            userTotalExpendingAmount[element.pair.split("/")[1]] =
-                double.parse((amount * multiplier).toStringAsFixed(6));
+            userTotalExpendingAmount[element.pair.split("/")[1]] = double.parse((amount * multiplier).toStringAsFixed(6));
           }
           //print("totalbuying: ${userTotalBuyingAmount}");
         }
       });
     }
-    //print("3: $userTotalBuyingAmount");
-    //print("4: $userTotalExpendingAmount");
+
+    userTotalBuyingAmount = deleteEmptyMapItemList(userTotalBuyingAmount);
+    userTotalExpendingAmount = deleteEmptyMapItemList(userTotalExpendingAmount);
+  }
+
+  Map<String, double> deleteEmptyMapItemList(Map<String, double> list) {
+    List<String> deleteKeyList = List();
+    list.forEach((key, value) {
+      if (value == 0) {
+        deleteKeyList.add(key);
+      }
+    });
+    deleteKeyList.forEach((key) {
+      list.remove(key);
+    });
+    return list;
   }
 }

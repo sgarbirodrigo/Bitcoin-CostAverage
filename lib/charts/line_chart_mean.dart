@@ -135,49 +135,8 @@ class PriceAVGChartLineState extends State<PriceAVGChartLine> {
         LineChartData(
           lineTouchData: LineTouchData(
             enabled: false,
-            touchTooltipData: LineTouchTooltipData(
-                fitInsideHorizontally: true,
-                fitInsideVertically: true,
-                showOnTopOfTheChartBoxArea: true,
-                tooltipBgColor: Colors.grey,
-                getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
-                  DateTime date = Timestamp.fromMillisecondsSinceEpoch(
-                          touchedBarSpots[0].x.toInt() * 1000)
-                      .toDate();
-                  String dateString = DateFormat('MMM d').format(date);
-
-                  //print("${touchedBarSpots[0].barIndex} - ${touchedBarSpots[0].y}");
-                  //int index = touchedBarSpots[0].barIndex;
-                  LineTooltipItem _priceTooltip = LineTooltipItem(
-                      "${dateString}\n",
-                      TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      children: [
-                        TextSpan(
-                          text:
-                              '${"Price: "}  ${returnCurrencyCorrectedNumber(_pairData.pair.split("/")[1], touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 0 : 1].y)}',
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ]);
-
-                  LineTooltipItem _avgTooltip = LineTooltipItem(
-                    "AVG:  ${returnCurrencyCorrectedNumber(_pairData.pair.split("/")[1], touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 1 : 0].y)}",
-                    TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  );
-
-                  return [_priceTooltip, _avgTooltip];
-                }),
-            //touchCallback: (LineTouchResponse touchResponse) {},
-            //handleBuiltInTouches: true,
+            touchTooltipData: null,
+            handleBuiltInTouches: false,
           ),
           clipData: FlClipData.vertical(),
           gridData: FlGridData(
