@@ -1,4 +1,3 @@
-
 import 'package:Bit.Me/models/settings_model.dart';
 import 'package:Bit.Me/tools.dart';
 import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
@@ -119,7 +118,8 @@ class _ChartWidgetState extends State<ChartWidget> {
                     Text(
                       _multiplierOptionsTitles[_multiplierIndex],
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontFamily: 'Arial', fontSize: 20, color: Colors.black.withOpacity(0.7)),
+                      style: TextStyle(
+                          fontFamily: 'Arial', fontSize: 20, color: Colors.black.withOpacity(0.7)),
                     ),
                     IconButton(
                         icon: Icon(
@@ -141,7 +141,9 @@ class _ChartWidgetState extends State<ChartWidget> {
               Container(
                 height: MediaQuery.of(context).size.width * 0.7,
                 child: Stack(
-                    children: data!=null && data.length > 0 && widget.user.userTotalBuyingAmount.length>0
+                    children: data != null &&
+                            data.length > 0 &&
+                            widget.user.userTotalBuyingAmount.length > 0
                         ? [
                             Center(
                               child: PieChart(
@@ -150,9 +152,13 @@ class _ChartWidgetState extends State<ChartWidget> {
                                       touchCallback: (pieTouchResponse) {
                                         setState(
                                           () {
-                                            final desiredTouch = pieTouchResponse.touchInput is! PointerExitEvent && pieTouchResponse.touchInput is! PointerUpEvent;
-                                            if (desiredTouch && pieTouchResponse.touchedSection != null) {
-                                              touchedIndex = pieTouchResponse.touchedSection.touchedSectionIndex;
+                                            final desiredTouch =
+                                                pieTouchResponse.touchInput is! PointerExitEvent &&
+                                                    pieTouchResponse.touchInput is! PointerUpEvent;
+                                            if (desiredTouch &&
+                                                pieTouchResponse.touchedSection != null) {
+                                              touchedIndex = pieTouchResponse
+                                                  .touchedSection.touchedSectionIndex;
                                             } else {
                                               touchedIndex = -1;
                                             }
@@ -179,7 +185,10 @@ class _ChartWidgetState extends State<ChartWidget> {
                                         title: "${(data[i].percentage * 100).toStringAsFixed(0)}%",
                                         radius: radius,
                                         //showTitle: false,
-                                        titleStyle: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w400, color: const Color(0xffffffff)),
+                                        titleStyle: TextStyle(
+                                            fontSize: fontSize,
+                                            fontWeight: FontWeight.w400,
+                                            color: const Color(0xffffffff)),
                                       );
                                     })),
 
@@ -192,7 +201,12 @@ class _ChartWidgetState extends State<ChartWidget> {
                                 width: 169,
                                 height: 169,
                                 decoration: BoxDecoration(
-                                    boxShadow: <BoxShadow>[BoxShadow(color: Colors.black.withOpacity(0.6), blurRadius: 16.0, offset: Offset(0.0, 0.0))],
+                                    boxShadow: <BoxShadow>[
+                                      BoxShadow(
+                                          color: Colors.black.withOpacity(0.6),
+                                          blurRadius: 16.0,
+                                          offset: Offset(0.0, 0.0))
+                                    ],
                                     color: Colors.white,
                                     borderRadius: BorderRadius.all(Radius.circular(128))),
                                 child: Center(
@@ -203,14 +217,21 @@ class _ChartWidgetState extends State<ChartWidget> {
                                     Text(
                                       "Trading",
                                       textAlign: TextAlign.center,
-                                      style: TextStyle(fontFamily: 'Arial', fontSize: 24, color: Colors.black.withOpacity(0.7)),
+                                      style: TextStyle(
+                                          fontFamily: 'Arial',
+                                          fontSize: 24,
+                                          color: Colors.black.withOpacity(0.7)),
                                     ),
                                     FittedBox(
                                       fit: BoxFit.fitWidth,
                                       child: Text(
                                         "${returnCurrencyCorrectedNumber(widget.settings.getBaseCoin(), widget.user.userTotalExpendingAmount[widget.settings.getBaseCoin()] != null ? (widget.user.userTotalExpendingAmount[widget.settings.getBaseCoin()] * _multiplier) : 0.0)}",
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(fontFamily: 'Arial', fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+                                        style: TextStyle(
+                                            fontFamily: 'Arial',
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black),
                                       ),
                                     ),
                                   ],
@@ -230,19 +251,24 @@ class _ChartWidgetState extends State<ChartWidget> {
                                 child: Center(
                                     child: Image.asset(
                                   'assets/images/pie-chart-2.png',
-                                  color: Colors.grey.withOpacity(0.1),
+                                  color: Colors.grey.withOpacity(0.05),
                                 )),
                               ),
                             )
                           ]),
               ),
               AnimatedContainer(
-                height: data != null ? ((data.length / 2).ceil().toDouble() * legendHeight) + 16 : 0,
+                height:
+                    data != null ? ((data.length / 2).ceil().toDouble() * legendHeight) + 16 : 0,
                 duration: Duration(milliseconds: 250),
                 child: GridView.builder(
                   physics: NeverScrollableScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, crossAxisSpacing: 0, mainAxisSpacing: 0, childAspectRatio: ((MediaQuery.of(context).size.width - 32) / 2) / legendHeight),
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 0,
+                      mainAxisSpacing: 0,
+                      childAspectRatio:
+                          ((MediaQuery.of(context).size.width - 32) / 2) / legendHeight),
                   // padding: EdgeInsets.all(8),
                   //shrinkWrap: true,
                   itemCount: data != null ? data.length : 0,
@@ -290,16 +316,20 @@ class _ChartWidgetState extends State<ChartWidget> {
                                   softWrap: true,
                                   text: TextSpan(
                                     text: '',
-                                    style: TextStyle(color: Colors.black.withOpacity(0.4), fontSize: 11),
+                                    style: TextStyle(
+                                        color: Colors.black.withOpacity(0.4), fontSize: 11),
                                     children: <TextSpan>[
                                       TextSpan(
-                                        text: '${returnCurrencyCorrectedNumber(data[index].pair.split("/")[1], data[index].amount * _multiplier)}',
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                                        text:
+                                            '${returnCurrencyCorrectedNumber(data[index].pair.split("/")[1], data[index].amount * _multiplier)}',
+                                        style: TextStyle(
+                                            color: Colors.black, fontWeight: FontWeight.bold),
                                       ),
                                       TextSpan(text: ' for '),
                                       TextSpan(
                                         text: '${data[index].pair.toString().split("/")[0]}',
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                                        style: TextStyle(
+                                            color: Colors.black, fontWeight: FontWeight.bold),
                                       ),
                                       TextSpan(text: ''),
                                     ],
@@ -342,7 +372,9 @@ class _ChartWidgetState extends State<ChartWidget> {
                       return GestureDetector(
                           onTap: () {
                             //widget.settings.updateBaseCoin(coins[index]);
-                            String initial = widget.user.userTotalBuyingAmount.keys.where((element) => element.contains("/${coins[index]}")).first;
+                            String initial = widget.user.userTotalBuyingAmount.keys
+                                .where((element) => element.contains("/${coins[index]}"))
+                                .first;
                             print("pair: ${initial}");
                             widget.settings.updateBasePair(initial);
                             // widget.settings.base_pair_color = colorsList[0];
@@ -352,16 +384,22 @@ class _ChartWidgetState extends State<ChartWidget> {
                               //padding: EdgeInsets.symmetric(horizontal: 16),
                               decoration: BoxDecoration(
                                 //color: Color(0xffF7F8F9),
-                                color: coins[index] == widget.settings.getBaseCoin() ? Colors.deepPurple.shade50 : Color(0xffF7F8F9),
+                                color: coins[index] == widget.settings.getBaseCoin()
+                                    ? Colors.deepPurple.shade50
+                                    : Color(0xffF7F8F9),
                                 border: coins[index] == widget.settings.getBaseCoin()
                                     ? Border(
                                         top: BorderSide(color: Colors.deepPurple, width: 4),
-                                        right: BorderSide(color: Colors.black.withOpacity(0.3), width: 0.5),
-                                        left: BorderSide(color: Colors.black.withOpacity(0.3), width: 0.5))
+                                        right: BorderSide(
+                                            color: Colors.black.withOpacity(0.3), width: 0.5),
+                                        left: BorderSide(
+                                            color: Colors.black.withOpacity(0.3), width: 0.5))
                                     : Border(
                                         top: BorderSide(color: Colors.deepPurple, width: 0.5),
-                                        right: BorderSide(color: Colors.black.withOpacity(0.3), width: 0.5),
-                                        left: BorderSide(color: Colors.black.withOpacity(0.3), width: 0.5)),
+                                        right: BorderSide(
+                                            color: Colors.black.withOpacity(0.3), width: 0.5),
+                                        left: BorderSide(
+                                            color: Colors.black.withOpacity(0.3), width: 0.5)),
                               ),
                               duration: Duration(milliseconds: 250),
                               child: Column(
@@ -369,10 +407,12 @@ class _ChartWidgetState extends State<ChartWidget> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Padding(
-                                    padding: EdgeInsets.only(top: coins[index] == widget.settings.getBaseCoin() ? 4 : 8),
+                                    padding: EdgeInsets.only(
+                                        top: coins[index] == widget.settings.getBaseCoin() ? 4 : 8),
                                     child: Text(
                                       "${returnCurrencyName(coins[index])}",
-                                      style: TextStyle(fontFamily: 'Arial', fontSize: 24, color: Colors.black),
+                                      style: TextStyle(
+                                          fontFamily: 'Arial', fontSize: 24, color: Colors.black),
                                     ),
                                   ),
                                   Container(
@@ -385,8 +425,11 @@ class _ChartWidgetState extends State<ChartWidget> {
                                         fontWeight: FontWeight.w400),
                                   ),*/
                                   Text(
-                                    widget.user.balance != null ? "${returnCurrencyCorrectedNumber(coins[index], widget.user.balance.balancesMapped[coins[index]])}" : "...",
-                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400),
+                                    widget.user.balance != null
+                                        ? "${returnCurrencyCorrectedNumber(coins[index], widget.user.balance.balancesMapped[coins[index]])}"
+                                        : "...",
+                                    style:
+                                        TextStyle(color: Colors.black, fontWeight: FontWeight.w400),
                                   ),
                                   Container(
                                     height: 4,
@@ -428,15 +471,14 @@ class _ChartWidgetState extends State<ChartWidget> {
             percentage = amount / price;
           }
           //print(percentage/total);
-          if(amount>=0){
+          if (amount >= 0) {
             data.add(MyChartSectionData(pair, percentage / total, amount));
           }
-
         }
       });
       return data;
     } catch (e) {
-      print("Error: ${e}");
+      //print("Error: ${e}");
       return null;
     }
   }

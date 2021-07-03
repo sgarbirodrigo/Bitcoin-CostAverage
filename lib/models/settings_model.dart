@@ -1,4 +1,7 @@
 import 'package:Bit.Me/charts/line_chart_mean.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../external/binance_api.dart';
 
@@ -15,15 +18,17 @@ class SettingsApp {
     scaleLineChart = ScaleLineChart.WEEK1;
     SharedPreferences.getInstance().then((value) {
       preferences = value;
-      this.base_pair =
-          preferences.getString(_base_pair_preference) ?? 'BTC/USDT';
+      this.base_pair = preferences.getString(_base_pair_preference) ?? 'BTC/USDT';
       this.scaleLineChart = _getScale();
       this._updateWidgets(this);
     });
   }
- void forceUpdate(){
+
+
+  void forceUpdate() {
     this._updateWidgets(this);
- }
+  }
+
   void updateBinancePrice() async {
     this.binanceTicker = await fetchBinancePairData();
     this._updateWidgets(this);

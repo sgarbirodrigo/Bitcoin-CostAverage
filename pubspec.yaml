@@ -48,6 +48,7 @@ dependencies:
   introduction_screen: ^2.1.0
   shared_preferences: ^0.4.2
   carousel_slider: ^4.0.0
+  package_info: ^2.0.2
 
   flutter_localizations: # Add this line
     sdk: flutter         # Add this line

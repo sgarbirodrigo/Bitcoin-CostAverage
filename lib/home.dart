@@ -54,7 +54,7 @@ class _HomeState extends State<Home> {
   void initState() {
     this.settings = SettingsApp((settings) {
       this.settings = settings;
-      print("setting-scale: ${this.settings.scaleLineChart}");
+      //print("setting-scale: ${this.settings.scaleLineChart}");
       switch (this.settings.scaleLineChart) {
         case ScaleLineChart.WEEK1:
           //this.settings.updateScaleLineChart(ScaleLineChart.WEEK1);
@@ -97,11 +97,11 @@ class _HomeState extends State<Home> {
   Future<void> validateSubscription() async {
     await Purchases.setup(apiKey, appUserId: this.user.firebaseUser.uid, observerMode: false);
     this.purchaserInfo = await Purchases.getPurchaserInfo();
-    print("0 purchaserInfo: ${purchaserInfo.activeSubscriptions}");
+    print("Purchaser Info: ${purchaserInfo.activeSubscriptions}");
     Purchases.addPurchaserInfoUpdateListener((purchaserInfo) async {
-      print("app userID: ${await Purchases.appUserID}");
+      print("App userID: ${await Purchases.appUserID}");
       this.purchaserInfo = await Purchases.getPurchaserInfo();
-      print("purchaserInfo: ${purchaserInfo.activeSubscriptions}");
+      print("Updated Purchaser Info: ${purchaserInfo.activeSubscriptions}");
       //this.user.updateUser();
       if (mounted) setState(() {});
       /* (purchaserInfo.entitlements.all[entitlementID] != null &&
@@ -114,18 +114,19 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     //print("userdata: ${user.userData}");
-    if (user.userData != null) {
+    if (user.userData != null && purchaserInfo!=null) {
       if (user.userData.hasIntroduced) {
         if (purchaserInfo.activeSubscriptions.length > 0) {
           //print("subs: ${purchaserInfo.activeSubscriptions.length}");
           if (user.userData.hasConnected) {
             return Scaffold(
               key: _scaffoldKey,
-              floatingActionButton: FloatingActionButton(
+              /*floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  FirebaseCrashlytics.instance.crash();
+                //Test functions
+                 // FirebaseCrashlytics.instance.crash();
                 },
-              ),
+              ),*/
               appBar: AppBarBitMe(
                 title: title,
                 scaffoldKey: _scaffoldKey,
