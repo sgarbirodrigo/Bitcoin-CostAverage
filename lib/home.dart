@@ -1,4 +1,5 @@
 import 'package:Bit.Me/bkp/CreateOrderDialog.dart';
+import 'package:Bit.Me/charts/line_chart_mean.dart';
 import 'package:Bit.Me/contants.dart';
 import 'package:Bit.Me/external/binance_api.dart';
 import 'package:Bit.Me/main_pages/dashboard.dart';
@@ -43,6 +44,7 @@ enum Section { LOGIN, DASHBOARD, ORDERS, HISTORY, SETTINGS }
 class _HomeState extends State<Home> {
   Settings settings;
   PageController _myPage;
+
   //Section section;
   User user;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -52,12 +54,33 @@ class _HomeState extends State<Home> {
   Widget body;
   String title = "Bitcoin-Cost Average";
 
-  /*
-  final _ordersKey = new GlobalKey<ScaffoldState>();*/
   @override
   void initState() {
     this.settings = Settings((settings) {
       this.settings = settings;
+      print("setting-scale: ${this.settings.scaleLineChart}");
+      switch (this.settings.scaleLineChart) {
+        case ScaleLineChart.WEEK1:
+          //this.settings.updateScaleLineChart(ScaleLineChart.WEEK1);
+          this.user.forceUpdateHistoryData(14);
+          break;
+        case ScaleLineChart.WEEK2:
+          //this.settings.updateScaleLineChart(ScaleLineChart.MONTH1);
+          this.user.forceUpdateHistoryData(30);
+          break;
+        case ScaleLineChart.MONTH1:
+          //this.settings.updateScaleLineChart(ScaleLineChart.MONTH6);
+          this.user.forceUpdateHistoryData(180);
+          break;
+        case ScaleLineChart.MONTH6:
+          //this.settings.updateScaleLineChart(ScaleLineChart.YEAR1);
+          this.user.forceUpdateHistoryData(365);
+          break;
+        case ScaleLineChart.YEAR1:
+          //this.settings.updateScaleLineChart(ScaleLineChart.WEEK1);
+          this.user.forceUpdateHistoryData(7);
+          break;
+      }
       if (mounted) setState(() {});
     });
     this.settings.updateBinancePrice();
@@ -66,15 +89,14 @@ class _HomeState extends State<Home> {
       if (this.settings.base_pair == null &&
           this.user.userData != null &&
           this.user.userData.orders.length > 0) {
-        settings
+        this
+            .settings
             .updateBasePair(this.user.userTotalBuyingAmount.keys.toList()[0]);
       }
       if (mounted) setState(() {});
     });
     _myPage = PageController(initialPage: 0);
-    //section = Section.DASHBOARD;
     validateSubscription();
-
     super.initState();
   }
 
@@ -105,7 +127,7 @@ class _HomeState extends State<Home> {
       this.purchaserInfo = await Purchases.getPurchaserInfo();
       print("purchaserInfo: ${purchaserInfo.activeSubscriptions}");
       //this.user.updateUser();
-      if(mounted)setState(() {});
+      if (mounted) setState(() {});
       /* (purchaserInfo.entitlements.all[entitlementID] != null &&
               purchaserInfo.entitlements.all[entitlementID].isActive)
           ? entitlementIsActive = true
@@ -138,7 +160,7 @@ class _HomeState extends State<Home> {
                       setState(() {
                         _pageIndex = index;
                       });
-                    }else{
+                    } else {
                       setState(() {
                         _pageIndex = _pageIndex;
                       });
@@ -160,7 +182,8 @@ class _HomeState extends State<Home> {
                             builder: (BuildContext context) {
                               return Dialog(child: CreateEditOrder(this.user));
                             },
-                          );/*
+                          );
+                          /*
                           widget.user.updateUser();
                           await showModalBottomSheet(
                             context: context,

@@ -6,31 +6,33 @@ class Settings {
   Map<String, double> binanceTicker;
   String base_pair;
   ScaleLineChart scaleLineChart;
-  final Function(Settings newSettings) updateWidgets;
+  final Function(Settings newSettings) _updateWidgets;
   SharedPreferences preferences;
   String _base_pair_preference = "base_pair";
   String _scale_line_preference = "scale_line";
 
-  Settings(this.updateWidgets) {
+  Settings(this._updateWidgets) {
     scaleLineChart = ScaleLineChart.WEEK1;
     SharedPreferences.getInstance().then((value) {
       preferences = value;
       this.base_pair =
           preferences.getString(_base_pair_preference) ?? 'BTC/USDT';
       this.scaleLineChart = _getScale();
-      this.updateWidgets(this);
+      this._updateWidgets(this);
     });
   }
-
+ void forceUpdate(){
+    this._updateWidgets(this);
+ }
   void updateBinancePrice() async {
     this.binanceTicker = await fetchBinancePairData();
-    this.updateWidgets(this);
+    this._updateWidgets(this);
   }
 
   void updateScaleLineChart(ScaleLineChart scaleLineChart) {
     this.scaleLineChart = scaleLineChart;
     this._saveScale(scaleLineChart);
-    this.updateWidgets(this);
+    this._updateWidgets(this);
   }
 
   String getBaseCoin() {
@@ -39,7 +41,6 @@ class Settings {
 
   ScaleLineChart _getScale() {
     ScaleLineChart scale = ScaleLineChart.WEEK1;
-    //TODO delete the shared preferences when logout
     switch (this.preferences.getString(_scale_line_preference)) {
       case "WEEK1":
         scale = ScaleLineChart.WEEK1;
@@ -83,6 +84,6 @@ class Settings {
   void updateBasePair(String pair) {
     this.base_pair = pair;
     this.preferences.setString(_base_pair_preference, pair);
-    this.updateWidgets(this);
+    this._updateWidgets(this);
   }
 }

@@ -352,7 +352,7 @@ PODS:
   - PromisesObjC (1.2.12)
   - Purchases (3.11.1):
     - PurchasesCoreSwift (= 3.11.1)
-  - purchases_flutter (3.3.0):
+  - purchases_flutter (3.3.1):
     - Flutter
     - PurchasesHybridCommon (= 1.7.1)
   - PurchasesCoreSwift (3.11.1)
@@ -461,7 +461,7 @@ SPEC CHECKSUMS:
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   Purchases: 6351f9ff6bd514e5ec5aa0f989ea181effa94bf5
-  purchases_flutter: b9bdce2607e0f8a5de0cbb11c3eee54e3104f293
+  purchases_flutter: 9b77e49e2ef40155b7a041d31f3f103c546c73af
   PurchasesCoreSwift: ee857e4c21e6254b09d7e303a756fcf2b9164408
   PurchasesHybridCommon: e3b25475328b58169e811135a3476ed0e5a4243a
   qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
