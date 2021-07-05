@@ -1,4 +1,3 @@
-
 import 'package:Bit.Me/charts/line_chart_mean.dart';
 import 'package:Bit.Me/models/order_model.dart';
 import 'package:Bit.Me/models/settings_model.dart';
@@ -18,7 +17,8 @@ class PairDetailPage extends StatefulWidget {
   User firebaseUser;
   SettingsApp settings;
   SqlDatabase sqlDatabase;
-  PairDetailPage(this.orderItem, this.firebaseUser, this.settings,this.sqlDatabase);
+
+  PairDetailPage(this.orderItem, this.firebaseUser, this.settings, this.sqlDatabase);
 
   @override
   State<StatefulWidget> createState() {
@@ -34,20 +34,17 @@ class _PairDetailPageState extends State<PairDetailPage> {
 
   @override
   void initState() {
-    user = UserManager(widget.sqlDatabase,widget.firebaseUser, widget.settings, (user) async {
+    user = UserManager(widget.sqlDatabase, widget.firebaseUser, widget.settings, (user) async {
       this.user = user;
       pairData = this.user.pairDataItems[widget.orderItem.pair];
       if (pairData != null) {
-        appreciation = (((widget.settings.binanceTicker[
-        pairData.pair.replaceAll("/", "")] *
-            pairData.coinAccumulated) /
-            pairData.totalExpended) -
-            1) *
+        appreciation = (((widget.settings.binanceTicker[pairData.pair.replaceAll("/", "")] *
+                        pairData.coinAccumulated) /
+                    pairData.totalExpended) -
+                1) *
             100;
       }
-      if(mounted)setState(() {
-
-      });
+      if (mounted) setState(() {});
     });
   }
 
@@ -110,41 +107,46 @@ class _PairDetailPageState extends State<PairDetailPage> {
                               color: Colors.white,
                               fontFamily: 'Arial Rounded MT Bold'),
                         ),
-                        Text(
-                          "Price: ${returnCurrencyCorrectedNumber(widget.orderItem.pair.split("/")[1], widget.settings.binanceTicker[widget.orderItem.pair.replaceAll("/", "")])}",
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontFamily: 'Arial',
-                              fontWeight: FontWeight.w100),
-                        )
+                        Tooltip(
+                            message: 'Price',
+                            child: Text(
+                              "${returnCurrencyCorrectedNumber(widget.orderItem.pair.split("/")[1], widget.settings.binanceTicker[widget.orderItem.pair.replaceAll("/", "")])}",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontFamily: 'Arial',
+                                  fontWeight: FontWeight.w100),
+                            ))
                       ],
                     ),
                     Expanded(
                       child: Container(),
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          getAppreciationConverted(appreciation),
-                          style: TextStyle(
-                              fontSize:18,
-                              color: Colors.white,
-                              fontFamily: 'Arial Rounded MT Bold'),
-                        ),
-                        Text(
-                          pairData != null
-                              ? "(${returnCurrencyCorrectedNumber(widget.orderItem.pair.split("/")[1], 0.00000001/*(widget.settings.binanceTicker[widget.orderItem.pair.replaceAll("/", "")] * pairData.coinAccumulated) - pairData.totalExpended*/)})"
-                              : "...",
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontFamily: 'Arial',
-                              fontWeight: FontWeight.w100),
-                        )
-                      ],
-                    ),
+                    Tooltip(
+                      message: 'Profit/Loss',
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            getAppreciationConverted(appreciation),
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                                fontFamily: 'Arial Rounded MT Bold'),
+                          ),
+                          Text(
+                            pairData != null
+                                ? "(${returnCurrencyCorrectedNumber(widget.orderItem.pair.split("/")[1], 0.00000001 /*(widget.settings.binanceTicker[widget.orderItem.pair.replaceAll("/", "")] * pairData.coinAccumulated) - pairData.totalExpended*/)})"
+                                : "...",
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontFamily: 'Arial',
+                                fontWeight: FontWeight.w100),
+                          )
+                        ],
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -170,13 +172,15 @@ class _PairDetailPageState extends State<PairDetailPage> {
                         color: Colors.grey.shade50,
                       ),*/
                         // height: 30,
-                        child: pairData != null && pairData.price_spots.length>0
+                        child: pairData != null && pairData.price_spots.length > 0
                             ? PriceAVGChartLinePair(
                                 user: this.user,
                                 settings: widget.settings,
                                 pairData: pairData,
                                 color: Colors.white)
-                            : Container(height: 200,),
+                            : Container(
+                                height: 200,
+                              ),
                       ),
                       /*Row( mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -200,8 +204,7 @@ class _PairDetailPageState extends State<PairDetailPage> {
                       Card(
                         color: Color(0xff825CC5),
                         elevation: 2,
-                        margin: EdgeInsets.only(
-                            top: 24, left: 8, right: 8, bottom: 8),
+                        margin: EdgeInsets.only(top: 24, left: 8, right: 8, bottom: 8),
                         child: Container(
                           padding: EdgeInsets.only(top: 8, bottom: 8),
                           child: Row(
@@ -304,17 +307,16 @@ class _PairDetailPageState extends State<PairDetailPage> {
                           children: [
                             TextButton(
                                 style: ButtonStyle(
-                                  backgroundColor: ScaleLineChart.WEEK1 ==
-                                          widget.settings.scaleLineChart
-                                      ? MaterialStateProperty.all<Color>(
-                                          Colors.deepPurple.withOpacity(0.2),
-                                        )
-                                      : null,
+                                  backgroundColor:
+                                      ScaleLineChart.WEEK1 == widget.settings.scaleLineChart
+                                          ? MaterialStateProperty.all<Color>(
+                                              Colors.deepPurple.withOpacity(0.2),
+                                            )
+                                          : null,
                                 ),
                                 onPressed: () {
                                   this.setState(() {
-                                    widget.settings.updateScaleLineChart(
-                                        ScaleLineChart.WEEK1);
+                                    widget.settings.updateScaleLineChart(ScaleLineChart.WEEK1);
                                     //interval = (2.0 * (60 * 60 * 24)) - 1;
                                     this.user.forceUpdateHistoryData(7);
                                   });
@@ -322,16 +324,15 @@ class _PairDetailPageState extends State<PairDetailPage> {
                                 child: Text("1W")),
                             TextButton(
                               style: ButtonStyle(
-                                backgroundColor: ScaleLineChart.WEEK2 ==
-                                        widget.settings.scaleLineChart
-                                    ? MaterialStateProperty.all<Color>(
-                                        Colors.deepPurple.withOpacity(0.2))
-                                    : null,
+                                backgroundColor:
+                                    ScaleLineChart.WEEK2 == widget.settings.scaleLineChart
+                                        ? MaterialStateProperty.all<Color>(
+                                            Colors.deepPurple.withOpacity(0.2))
+                                        : null,
                               ),
                               onPressed: () {
                                 this.setState(() {
-                                  widget.settings.updateScaleLineChart(
-                                      ScaleLineChart.WEEK2);
+                                  widget.settings.updateScaleLineChart(ScaleLineChart.WEEK2);
                                   //interval = (4.0 * (60 * 60 * 24)) - 1;
                                   this.user.forceUpdateHistoryData(14);
                                 });
@@ -340,16 +341,15 @@ class _PairDetailPageState extends State<PairDetailPage> {
                             ),
                             TextButton(
                               style: ButtonStyle(
-                                backgroundColor: ScaleLineChart.MONTH1 ==
-                                        widget.settings.scaleLineChart
-                                    ? MaterialStateProperty.all<Color>(
-                                        Colors.deepPurple.withOpacity(0.2))
-                                    : null,
+                                backgroundColor:
+                                    ScaleLineChart.MONTH1 == widget.settings.scaleLineChart
+                                        ? MaterialStateProperty.all<Color>(
+                                            Colors.deepPurple.withOpacity(0.2))
+                                        : null,
                               ),
                               onPressed: () {
                                 this.setState(() {
-                                  widget.settings.updateScaleLineChart(
-                                      ScaleLineChart.MONTH1);
+                                  widget.settings.updateScaleLineChart(ScaleLineChart.MONTH1);
                                   //interval = (8.0 * (60 * 60 * 24)) - 1;
                                   this.user.forceUpdateHistoryData(30);
                                 });
@@ -358,16 +358,15 @@ class _PairDetailPageState extends State<PairDetailPage> {
                             ),
                             TextButton(
                               style: ButtonStyle(
-                                backgroundColor: ScaleLineChart.MONTH6 ==
-                                        widget.settings.scaleLineChart
-                                    ? MaterialStateProperty.all<Color>(
-                                        Colors.deepPurple.withOpacity(0.2))
-                                    : null,
+                                backgroundColor:
+                                    ScaleLineChart.MONTH6 == widget.settings.scaleLineChart
+                                        ? MaterialStateProperty.all<Color>(
+                                            Colors.deepPurple.withOpacity(0.2))
+                                        : null,
                               ),
                               onPressed: () {
                                 this.setState(() {
-                                  widget.settings.updateScaleLineChart(
-                                      ScaleLineChart.MONTH6);
+                                  widget.settings.updateScaleLineChart(ScaleLineChart.MONTH6);
                                   //interval = (28.0 * (60 * 60 * 24)) - 1;
                                   this.user.forceUpdateHistoryData(180);
                                 });
@@ -376,16 +375,15 @@ class _PairDetailPageState extends State<PairDetailPage> {
                             ),
                             TextButton(
                                 style: ButtonStyle(
-                                  backgroundColor: ScaleLineChart.YEAR1 ==
-                                          widget.settings.scaleLineChart
-                                      ? MaterialStateProperty.all<Color>(
-                                          Colors.deepPurple.withOpacity(0.2))
-                                      : null,
+                                  backgroundColor:
+                                      ScaleLineChart.YEAR1 == widget.settings.scaleLineChart
+                                          ? MaterialStateProperty.all<Color>(
+                                              Colors.deepPurple.withOpacity(0.2))
+                                          : null,
                                 ),
                                 onPressed: () {
                                   this.setState(() {
-                                    widget.settings.updateScaleLineChart(
-                                        ScaleLineChart.YEAR1);
+                                    widget.settings.updateScaleLineChart(ScaleLineChart.YEAR1);
                                     //interval = (60.0 * (60 * 60 * 24)) - 1;
                                     this.user.forceUpdateHistoryData(365);
                                   });
@@ -442,13 +440,13 @@ class _PairDetailPageState extends State<PairDetailPage> {
                         itemCount: pairData.historyItems.length,
                         itemBuilder: (context, index) {
                           return HistoryItemList(
-                            historyItem: pairData.historyItems[
-                                pairData.historyItems.length - index - 1],
+                            historyItem:
+                                pairData.historyItems[pairData.historyItems.length - index - 1],
                             userUid: widget.firebaseUser.uid,
                           );
                         })
                     : Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
+                        padding: EdgeInsets.symmetric(horizontal: 16),
                         decoration: BoxDecoration(
                             border: Border(
                           bottom: BorderSide(
@@ -458,7 +456,8 @@ class _PairDetailPageState extends State<PairDetailPage> {
                         )),
                         child: Center(
                           child: Text(
-                            "You have no acquisitions on the selected period.",textAlign: TextAlign.center,
+                            "You have no acquisitions on the selected period.",
+                            textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 18),
                           ),
                         )),

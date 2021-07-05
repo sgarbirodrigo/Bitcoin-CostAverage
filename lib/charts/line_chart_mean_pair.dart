@@ -229,7 +229,7 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                 price_spots!=null?LineChartBarData(
                   spots: price_spots,
                   isCurved: true,
-                  curveSmoothness: 0.3,
+                  curveSmoothness: 0,
                   colors: [
                     widget.color,
                   ],
@@ -262,7 +262,7 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
                 avg_price_spots!=null?LineChartBarData(
                   spots: avg_price_spots,
                   isCurved: true,
-                  curveSmoothness: 0.2,
+                  curveSmoothness: 0.1,
                   dashArray: [8, 8],
                   colors: [
                     widget.color,

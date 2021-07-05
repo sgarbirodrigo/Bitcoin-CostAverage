@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:decimal/decimal.dart';
 import 'package:intl/intl.dart';
 
 String doubleToValueString(double amount, {int decimal = 8}) {
@@ -36,7 +37,9 @@ String returnCurrencyCorrectedNumber(String currencyCode, double value) {
   String currencySymbol = getCurrencySymbolFromCode(currencyCode);
   if (currencyCode == currencySymbol) {
     double valueNoZeros = double.parse(doubleToValueString(value));
-    return "${valueNoZeros} $currencySymbol";
+    //Decimal decimal = Decimal;
+    Decimal convertedNum = Decimal.parse(valueNoZeros.toString());
+    return "$convertedNum $currencySymbol";
   } else {
     return "$currencySymbol ${doubleToValueString(value, decimal: 2)}";
   }

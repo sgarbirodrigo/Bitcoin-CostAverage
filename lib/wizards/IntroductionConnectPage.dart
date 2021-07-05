@@ -49,9 +49,12 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
         privatekey_controller.text = UserData.fromJson(userSnapshot.data()).private_key;
       }
     });
+    _selectedExchange = _exchanges[0];
   }
 
   int index = 0;
+  List<String> _exchanges = ["Binance"];
+  String _selectedExchange;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +69,8 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
     );
     print("index $index");
     return IntroductionScreen(
-      showNextButton: false,globalBackgroundColor: Colors.white,
+      showNextButton: false,
+      globalBackgroundColor: Colors.white,
       showSkipButton: false,
       //freeze: this.index==4,
       showDoneButton: false,
@@ -76,8 +80,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
           activeColor: Colors.deepPurple,
           color: Colors.black26,
           spacing: const EdgeInsets.symmetric(horizontal: 2.0),
-          activeShape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(25.0))),
+          activeShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0))),
       onChange: (index) {
         this.index = index;
       },
@@ -85,10 +88,50 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
       pages: [
         PageViewModel(
           title: "How we work?",
-          body:
-              "We connect to your Binance account and automatically execute your predefined orders daily at 11PM",
+          /*body:
+              "We connect to your Exchange account and automatically execute your predefined orders daily at 11PM",*/
+          bodyWidget: Container(
+            child: Column(
+              children: [
+                Text(
+                  "We connect to your Exchange account and automatically execute your predefined orders daily at 11PM",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 32, right: 32, top: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Select your exchange: ",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Container(
+                        //width: 128,
+                        child: DropdownButton<String>(
+                          value: _selectedExchange,
+                          items: _exchanges.map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (newValue) {
+                            setState(() {
+                              _selectedExchange = newValue;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
           image: _buildImage(
-            'connect.png',
+            'link.png',
           ),
           decoration: pageDecoration,
         ),
@@ -129,8 +172,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                 ? QRViewExample((Barcode barcode) {
                     try {
                       Map<String, dynamic> response = jsonDecode(barcode.code);
-                      if (response["apiKey"] != null &&
-                          response["secretKey"] != null) {
+                      if (response["apiKey"] != null && response["secretKey"] != null) {
                         publickey_controller.text = response["apiKey"];
                         privatekey_controller.text = response["secretKey"];
                         setState(() {
@@ -143,7 +185,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                       //todo add snackbar invalid qrcode
                     }
                   })
-                : Image.asset('assets/images/app_link_binance.png'),
+                : Image.asset('assets/images/link.png'),
           ),
           useScrollView: true,
           bodyWidget: GestureDetector(
@@ -167,7 +209,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               prefixIcon: Icon(Icons.public),
-                              labelText: "Public Key"),
+                              labelText: "Api Key"),
                           onChanged: (value) {},
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -186,7 +228,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               prefixIcon: Icon(Icons.lock_outlined),
-                              labelText: "Private Key"),
+                              labelText: "Secret Key"),
                           onChanged: (value) {},
                           // The validator receives the text that the user has entered.
                           validator: (value) {
@@ -232,8 +274,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                               fontSize: 16),
                         ),
                         onTap: () {
-                          launch(
-                              'https://www.binance.com/en/my/SettingsApp/api-management');
+                          launch('https://www.binance.com/en/my/SettingsApp/api-management');
                         },
                       ),
                       Container(
@@ -245,8 +286,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                           EdgeInsets.symmetric(horizontal: 32, vertical: 24),*/
                           child: _selectedStatus == 0
                               ? Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 8),
+                                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                                   child: Text(
                                     "SAVE",
                                     style: TextStyle(fontSize: 18),
@@ -258,10 +298,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                                       children: [
                                         Padding(
                                           padding: EdgeInsets.only(
-                                              left: 32,
-                                              bottom: 24,
-                                              top: 24,
-                                              right: 24),
+                                              left: 32, bottom: 24, top: 24, right: 24),
                                           child: Text(
                                             "SAVING",
                                             style: TextStyle(fontSize: 18),
@@ -272,9 +309,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                                           width: 32,
                                           child: CircularProgressIndicator(
                                             strokeWidth: 4,
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                                    Colors.grey),
+                                            valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
                                           ),
                                         ),
                                         Container(
@@ -287,12 +322,8 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                                       children: [
                                         Padding(
                                           padding: EdgeInsets.only(
-                                              left: 32,
-                                              bottom: 24,
-                                              top: 24,
-                                              right: 16),
-                                          child: Text("SAVED",
-                                              style: TextStyle(fontSize: 18)),
+                                              left: 32, bottom: 24, top: 24, right: 16),
+                                          child: Text("SAVED", style: TextStyle(fontSize: 18)),
                                         ),
                                         Container(
                                           height: 32,
@@ -310,8 +341,8 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                                     ),
                         ),
                         style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(RoundedRectangleBorder(
+                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(36),
                           /*side:
                                         BorderSide(color: Colors.deepPurple)*/
@@ -325,8 +356,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                                   });
                                   // print("${_selectedStatus}");
                                   if (await areUserKeysNewCorrect(
-                                      privatekey_controller.text,
-                                      publickey_controller.text)) {
+                                      privatekey_controller.text, publickey_controller.text)) {
                                     FirebaseFirestore.instance
                                         .collection("users")
                                         .doc(widget.user.firebaseUser.uid)
@@ -341,9 +371,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                                           _selectedStatus = 2;
                                         });
                                       if (mounted) setState(() {});
-                                      Future.delayed(
-                                          const Duration(milliseconds: 4000),
-                                          () {
+                                      Future.delayed(const Duration(milliseconds: 4000), () {
                                         setState(() {
                                           _selectedStatus = 0;
                                         });
@@ -354,8 +382,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                                     setState(() {
                                       _selectedStatus = 0;
                                     });
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(new SnackBar(
+                                    ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
                                       backgroundColor: Colors.red,
                                       content: Text(
                                         "API keys invalid!",

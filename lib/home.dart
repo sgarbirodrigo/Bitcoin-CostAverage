@@ -122,7 +122,7 @@ class _HomeState extends State<Home> {
         print("1");
         if (entitlementIsActive || this.isFlutterDebugging) {
           print("2");
-          if (user.userData.hasConnected) {
+          if (!user.userData.hasConnected) {
             return Scaffold(
               key: _scaffoldKey,
               /*floatingActionButton: FloatingActionButton(

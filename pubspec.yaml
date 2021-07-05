@@ -49,6 +49,7 @@ dependencies:
   shared_preferences: ^0.4.2
   carousel_slider: ^4.0.0
   package_info: ^2.0.2
+  decimal: ^0.3.0
 
   flutter_localizations: # Add this line
     sdk: flutter         # Add this line

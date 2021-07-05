@@ -36,6 +36,12 @@
       <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/firebase_crashlytics/example/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/firebase_crashlytics/example/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/firebase_crashlytics/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/package_info/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/package_info/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/package_info/build" />
+      <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/package_info/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/package_info/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/package_info/example/build" />
       <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/purchases_flutter/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/purchases_flutter/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/purchases_flutter/build" />
