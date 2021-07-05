@@ -28,6 +28,7 @@ import 'main_pages/orders_Page.dart';
 
 class Home extends StatefulWidget {
   Home({this.title, this.firebaseUser, this.purchaserInfo, this.sql_database});
+
   SqlDatabase sql_database;
   PurchaserInfo purchaserInfo;
   final User firebaseUser;
@@ -83,7 +84,7 @@ class _HomeState extends State<Home> {
       if (mounted) setState(() {});
     });
     this.settings.updateBinancePrice();
-    this.user = UserManager(widget.sql_database,widget.firebaseUser, this.settings, (user) async {
+    this.user = UserManager(widget.sql_database, widget.firebaseUser, this.settings, (user) async {
       this.user = user;
       if (this.settings.base_pair == null &&
           this.user.userData != null &&
@@ -104,8 +105,9 @@ class _HomeState extends State<Home> {
 
     super.initState();
   }
+
   //TODO always check before release
-  bool isFlutterDebugging=true;
+  bool isFlutterDebugging = true;
 
   void _checkSubscription() {
     (widget.purchaserInfo.entitlements.all[entitlementID] != null &&
@@ -117,12 +119,9 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     if (user.userData != null) {
-      print("0");
       if (user.userData.hasIntroduced) {
-        print("1");
-        if (entitlementIsActive || this.isFlutterDebugging) {
-          print("2");
-          if (!user.userData.hasConnected) {
+        if (entitlementIsActive) {
+          if (user.userData.hasConnected) {
             return Scaffold(
               key: _scaffoldKey,
               /*floatingActionButton: FloatingActionButton(
@@ -256,16 +255,13 @@ class _HomeState extends State<Home> {
           return FutureBuilder(
             future: Purchases.getOfferings(),
             builder: (context, AsyncSnapshot<Offerings> offerings) {
-              //print("3");
               if (offerings.hasData) {
-                //print("oferings: ${offerings.data}");
                 if ((offerings.data.current != null &&
                     offerings.data.current.availablePackages.isNotEmpty)) {
                   return PaywallMy(
                     offering: offerings.data.current,
                   );
                 } else {
-                  //print("4");
                   return Scaffold(
                     body: SafeArea(
                       child: Center(
