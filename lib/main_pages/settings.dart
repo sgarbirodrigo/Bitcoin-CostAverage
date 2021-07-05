@@ -94,20 +94,12 @@ class _SettingsPageState extends State<SettingsPage> {
                 textAlign: TextAlign.center,
                 text: TextSpan(
                   text:
-                      'To ensure another level of security on your funds, create an account on ',
+                      'To ensure another level of security on your funds, create an account  exclusively for automating your daily trades with ',
                   style: TextStyle(
                       color: Colors.black.withOpacity(0.7), fontSize: 18),
                   children: <TextSpan>[
                     TextSpan(
-                      text: 'Binance',
-                      style: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold),
-                    ),
-                    TextSpan(
-                        text:
-                            ' exclusively for automating your daily trades with '),
-                    TextSpan(
-                      text: 'BitMe',
+                      text: 'Bitcoin-Cost Average',
                       style: TextStyle(
                           color: Colors.black, fontWeight: FontWeight.bold),
                     ),

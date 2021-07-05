@@ -1,6 +1,7 @@
 import 'package:Bit.Me/main_pages/dashboard_widget/orders_widget.dart';
 import 'package:Bit.Me/models/settings_model.dart';
 import 'package:Bit.Me/models/user_model.dart';
+import 'package:Bit.Me/sql_database.dart';
 import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -9,8 +10,9 @@ import 'dashboard_widget/chart_widget.dart';
 class DashboardBitMe extends StatefulWidget {
   final UserManager user;
   final SettingsApp settings;
+  SqlDatabase sqlDatabase;
 
-  const DashboardBitMe({this.user, this.settings});
+  DashboardBitMe({this.user, this.settings,this.sqlDatabase});
 
   @override
   State<StatefulWidget> createState() {
@@ -30,8 +32,7 @@ class _DashboardBitMeState extends State<DashboardBitMe> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ChartWidget(widget.user, widget.settings),
-              OrdersWidget(user: widget.user, settings: widget.settings),
-              /*OrdersWidget(user: widget.user, SettingsApp: widget.settings)*/
+              OrdersWidget(user: widget.user, settings: widget.settings,sqlDatabase: widget.sqlDatabase,),
             ],
           ),
         ),

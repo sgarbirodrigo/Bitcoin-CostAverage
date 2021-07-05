@@ -7,6 +7,7 @@ import 'package:Bit.Me/models/settings_model.dart';
 import 'package:Bit.Me/models/user_model.dart';
 import 'package:Bit.Me/purchase/paywall.dart';
 import 'package:Bit.Me/purchase/paywall_bca.dart';
+import 'package:Bit.Me/sql_database.dart';
 import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:Bit.Me/widgets/appbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -26,8 +27,9 @@ import 'wizards/IntroductionPage.dart';
 import 'main_pages/orders_Page.dart';
 
 class Home extends StatefulWidget {
-  Home({this.title, this.firebaseUser});
-
+  Home({this.title, this.firebaseUser, this.purchaserInfo, this.sql_database});
+  SqlDatabase sql_database;
+  PurchaserInfo purchaserInfo;
   final User firebaseUser;
   final String title;
 
@@ -49,6 +51,7 @@ class _HomeState extends State<Home> {
   int _pageIndex = 1;
   Widget body;
   String title = "Bitcoin-Cost Average";
+  bool entitlementIsActive = false;
 
   @override
   void initState() {
@@ -80,44 +83,45 @@ class _HomeState extends State<Home> {
       if (mounted) setState(() {});
     });
     this.settings.updateBinancePrice();
-    this.user = UserManager(widget.firebaseUser, this.settings, (user) async {
+    this.user = UserManager(widget.sql_database,widget.firebaseUser, this.settings, (user) async {
       this.user = user;
-      if (this.settings.base_pair == null && this.user.userData != null && this.user.userData.orders.length > 0) {
+      if (this.settings.base_pair == null &&
+          this.user.userData != null &&
+          this.user.userData.orders.length > 0) {
         this.settings.updateBasePair(this.user.userTotalBuyingAmount.keys.toList()[0]);
       }
       if (mounted) setState(() {});
     });
     _myPage = PageController(initialPage: 0);
-    validateSubscription();
+
+    _checkSubscription();
+    Purchases.addPurchaserInfoUpdateListener((purchaserInfo) async {
+      widget.purchaserInfo = purchaserInfo;
+      print("Updated Purchaser Info: ${purchaserInfo}");
+      _checkSubscription();
+      if (mounted) setState(() {});
+    });
+
     super.initState();
   }
+  //TODO always check before release
+  bool isFlutterDebugging=true;
 
-  PurchaserInfo purchaserInfo;
-
-  Future<void> validateSubscription() async {
-    await Purchases.setup(apiKey, appUserId: this.user.firebaseUser.uid, observerMode: false);
-    this.purchaserInfo = await Purchases.getPurchaserInfo();
-    print("Purchaser Info: ${purchaserInfo.activeSubscriptions}");
-    Purchases.addPurchaserInfoUpdateListener((purchaserInfo) async {
-      print("App userID: ${await Purchases.appUserID}");
-      this.purchaserInfo = await Purchases.getPurchaserInfo();
-      print("Updated Purchaser Info: ${purchaserInfo.activeSubscriptions}");
-      //this.user.updateUser();
-      if (mounted) setState(() {});
-      /* (purchaserInfo.entitlements.all[entitlementID] != null &&
-              purchaserInfo.entitlements.all[entitlementID].isActive)
-          ? entitlementIsActive = true
-          : entitlementIsActive = false;*/
-    });
+  void _checkSubscription() {
+    (widget.purchaserInfo.entitlements.all[entitlementID] != null &&
+            widget.purchaserInfo.entitlements.all[entitlementID].isActive)
+        ? entitlementIsActive = true
+        : entitlementIsActive = false;
   }
 
   @override
   Widget build(BuildContext context) {
-    //print("userdata: ${user.userData}");
-    if (user.userData != null && purchaserInfo!=null) {
+    if (user.userData != null) {
+      print("0");
       if (user.userData.hasIntroduced) {
-        if (purchaserInfo.activeSubscriptions.length > 0) {
-          //print("subs: ${purchaserInfo.activeSubscriptions.length}");
+        print("1");
+        if (entitlementIsActive || this.isFlutterDebugging) {
+          print("2");
           if (user.userData.hasConnected) {
             return Scaffold(
               key: _scaffoldKey,
@@ -226,34 +230,42 @@ class _HomeState extends State<Home> {
                 );
               },
             ),*/
-              body: PageView(physics: NeverScrollableScrollPhysics(), controller: _myPage, children: <Widget>[
-                DashboardBitMe(
-                  /*key: context.widget.key,*/
-                  settings: settings,
-                  user: user,
-                ),
-                OrdersPage(
-                  user: this.user,
-                  settings: this.settings,
-                ),
-                //HistorySelPage(this.user, this.settings),
-                SettingsPage(this.user)
-              ]),
+              body: PageView(
+                  physics: NeverScrollableScrollPhysics(),
+                  controller: _myPage,
+                  children: <Widget>[
+                    DashboardBitMe(
+                      /*key: context.widget.key,*/
+                      settings: settings,
+                      user: user,
+                      sqlDatabase: widget.sql_database,
+                    ),
+                    OrdersPage(
+                      user: this.user,
+                      settings: this.settings,
+                      sqlDatabase: widget.sql_database,
+                    ),
+                    //HistorySelPage(this.user, this.settings),
+                    SettingsPage(this.user)
+                  ]),
             );
           } else {
             return ConnectToBinancePage(this.user);
           }
         } else {
-          //print("0-subs: ${purchaserInfo.activeSubscriptions.length>0}");
           return FutureBuilder(
             future: Purchases.getOfferings(),
             builder: (context, AsyncSnapshot<Offerings> offerings) {
+              //print("3");
               if (offerings.hasData) {
-                if (offerings.data.current != null && offerings.data.current.availablePackages.isNotEmpty) {
+                //print("oferings: ${offerings.data}");
+                if ((offerings.data.current != null &&
+                    offerings.data.current.availablePackages.isNotEmpty)) {
                   return PaywallMy(
                     offering: offerings.data.current,
                   );
                 } else {
+                  //print("4");
                   return Scaffold(
                     body: SafeArea(
                       child: Center(

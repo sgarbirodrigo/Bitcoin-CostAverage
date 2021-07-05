@@ -277,65 +277,67 @@ class _ChartWidgetState extends State<ChartWidget> {
                     return GestureDetector(
                       onTap: () {
                         widget.settings.updateBasePair(data[index].pair);
-                        /* widget.settings.base_pair_color =
-                        colorsList[index];*/
                       },
                       child: Container(
                         margin: EdgeInsets.only(left: 4, right: 4),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(4),
-                                //color: Colors.grey,
                                 color: colorsList[index],
                               ),
+                              margin: EdgeInsets.symmetric(horizontal: 16),
                               height: 12,
                               width: 12,
-                              //margin: EdgeInsets.only(left: 8, right: 16),
                             ),
                             //Container(width: ,),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  data[index].pair,
-                                  style: TextStyle(
-                                      fontFamily: 'Arial',
-                                      fontSize: 24,
-                                      //fontWeight: FontWeight.w400,
-                                      color: Colors.black),
+                            Expanded(
+                              child: Container(
+                            //color: Colors.red,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      data[index].pair,
+                                      style: TextStyle(
+                                          fontFamily: 'Arial',
+                                          fontSize: 24,
+                                          //fontWeight: FontWeight.w400,
+                                          color: Colors.black),
+                                    ),
+                                    RichText(
+                                      textAlign: TextAlign.left,
+                                      softWrap: true,
+                                      text: TextSpan(
+                                        text: '',
+                                        style: TextStyle(
+                                            color: Colors.black.withOpacity(0.4), fontSize: 11),
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                            text:
+                                                '${returnCurrencyCorrectedNumber(data[index].pair.split("/")[1], data[index].amount * _multiplier)}',
+                                            style: TextStyle(
+                                                color: Colors.black, fontWeight: FontWeight.bold),
+                                          ),
+                                          TextSpan(text: ' for '),
+                                          TextSpan(
+                                            text: '${data[index].pair.toString().split("/")[0]}',
+                                            style: TextStyle(
+                                                color: Colors.black, fontWeight: FontWeight.bold),
+                                          ),
+                                          TextSpan(text: ''),
+                                        ],
+                                      ),
+                                    )
+                                  ],
                                 ),
-                                RichText(
-                                  textAlign: TextAlign.left,
-                                  softWrap: true,
-                                  text: TextSpan(
-                                    text: '',
-                                    style: TextStyle(
-                                        color: Colors.black.withOpacity(0.4), fontSize: 11),
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        text:
-                                            '${returnCurrencyCorrectedNumber(data[index].pair.split("/")[1], data[index].amount * _multiplier)}',
-                                        style: TextStyle(
-                                            color: Colors.black, fontWeight: FontWeight.bold),
-                                      ),
-                                      TextSpan(text: ' for '),
-                                      TextSpan(
-                                        text: '${data[index].pair.toString().split("/")[0]}',
-                                        style: TextStyle(
-                                            color: Colors.black, fontWeight: FontWeight.bold),
-                                      ),
-                                      TextSpan(text: ''),
-                                    ],
-                                  ),
-                                )
-                              ],
+                              ),
                             )
                           ],
                         ),

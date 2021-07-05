@@ -1,5 +1,6 @@
 import 'package:Bit.Me/CreateEditOrder.dart';
 import 'package:Bit.Me/models/order_model.dart';
+import 'package:Bit.Me/sql_database.dart';
 import 'package:Bit.Me/tools.dart';
 import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:Bit.Me/widgets/weekindicator.dart';
@@ -19,8 +20,9 @@ class OrderItemList extends StatefulWidget {
   int index;
   UserManager user;
   SettingsApp settings;
+  SqlDatabase sqlDatabase;
 
-  OrderItemList(this.index, this.user, this.settings);
+  OrderItemList(this.index, this.user, this.settings,this.sqlDatabase);
 
   @override
   State<StatefulWidget> createState() {
@@ -80,7 +82,7 @@ class _OrderItemListState extends State<OrderItemList> {
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => PairDetailPage(
-                  _orderItem, widget.user.firebaseUser, widget.settings)));
+                  _orderItem, widget.user.firebaseUser, widget.settings, widget.sqlDatabase)));
         },
         child: Container(
           height: 72,
@@ -238,7 +240,7 @@ class _OrderItemListState extends State<OrderItemList> {
                           widget.user.userData.orders.values
                               .toList()[widget.index],
                           widget.user.firebaseUser,
-                          widget.settings)));
+                          widget.settings,widget.sqlDatabase)));
                 },
               ),
             ]

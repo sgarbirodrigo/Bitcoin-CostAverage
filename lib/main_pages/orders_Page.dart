@@ -3,6 +3,7 @@ import 'package:Bit.Me/models/history_model.dart';
 import 'package:Bit.Me/models/settings_model.dart';
 import 'package:Bit.Me/models/user_model.dart';
 import 'package:Bit.Me/main_pages/pairdetail_page.dart';
+import 'package:Bit.Me/sql_database.dart';
 import 'package:Bit.Me/tools.dart';
 import 'package:Bit.Me/widgets/weekindicator.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +14,8 @@ import '../list_item/order_item_list.dart';
 class OrdersPage extends StatefulWidget {
   UserManager user;
   SettingsApp settings;
-
-  OrdersPage({this.user, this.settings});
+  SqlDatabase sqlDatabase;
+  OrdersPage({this.user, this.settings,this.sqlDatabase});
 
   @override
   State<StatefulWidget> createState() {
@@ -188,7 +189,7 @@ class _OrdersPageState extends State<OrdersPage> {
                           }
 
                           return OrderItemList(
-                              index, widget.user, widget.settings);
+                              index, widget.user, widget.settings,widget.sqlDatabase);
                           ;
                         })
                     : Container(

@@ -42,6 +42,32 @@
           "referenceName" : "monthly_hodler_btc",
           "subscriptionGroupID" : "BC7E7BF5",
           "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "0.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "A412CAA0",
+          "introductoryOffer" : {
+            "internalID" : "AE5AA2CD",
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P2W"
+          },
+          "localizations" : [
+            {
+              "description" : "",
+              "displayName" : "",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.racooney.bit.me",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "annualy_hodler_btc",
+          "subscriptionGroupID" : "BC7E7BF5",
+          "type" : "RecurringSubscription"
         }
       ]
     }

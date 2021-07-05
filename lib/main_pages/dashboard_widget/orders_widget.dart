@@ -3,6 +3,7 @@ import 'package:Bit.Me/models/history_model.dart';
 import 'package:Bit.Me/models/settings_model.dart';
 import 'package:Bit.Me/models/user_model.dart';
 import 'package:Bit.Me/main_pages/pairdetail_page.dart';
+import 'package:Bit.Me/sql_database.dart';
 import 'package:Bit.Me/tools.dart';
 import 'package:Bit.Me/widgets/weekindicator.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +15,9 @@ import '../../list_item/order_item_list.dart';
 class OrdersWidget extends StatefulWidget {
   UserManager user;
   SettingsApp settings;
+  SqlDatabase sqlDatabase;
 
-  OrdersWidget({this.user, this.settings});
+  OrdersWidget({this.user, this.settings,this.sqlDatabase});
 
   @override
   State<StatefulWidget> createState() {
@@ -91,7 +93,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                       ),
                     ),
                     Text(
-                      "Executed on the selected days at 11 PM.",
+                      "Executed every night",
                       style: TextStyle(
                         fontFamily: 'Arial',
                         fontSize: 12,
@@ -111,7 +113,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
               ),
               Expanded(child: Container()),
               Padding(
-                padding: EdgeInsets.only(top: 0, bottom: 0),
+                padding: EdgeInsets.only(top: 0, bottom: 0,right: 8),
                 child: TextButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(
@@ -186,7 +188,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                     if (widget.user.userData.orders.values
                         .toList()[index]
                         .active) {
-                      return OrderItemList(index, widget.user, widget.settings);
+                      return OrderItemList(index, widget.user, widget.settings,widget.sqlDatabase);
                     } else {
                       return Container();
                     }

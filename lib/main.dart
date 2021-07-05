@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:Bit.Me/contants.dart';
+import 'package:Bit.Me/sql_database.dart';
 import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,6 +11,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
+import 'package:purchases_flutter/object_wrappers.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:sqflite/sqflite.dart';
 
 import 'auth_pages/authentication.dart';
 import 'external/authService.dart';
@@ -23,8 +27,17 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   bool app_updated = await checkAppVersion();
+  await Purchases.setup(apiKey, observerMode: false);
+  SqlDatabase sql_database = SqlDatabase();
+  await sql_database.initDB();
+  FirebaseAuth.instance.authStateChanges().listen((firebaseUser) async {
+    if (firebaseUser == null) {
+      await sql_database.deleteDB();
+      await Purchases.reset();
+    }
+  });
   runZonedGuarded(() {
-    runApp(MyApp(app_updated));
+    runApp(MyApp(app_updated, sql_database));
   }, FirebaseCrashlytics.instance.recordError);
 }
 
@@ -38,7 +51,6 @@ Future<bool> checkAppVersion() async {
   DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
       await FirebaseFirestore.instance.collection("appConfig").doc("standard").get();
   var data = documentSnapshot.data();
-
   bool result = int.parse(buildNumber) >= int.parse(data["min_version_build"].toString());
   //print("result: $result");
   return result;
@@ -46,8 +58,9 @@ Future<bool> checkAppVersion() async {
 
 class MyApp extends StatelessWidget {
   bool appUpdated;
+  SqlDatabase sql_database;
 
-  MyApp(this.appUpdated);
+  MyApp(this.appUpdated, this.sql_database);
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +76,19 @@ class MyApp extends StatelessWidget {
           if (this.appUpdated) {
             if (snapshot.hasData) {
               FirebaseCrashlytics.instance.setUserIdentifier(snapshot.data.uid);
-              return Home(firebaseUser: snapshot.data);
+              return FutureBuilder<PurchaserInfo>(
+                  future: Purchases.identify(snapshot.data.uid),
+                  builder: (context, purchaserInfoSnapshot) {
+                    if (purchaserInfoSnapshot.hasData) {
+                      print("Purchaser Info: ${purchaserInfoSnapshot.data.activeSubscriptions}");
+                      return Home(
+                          firebaseUser: snapshot.data,
+                          purchaserInfo: purchaserInfoSnapshot.data,
+                          sql_database: sql_database);
+                    } else {
+                      return CircularProgressIndicatorMy();
+                    }
+                  });
             } else if (snapshot.hasData == false &&
                 snapshot.connectionState == ConnectionState.active) {
               return Authentication();

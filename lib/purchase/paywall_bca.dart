@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:Bit.Me/tools.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import '../contants.dart';
@@ -31,16 +32,13 @@ class _PaywallMyState extends State<PaywallMy> {
         child: Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(
-                  top: 32, bottom: 16, left: 16.0, right: 16.0),
+              padding: const EdgeInsets.only(top: 32, bottom: 16, left: 16.0, right: 16.0),
               child: Container(
                 child: Text(
                   'CHOOSE YOUR PLAN',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontSize: 24,
-                      fontFamily: 'Arial Rounded MT Bold',
-                      color: Colors.white),
+                      fontSize: 24, fontFamily: 'Arial Rounded MT Bold', color: Colors.white),
                 ),
                 width: double.infinity,
               ),
@@ -79,22 +77,18 @@ class _PaywallMyState extends State<PaywallMy> {
                         borderRadius: BorderRadius.circular(75),
                         //color: Colors.grey,
                       ),
-                      child: Center(
-                          child: Image.asset('assets/images/unlock.png')),
+                      child: Center(child: Image.asset('assets/images/unlock.png')),
                     ),
                     Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 48, vertical: 16),
+                      padding: EdgeInsets.symmetric(horizontal: 48, vertical: 16),
                       child: Text(
                         "${offeringDescription["title"]}",
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontFamily: 'Arial Rounded MT Bold', fontSize: 28),
+                        style: TextStyle(fontFamily: 'Arial Rounded MT Bold', fontSize: 28),
                       ),
                     ),
                     Column(
-                        children: Iterable<int>.generate(features.length)
-                            .map((entry) {
+                        children: Iterable<int>.generate(features.length).map((entry) {
                       return productItem(
                           title: features[entry]["title"],
                           description: features[entry]["description"]);
@@ -138,9 +132,8 @@ class _PaywallMyState extends State<PaywallMy> {
                   )),
             ),
             Column(
-                children: Iterable<int>.generate(
-                        widget.offering.availablePackages.length)
-                    .map((entry) {
+                children:
+                    Iterable<int>.generate(widget.offering.availablePackages.length).map((entry) {
               return AnimatedContainer(
                 //width: 300,
                 margin: EdgeInsets.only(top: 16),
@@ -148,21 +141,28 @@ class _PaywallMyState extends State<PaywallMy> {
                 child: ElevatedButton(
                   onPressed: () async {
                     setState(() => this.isPaying = true);
-                    Purchases.purchasePackage(
-                            widget.offering.availablePackages[entry])
-                        .then((purchaseInfo) {
-                      print("purchaser info: $purchaseInfo");
+                    try {
+                      PurchaserInfo purchaserInfo =
+                          await Purchases.purchasePackage(widget.offering.availablePackages[entry]);
+                      var isPro = purchaserInfo.entitlements.all[entitlementID].isActive;
+                      if (isPro) {
+                        print("purchaser info: $purchaserInfo");
+                        setState(() => this.isPaying = false);
+                      }
+                    } on PlatformException catch (e) {
+                      var errorCode = PurchasesErrorHelper.getErrorCode(e);
+                      if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
+                        //showError(e);
+                        //todo handle error
+                      }
                       setState(() => this.isPaying = false);
-                    }).catchError((error) {
-                      setState(() => this.isPaying = false);
-                    });
+                    }
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(
                       Colors.deepPurple.shade800,
                     ),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(64.0),
                       //side: BorderSide(color: Colors.deepPurple)
                     )),
@@ -186,20 +186,16 @@ class _PaywallMyState extends State<PaywallMy> {
                           ),
                           Text(
                             "${widget.offering.availablePackages[entry].product.introductoryPrice.introPricePeriodNumberOfUnits}-${widget.offering.availablePackages[entry].product.introductoryPrice.introPricePeriodUnit} free trial",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Arial',
-                                fontSize: 16),
+                            style:
+                                TextStyle(color: Colors.white, fontFamily: 'Arial', fontSize: 16),
                           ),
                           Container(
                             height: 4,
                           ),
                           Text(
                             "${widget.offering.availablePackages[entry].product.identifier.contains("anual") ? "${getCurrencySymbolFromCode(widget.offering.availablePackages[entry].product.currencyCode)} ${(widget.offering.availablePackages[entry].product.price / 12).toStringAsFixed(2)}/month - ${getCurrencySymbolFromCode(widget.offering.availablePackages[entry].product.currencyCode)} ${(widget.offering.availablePackages[entry].product.price).toStringAsFixed(2)}" : "${getCurrencySymbolFromCode(widget.offering.availablePackages[entry].product.currencyCode)} ${(widget.offering.availablePackages[entry].product.price).toStringAsFixed(2)}/month"}",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Arial',
-                                fontSize: 18),
+                            style:
+                                TextStyle(color: Colors.white, fontFamily: 'Arial', fontSize: 18),
                           )
                         ],
                       ),
@@ -208,9 +204,21 @@ class _PaywallMyState extends State<PaywallMy> {
                 ),
               );
             }).toList()),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  PurchaserInfo restoredInfo = await Purchases.restoreTransactions();
+                  print("restore info ${restoredInfo}");
+                  // ... check restored purchaserInfo to see if entitlement is now active
+                } on PlatformException catch (e) {
+                  print("restore error: $e");
+                  // Error restoring purchases
+                }
+              },
+              child: Text("Restore Purchase"),
+            ),
             Padding(
-              padding: const EdgeInsets.only(
-                  top: 32, bottom: 64, left: 16.0, right: 16.0),
+              padding: const EdgeInsets.only(top: 32, bottom: 64, left: 16.0, right: 16.0),
               child: Container(
                 child: Text(
                   "Subscription automatically renew after you\'ve finished your trial period. You can cancel anytime.",

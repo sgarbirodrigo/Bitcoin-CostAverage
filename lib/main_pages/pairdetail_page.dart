@@ -3,6 +3,7 @@ import 'package:Bit.Me/charts/line_chart_mean.dart';
 import 'package:Bit.Me/models/order_model.dart';
 import 'package:Bit.Me/models/settings_model.dart';
 import 'package:Bit.Me/models/user_model.dart';
+import 'package:Bit.Me/sql_database.dart';
 import 'package:Bit.Me/tools.dart';
 import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,10 +15,10 @@ import '../charts/line_chart_mean_pair.dart';
 
 class PairDetailPage extends StatefulWidget {
   OrderItem orderItem;
- User firebaseUser;
+  User firebaseUser;
   SettingsApp settings;
-
-  PairDetailPage(this.orderItem, this.firebaseUser, this.settings);
+  SqlDatabase sqlDatabase;
+  PairDetailPage(this.orderItem, this.firebaseUser, this.settings,this.sqlDatabase);
 
   @override
   State<StatefulWidget> createState() {
@@ -33,18 +34,19 @@ class _PairDetailPageState extends State<PairDetailPage> {
 
   @override
   void initState() {
-    user = UserManager(widget.firebaseUser, widget.settings, (user) async {
-      setState(() {
-        this.user = user;
-        pairData = this.user.pairDataItems[widget.orderItem.pair];
-        if (pairData != null) {
-          appreciation = (((widget.settings.binanceTicker[
-                              pairData.pair.replaceAll("/", "")] *
-                          pairData.coinAccumulated) /
-                      pairData.totalExpended) -
-                  1) *
-              100;
-        }
+    user = UserManager(widget.sqlDatabase,widget.firebaseUser, widget.settings, (user) async {
+      this.user = user;
+      pairData = this.user.pairDataItems[widget.orderItem.pair];
+      if (pairData != null) {
+        appreciation = (((widget.settings.binanceTicker[
+        pairData.pair.replaceAll("/", "")] *
+            pairData.coinAccumulated) /
+            pairData.totalExpended) -
+            1) *
+            100;
+      }
+      if(mounted)setState(() {
+
       });
     });
   }
@@ -85,6 +87,7 @@ class _PairDetailPageState extends State<PairDetailPage> {
               Padding(
                 padding: EdgeInsets.only(left: 4, top: 8, right: 16),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     IconButton(
                       icon: Icon(
@@ -108,9 +111,9 @@ class _PairDetailPageState extends State<PairDetailPage> {
                               fontFamily: 'Arial Rounded MT Bold'),
                         ),
                         Text(
-                          "${returnCurrencyCorrectedNumber(widget.orderItem.pair.split("/")[1], widget.settings.binanceTicker[widget.orderItem.pair.replaceAll("/", "")])}",
+                          "Price: ${returnCurrencyCorrectedNumber(widget.orderItem.pair.split("/")[1], widget.settings.binanceTicker[widget.orderItem.pair.replaceAll("/", "")])}",
                           style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 16,
                               color: Colors.white,
                               fontFamily: 'Arial',
                               fontWeight: FontWeight.w100),
@@ -126,16 +129,16 @@ class _PairDetailPageState extends State<PairDetailPage> {
                         Text(
                           getAppreciationConverted(appreciation),
                           style: TextStyle(
-                              fontSize: 22,
+                              fontSize:18,
                               color: Colors.white,
                               fontFamily: 'Arial Rounded MT Bold'),
                         ),
                         Text(
                           pairData != null
-                              ? "(${returnCurrencyCorrectedNumber(widget.orderItem.pair.split("/")[1], (widget.settings.binanceTicker[widget.orderItem.pair.replaceAll("/", "")] * pairData.coinAccumulated) - pairData.totalExpended)})"
+                              ? "(${returnCurrencyCorrectedNumber(widget.orderItem.pair.split("/")[1], 0.00000001/*(widget.settings.binanceTicker[widget.orderItem.pair.replaceAll("/", "")] * pairData.coinAccumulated) - pairData.totalExpended*/)})"
                               : "...",
                           style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 16,
                               color: Colors.white,
                               fontFamily: 'Arial',
                               fontWeight: FontWeight.w100),
@@ -220,7 +223,7 @@ class _PairDetailPageState extends State<PairDetailPage> {
                                         : "...",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        fontSize: 20,
+                                        fontSize: 18,
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold),
                                   ),
@@ -240,7 +243,7 @@ class _PairDetailPageState extends State<PairDetailPage> {
                                         : "...",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        fontSize: 20,
+                                        fontSize: 18,
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold),
                                   ),

@@ -41,13 +41,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
       showSkipButton: true,
       skip: TextButton(
         onPressed: () {
-          FirebaseFirestore.instance
-              .collection("users")
-              .doc(widget.user.firebaseUser.uid)
-              .update({"hasIntroduced": true}).then((value) {
-            //Navigator.of(context).pop();
-            widget.user.updateUser();
-          });
+          updateUser();
         },
         child: Text("Skip"),
       ),
@@ -94,15 +88,17 @@ class _IntroductionPageState extends State<IntroductionPage> {
       done:
           const Text("Connect", style: TextStyle(fontWeight: FontWeight.w600)),
       onDone: () {
-        FirebaseFirestore.instance
-            .collection("users")
-            .doc(widget.user.firebaseUser.uid)
-            .update({"hasIntroduced": true}).then((value) {
-          Navigator.of(context).pop();
-          widget.user.updateUser();
-        });
-        // When done button is press
+        updateUser();
       },
     );
+  }
+  void updateUser(){
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(widget.user.firebaseUser.uid)
+        .update({"hasIntroduced": true}).then((value) {
+      //Navigator.of(context).pop();
+      widget.user.updateUser();
+    });
   }
 }

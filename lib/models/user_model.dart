@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
+import 'package:Bit.Me/sql_database.dart';
 import 'package:path/path.dart';
 import 'package:Bit.Me/external/binance_api.dart';
 import 'package:Bit.Me/external/firestoreService.dart';
@@ -93,7 +94,8 @@ class PairData {
       totalExpended += historyItem.response.filled * historyItem.response.price;
       avgPrice = totalExpended / coinAccumulated;
       //avgPrice =null;
-      price_spots.add(FlSpot((historyItem.timestamp.seconds).toDouble(), historyItem.response.price));
+      price_spots
+          .add(FlSpot((historyItem.timestamp.seconds).toDouble(), historyItem.response.price));
       avg_price_spots.add(FlSpot((historyItem.timestamp.seconds).toDouble(), avgPrice));
       percentage_variation = getValueVariation(historyItem.response.price, avgPrice);
       isLoaded = true;
@@ -117,8 +119,9 @@ class UserManager {
   Map<String, PairData> pairDataItems = Map();
   SettingsApp settings;
   bool isUpdatingHistory = false;
+  SqlDatabase sqlDatabase;
 
-  UserManager(this.firebaseUser, this.settings, this.onUserDataUpdate) {
+  UserManager(this.sqlDatabase, this.firebaseUser, this.settings, this.onUserDataUpdate) {
     updateUser();
     switch (this.settings.scaleLineChart) {
       case ScaleLineChart.WEEK1:
@@ -152,47 +155,43 @@ class UserManager {
   }
 
   void forceUpdateHistoryData(int daysToConsider) async {
-    int dbVersion = 8;
-    final path = join(await getDatabasesPath(), 'bca_v$dbVersion.db');
-    Database database = await openDatabase(path, version: dbVersion, onCreate: (Database db, int version) async {
-      await db.execute('CREATE TABLE History (id TEXT PRIMARY KEY,timestamp INTEGER, amount REAL, pair TEXT,result TEXT,rawFirestore TEXT)');
-    });
-    FirebaseAuth.instance.authStateChanges().listen((firebaseUser) async {
-      if (firebaseUser == null) {
-        Database database = await openDatabase(path, version: dbVersion, onCreate: (Database db, int version) async {
-          await db.execute('CREATE TABLE History (id TEXT PRIMARY KEY,timestamp INTEGER, amount REAL, pair TEXT,result TEXT,rawFirestore TEXT)');
-        });
-        //database.close();
-        database.rawDelete("DELETE FROM History");
-      }
-    });
-    List<Map<String, dynamic>> db_query = await database.rawQuery('SELECT * FROM History ORDER BY timestamp DESC');
+    List<Map<String, dynamic>> db_query =
+        await this.sqlDatabase.database.rawQuery('SELECT * FROM History ORDER BY timestamp DESC');
 
-    Query firestoreHistoryQuery = FirebaseFirestore.instance.collection("users").doc(firebaseUser.uid).collection("history").orderBy("timestamp", descending: false);
+    Query firestoreHistoryQuery = FirebaseFirestore.instance
+        .collection("users")
+        .doc(firebaseUser.uid)
+        .collection("history")
+        .orderBy("timestamp", descending: false);
+
     void addSnapshotToSQLDB(QuerySnapshot historySnapshots) async {
       historySnapshots.docs.forEach((element) async {
         HistoryItem historyItem = HistoryItem.fromJson(element.data());
-        await database.insert('history', {
+        await this.sqlDatabase.database.insert('history', {
           'id': element.id,
           'timestamp': historyItem.timestamp.millisecondsSinceEpoch,
           'amount': historyItem.order.amount,
           'pair': historyItem.order.pair,
           'result': historyItem.result.index,
           'rawFirestore': json.encode(historyItem.toJson()),
-        });
+        },conflictAlgorithm: ConflictAlgorithm.replace);
       });
     }
 
     if (db_query.length > 0) {
-      Timestamp last_loaded_timestamp = Timestamp.fromMillisecondsSinceEpoch(db_query.first['timestamp']);
+      Timestamp last_loaded_timestamp =
+          Timestamp.fromMillisecondsSinceEpoch(db_query.first['timestamp']);
       if (last_loaded_timestamp.toDate().isBefore(DateTime.now().add(Duration(hours: -24)))) {
-        addSnapshotToSQLDB(await firestoreHistoryQuery.where('timestamp', isGreaterThan: last_loaded_timestamp).get());
+        addSnapshotToSQLDB(await firestoreHistoryQuery
+            .where('timestamp', isGreaterThan: last_loaded_timestamp)
+            .get());
       }
     } else {
       addSnapshotToSQLDB(await firestoreHistoryQuery.get());
     }
 
-    List<Map<String, dynamic>> rawQuery = await database.rawQuery('SELECT * FROM History WHERE timestamp>= ${DateTime.now().add(Duration(days: -daysToConsider)).millisecondsSinceEpoch}');
+    List<Map<String, dynamic>> rawQuery = await this.sqlDatabase.database.rawQuery(
+        'SELECT * FROM History WHERE timestamp>= ${DateTime.now().add(Duration(days: -daysToConsider)).millisecondsSinceEpoch}');
     historyItems.clear();
     pairDataItems.clear();
     rawQuery.forEach((element) {
@@ -201,7 +200,8 @@ class UserManager {
       if (pairDataItems[historyItem.order.pair] == null) {
         pairDataItems[historyItem.order.pair] = PairData().addHistoryItem(historyItem);
       } else {
-        pairDataItems[historyItem.order.pair] = pairDataItems[historyItem.order.pair].addHistoryItem(historyItem);
+        pairDataItems[historyItem.order.pair] =
+            pairDataItems[historyItem.order.pair].addHistoryItem(historyItem);
       }
     });
 
@@ -295,9 +295,11 @@ class UserManager {
             userTotalBuyingAmount[element.pair] = amount * multiplier;
           }
           if (userTotalExpendingAmount[element.pair.split("/")[1]] != null) {
-            userTotalExpendingAmount[element.pair.split("/")[1]] += double.parse((amount * multiplier).toStringAsFixed(6));
+            userTotalExpendingAmount[element.pair.split("/")[1]] +=
+                double.parse((amount * multiplier).toStringAsFixed(6));
           } else {
-            userTotalExpendingAmount[element.pair.split("/")[1]] = double.parse((amount * multiplier).toStringAsFixed(6));
+            userTotalExpendingAmount[element.pair.split("/")[1]] =
+                double.parse((amount * multiplier).toStringAsFixed(6));
           }
           //print("totalbuying: ${userTotalBuyingAmount}");
         }
