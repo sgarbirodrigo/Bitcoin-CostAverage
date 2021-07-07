@@ -24,7 +24,7 @@ class _PaywallMyState extends State<PaywallMy> {
   CarouselController buttonCarouselController = CarouselController();
   int _current = 0;
   bool isPaying = false;
-  bool isDebug = false;
+  bool isDebug = true;
 
   @override
   Widget build(BuildContext context) {
@@ -63,14 +63,14 @@ class _PaywallMyState extends State<PaywallMy> {
                   }),
             ),*/
                 Card(
-                  margin: EdgeInsets.symmetric(horizontal: 4, vertical: 16),
+                  margin: EdgeInsets.only(top: 8),
                   color: Colors.white,
                   child: Container(
                     padding: EdgeInsets.only(bottom: 8, left: 8, right: 8, top: 32),
                     width: MediaQuery.of(context).size.width * 0.9,
                     child: Column(
                       children: [
-                        Container(
+                        /*Container(
                           height: 100,
                           //width: 100,
                           decoration: BoxDecoration(
@@ -78,9 +78,9 @@ class _PaywallMyState extends State<PaywallMy> {
                             //color: Colors.grey,
                           ),
                           child: Center(child: Image.asset('assets/images/unlock.png')),
-                        ),
+                        ),*/
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 48, vertical: 16),
+                          padding: EdgeInsets.symmetric(horizontal: 48, vertical: 8),
                           child: Text(
                             "${offeringDescription["title"]}",
                             textAlign: TextAlign.center,
@@ -88,7 +88,7 @@ class _PaywallMyState extends State<PaywallMy> {
                           ),
                         ),
                         Container(
-                          padding: EdgeInsets.only(bottom: 16),
+                          padding: EdgeInsets.only(bottom: 8),
                           child: Text(
                             "1-week free trial",
                             textAlign: TextAlign.center,
@@ -106,6 +106,7 @@ class _PaywallMyState extends State<PaywallMy> {
                     ),
                   ),
                 )
+                ,Expanded(child: Container(),)
                 /*Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: Iterable<int>.generate(
@@ -202,7 +203,7 @@ class _PaywallMyState extends State<PaywallMy> {
                   );
                 }).toList()),
                 Padding(
-                  padding: const EdgeInsets.only(top: 32, bottom: 64, left: 16.0, right: 16.0),
+                  padding: const EdgeInsets.only(top: 8, bottom: 16, left: 16.0, right: 16.0),
                   child: Container(
                     child: RichText(
                       textAlign: TextAlign.center,

@@ -29,7 +29,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
   TextEditingController privatekey_controller;
   TextEditingController publickey_controller;
 
-  Widget _buildImage(String assetName, [double width = 350]) {
+  Widget _buildImage(String assetName, [double width = 256]) {
     return Image.asset('assets/images/introduction/$assetName', width: width);
   }
 
@@ -63,7 +63,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
     const pageDecoration = const PageDecoration(
       titleTextStyle: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w700),
       bodyTextStyle: bodyStyle,
-      descriptionPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+      descriptionPadding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
       pageColor: col,
       imagePadding: EdgeInsets.zero,
     );
@@ -76,7 +76,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
       showDoneButton: false,
       dotsDecorator: DotsDecorator(
           size: const Size.square(12.0),
-          activeSize: const Size(48.0, 12.0),
+          activeSize: const Size(36.0, 12.0),
           activeColor: Colors.deepPurple,
           color: Colors.black26,
           spacing: const EdgeInsets.symmetric(horizontal: 2.0),
@@ -104,7 +104,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Select your exchange: ",
+                        "Exchange: ",
                         style: TextStyle(fontSize: 18),
                       ),
                       Container(

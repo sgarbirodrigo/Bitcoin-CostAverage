@@ -200,7 +200,7 @@ class _OrderItemListState extends State<OrderItemList> {
                               ? '+${returnCurrencyCorrectedNumber(_pairData.pair.split("/")[0], _pairData.coinAccumulated)}'
                               : "...",
                           style: TextStyle(
-                              color: Colors.deepPurple, fontSize: 14)),
+                              color: Colors.deepPurple, fontSize: 12)),
                     ),
                   ],
                 ),

@@ -7,6 +7,7 @@ import 'package:Bit.Me/models/settings_model.dart';
 import 'package:Bit.Me/models/user_model.dart';
 import 'package:Bit.Me/purchase/paywall.dart';
 import 'package:Bit.Me/purchase/paywall_bca.dart';
+import 'package:Bit.Me/purchase/paywall_bcav2.dart';
 import 'package:Bit.Me/sql_database.dart';
 import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:Bit.Me/widgets/appbar.dart';
@@ -106,8 +107,6 @@ class _HomeState extends State<Home> {
     super.initState();
   }
 
-  //TODO always check before release
-  bool isFlutterDebugging = true;
 
   void _checkSubscription() {
     (widget.purchaserInfo.entitlements.all[entitlementID] != null &&
@@ -256,9 +255,9 @@ class _HomeState extends State<Home> {
             future: Purchases.getOfferings(),
             builder: (context, AsyncSnapshot<Offerings> offerings) {
               if (offerings.hasData) {
-                if ((offerings.data.current != null &&
+                if (!(offerings.data.current != null &&
                     offerings.data.current.availablePackages.isNotEmpty)) {
-                  return PaywallMy(
+                  return PaywallMy_v2(
                     offering: offerings.data.current,
                   );
                 } else {
