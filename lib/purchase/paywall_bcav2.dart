@@ -24,18 +24,18 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
   CarouselController buttonCarouselController = CarouselController();
   int _current = 0;
   bool isPaying = false;
-  bool isDebug = true;
+  bool isDebug = false;
 
   @override
   Widget build(BuildContext context) {
     var offeringDescription = isDebug
         ? json.decode(
-        '{"title":"Full Access","features":[{"title":"Buy everyday","description":"From Monday to Sunday"},{"title":"Unlimited orders","description":"Recurrent buys for your favorite investments"}]}')
+            '{"title":"Full Access","features":[{"title":"Buy everyday","description":"From Monday to Sunday"},{"title":"Unlimited orders","description":"Recurrent buys for your favorite investments"}]}')
         : json.decode(widget.offering.serverDescription);
 
     List<dynamic> features = offeringDescription["features"] as List;
     TextStyle _linkStyle =
-    TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.underline);
+        TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.underline);
     return Scaffold(
       backgroundColor: Colors.deepPurple.shade50,
       body: Stack(
@@ -43,6 +43,9 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
           SafeArea(
             child: Column(
               children: <Widget>[
+                Expanded(
+                  child: Container(),
+                ),
                 Card(
                   margin: EdgeInsets.only(top: 8),
                   elevation: 8,
@@ -50,22 +53,20 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                   clipBehavior: Clip.antiAlias,
                   child: Container(
                     //padding: EdgeInsets.only(bottom: 8, left: 8, right: 8, top: 32),
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width * 0.9,
+                    width: MediaQuery.of(context).size.width * 0.9,
                     child: Column(
                       children: [
                         Container(
                           color: Colors.deepPurple,
                           padding: EdgeInsets.only(top: 16),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            //crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Text("Premium",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontFamily: 'Arial Rounded MT Bold',
+                                      fontWeight: FontWeight.w400,
                                       fontSize: 28,
                                       color: Colors.white)),
                               Container(
@@ -81,8 +82,8 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                                   options: CarouselOptions(
                                       autoPlay: true,
                                       enlargeCenterPage: true,
-                                      viewportFraction:1,
-                                      //aspectRatio: 1,
+                                      viewportFraction: 1,
+                                      aspectRatio: 3.5,
                                       initialPage: 1,
                                       enableInfiniteScroll: false,
                                       onPageChanged: (index, reason) {
@@ -96,29 +97,29 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: Iterable<int>.generate(features.length).map((entry) {
                                     return GestureDetector(
-                                      onTap: () =>
-                                          setState(() {
-                                            buttonCarouselController.animateToPage(entry);
-                                          }),
+                                      onTap: () => setState(() {
+                                        buttonCarouselController.animateToPage(entry);
+                                      }),
                                       child: Container(
-                                          width: 12.0,
-                                          height: 12.0,
-                                          margin: EdgeInsets.symmetric(
-                                              vertical: 8.0, horizontal: 4.0),
-                                          decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color:
-                                              Colors.white
-                                              .withOpacity(_current != entry ? 0.9 : 0.2)),
-                                    )
-                                    ,
+                                        width: 12.0,
+                                        height: 12.0,
+                                        margin:
+                                            EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.white
+                                                .withOpacity(_current != entry ? 0.9 : 0.2)),
+                                      ),
                                     );
-                                  }).toList()),Container(height: 8,)
+                                  }).toList()),
+                              Container(
+                                height: 8,
+                              )
                             ],
                           ),
                         ),
-                        Container(height: 16,),
                         Container(
+                          padding: EdgeInsets.only(top: 16),
                           child: Column(
                             children: [
                               Text("1-WEEK FREE TRIAL",
@@ -129,98 +130,88 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                                       color: Colors.deepPurple)),
                               Column(
                                   children: Iterable<int>.generate(
-                                    /*widget.offering.availablePackages.length*/
-                                      2).map((entry) {
-                                    return AnimatedContainer(
-                                      //width: 300,
-                                      margin: EdgeInsets.only(top: 16),
-                                      duration: Duration(milliseconds: 250),
-                                      child: ElevatedButton(
-                                        onPressed: () async {
-                                          setState(() => this.isPaying = true);
-                                          try {
-                                            PurchaserInfo purchaserInfo =
+                                          widget.offering.availablePackages.length)
+                                      .map((entry) {
+                                return AnimatedContainer(
+                                  //width: 300,
+                                  margin: EdgeInsets.only(top: 16),
+                                  duration: Duration(milliseconds: 250),
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      setState(() => this.isPaying = true);
+                                      try {
+                                        PurchaserInfo purchaserInfo =
                                             await Purchases.purchasePackage(
                                                 widget.offering.availablePackages[entry]);
-                                            var isPro =
-                                                purchaserInfo.entitlements.all[entitlementID]
-                                                    .isActive;
-                                            if (isPro) {
-                                              print("purchaser info: $purchaserInfo");
-                                              setState(() => this.isPaying = false);
-                                            }
-                                          } on PlatformException catch (e) {
-                                            var errorCode = PurchasesErrorHelper.getErrorCode(e);
-                                            if (errorCode !=
-                                                PurchasesErrorCode.purchaseCancelledError) {
-                                              //showError(e);
-                                              //todo handle error
-                                            }
-                                          }
+                                        var isPro =
+                                            purchaserInfo.entitlements.all[entitlementID].isActive;
+                                        if (isPro) {
+                                          print("purchaser info: $purchaserInfo");
                                           setState(() => this.isPaying = false);
-                                        },
-                                        style: ButtonStyle(
-                                          backgroundColor: MaterialStateProperty.all(
-                                            Colors.deepPurple,
-                                          ),
-                                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(24),
-                                                //side: BorderSide(color: Colors.deepPurple)
-                                              )),
-                                          padding: MaterialStateProperty.all(
-                                              EdgeInsets.symmetric(horizontal: 32, vertical: 8)),
-                                        ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
+                                        }
+                                      } on PlatformException catch (e) {
+                                        var errorCode = PurchasesErrorHelper.getErrorCode(e);
+                                        if (errorCode !=
+                                            PurchasesErrorCode.purchaseCancelledError) {
+                                          //showError(e);
+                                          //todo handle error
+                                        }
+                                      }
+                                      setState(() => this.isPaying = false);
+                                    },
+                                    style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all(
+                                        widget.offering.availablePackages[entry].product.identifier
+                                                .contains("anual")
+                                            ? Colors.deepPurple
+                                            : Colors.white,
+                                      ),
+                                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(24),
+                                        side: BorderSide(color: Colors.deepPurple)
+                                      )),
+                                      padding: MaterialStateProperty.all(
+                                          EdgeInsets.symmetric(horizontal: 32, vertical: 8)),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Column(
                                           children: [
-                                            Column(
-                                              children: [
-                                                Text(
-                                                  isDebug
-                                                      ? "Monthly Plan"
-                                                      : "${widget.offering.availablePackages[entry]
-                                                      .product.title}",
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontFamily: 'Arial Rounded MT Bold',
-                                                      fontSize: 22),
-                                                ),
-                                                Container(
-                                                  height: 4,
-                                                ),
-                                                Text(
-                                                  isDebug
-                                                      ? "R\$ 29.90/month - R\$ 309.90"
-                                                      : "${widget.offering.availablePackages[entry]
-                                                      .product.identifier.contains("anual")
-                                                      ? "${getCurrencySymbolFromCode(widget.offering
-                                                      .availablePackages[entry].product
-                                                      .currencyCode)} ${(widget.offering
-                                                      .availablePackages[entry].product.price / 12)
-                                                      .toStringAsFixed(
-                                                      2)}/month - ${getCurrencySymbolFromCode(widget
-                                                      .offering.availablePackages[entry].product
-                                                      .currencyCode)} ${(widget.offering
-                                                      .availablePackages[entry].product.price)
-                                                      .toStringAsFixed(2)}"
-                                                      : "${getCurrencySymbolFromCode(widget.offering
-                                                      .availablePackages[entry].product
-                                                      .currencyCode)} ${(widget.offering
-                                                      .availablePackages[entry].product.price)
-                                                      .toStringAsFixed(2)}/month"}",
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontFamily: 'Arial',
-                                                      fontSize: 18),
-                                                )
-                                              ],
+                                            Text(
+                                              isDebug
+                                                  ? "Monthly Plan"
+                                                  : "${widget.offering.availablePackages[entry].product.title}"
+                                                      .split("(")[0],
+                                              style: TextStyle(
+                                                  color: widget.offering.availablePackages[entry].product.identifier
+                                                      .contains("anual")
+                                                      ? Colors.white:Colors.deepPurple,
+                                                  fontFamily: 'Arial Rounded MT Bold',
+                                                  fontSize: 20),
                                             ),
+                                            Container(
+                                              height: 4,
+                                            ),
+                                            Text(
+                                              isDebug
+                                                  ? "R\$ 29.90/month - R\$ 309.90"
+                                                  : "${widget.offering.availablePackages[entry].product.identifier.contains("anual") ? "${getCurrencySymbolFromCode(widget.offering.availablePackages[entry].product.currencyCode)} ${(widget.offering.availablePackages[entry].product.price / 12).toStringAsFixed(2)}/month - ${getCurrencySymbolFromCode(widget.offering.availablePackages[entry].product.currencyCode)} ${(widget.offering.availablePackages[entry].product.price).toStringAsFixed(2)}" : "${getCurrencySymbolFromCode(widget.offering.availablePackages[entry].product.currencyCode)} ${(widget.offering.availablePackages[entry].product.price).toStringAsFixed(2)}/month"}",
+                                              style: TextStyle(
+                                                  color: widget.offering.availablePackages[entry].product.identifier
+                                                      .contains("anual")
+                                                      ? Colors.white:Colors.deepPurple,
+                                                  fontFamily: 'Arial',
+                                                  fontSize: 16),
+                                            )
                                           ],
                                         ),
-                                      ),
-                                    );
-                                  }).toList()),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }).toList()),
                             ],
                           ),
                         ),
@@ -259,7 +250,7 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                   child: Container(),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 8, bottom: 16, left: 16.0, right: 16.0),
+                  padding: const EdgeInsets.only(top: 8, left: 16.0, right: 16.0),
                   child: Container(
                     child: RichText(
                       textAlign: TextAlign.center,
@@ -292,14 +283,8 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
                 color: Colors.white.withOpacity(0.6),
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width,
-                height: MediaQuery
-                    .of(context)
-                    .size
-                    .height,
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
                 child: Center(
                   child: CircularProgressIndicator(),
                 ),
@@ -322,20 +307,16 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
   Widget productItem({String title, String description}) {
     return Container(
       //height: 72,
-      padding: EdgeInsets.only(
-        top: 16,
-        bottom: 16,
-        left: 8,right: 8
-      ),
+      padding: EdgeInsets.only(top: 16, bottom: 16, left: 8, right: 8),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(
-            Icons.ac_unit,
+          /*Icon(
+            Icons.det,
             color: Colors.white,
             size: 64,
-          ),
+          ),*/
           Container(
             height: 16,
           ),

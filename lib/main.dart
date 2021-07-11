@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:Bit.Me/contants.dart';
 import 'package:Bit.Me/sql_database.dart';
@@ -19,14 +20,30 @@ import 'auth_pages/authentication.dart';
 import 'external/authService.dart';
 import 'home.dart';
 
+//1222
 void main() async {
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-    statusBarColor: Colors.deepPurple, // Color for Android
-    statusBarBrightness: Brightness.dark, // Dark == white status bar -- for IOS.
-  ));
+
+  if (Platform.isIOS) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+      statusBarColor: Colors.deepPurple, // Color for Android
+      statusBarBrightness: Platform.isAndroid
+          ? Brightness.light
+          : Brightness.dark, // Dark == white status bar -- for IOS.
+    ));
+  }else{
+    SystemChrome.setEnabledSystemUIOverlays([]);
+  }
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  bool app_updated = await checkAppVersion();
+
+  bool app_updated = true;
+  try {
+    if (Platform.isAndroid || Platform.isIOS) {
+      app_updated = true;
+    }
+  } catch (e) {
+    app_updated = true;
+  }
   await Purchases.setup(apiKey, observerMode: false);
   SqlDatabase sql_database = SqlDatabase();
   await sql_database.initDB();
@@ -52,7 +69,6 @@ Future<bool> checkAppVersion() async {
       await FirebaseFirestore.instance.collection("appConfig").doc("standard").get();
   var data = documentSnapshot.data();
   bool result = int.parse(buildNumber) >= int.parse(data["min_version_build"].toString());
-  //print("result: $result");
   return result;
 }
 

@@ -15,12 +15,16 @@ class CircularProgressIndicatorMy extends StatefulWidget {
   }
 }
 
-class _CircularProgressIndicatorMyState
-    extends State<CircularProgressIndicatorMy> {
+class _CircularProgressIndicatorMyState extends State<CircularProgressIndicatorMy> {
   @override
   Widget build(BuildContext context) {
-    return Platform.isIOS || Platform.isMacOS
-        ? CupertinoActivityIndicator()
-        : CircularProgressIndicator();
+    return Container(
+      color: Colors.white,
+      child: Center(
+        child: Platform.isIOS || Platform.isMacOS
+            ? CupertinoActivityIndicator()
+            : CircularProgressIndicator(),
+      ),
+    );
   }
 }

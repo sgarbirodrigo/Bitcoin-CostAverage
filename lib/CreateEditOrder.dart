@@ -108,7 +108,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                                 return Row(
                                   children: [
                                     Text(
-                                      value,
+                                      value,style: TextStyle(fontSize: 18),
                                     ),
                                     Icon(
                                       Icons.arrow_drop_down,

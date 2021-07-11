@@ -255,7 +255,8 @@ class _HomeState extends State<Home> {
             future: Purchases.getOfferings(),
             builder: (context, AsyncSnapshot<Offerings> offerings) {
               if (offerings.hasData) {
-                if (!(offerings.data.current != null &&
+                print("offer: ${offerings.data}");
+                if ((offerings.data.current != null &&
                     offerings.data.current.availablePackages.isNotEmpty)) {
                   return PaywallMy_v2(
                     offering: offerings.data.current,

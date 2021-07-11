@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "256178541206",
+    "project_id": "contant-buyer",
+    "storage_bucket": "contant-buyer.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:256178541206:android:91ea3486d12309830de8b7",
+        "android_client_info": {
+          "package_name": "com.racooney.bit.me"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "256178541206-aoukd8s9vv9rdgge1pdkfd04eq7a8b6k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.racooney.bit.me",
+            "certificate_hash": "a3d838789c83bf1d5c0efea84fc93d298d4fb503"
+          }
+        },
+        {
+          "client_id": "256178541206-3blgvob6798ilclcmfc6tghog2hpl06k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-T93D5v1BEOL5WwkSTI0ziexelWEaMIs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "256178541206-3blgvob6798ilclcmfc6tghog2hpl06k.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "256178541206-arv2retjobp2117co5c4j0c9g092690c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.racooney.bit.me",
+                "app_store_id": "1570990404"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
