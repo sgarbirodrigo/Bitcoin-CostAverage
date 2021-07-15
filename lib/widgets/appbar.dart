@@ -1,8 +1,9 @@
-import 'package:Bit.Me/external/authService.dart';
+import 'package:Bit.Me/controllers/auth_controller.dart';
 import 'package:Bit.Me/models/user_model.dart';
 import 'package:Bit.Me/purchase/paywall.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 
 class AppBarBitMe extends StatefulWidget implements PreferredSizeWidget{
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -18,6 +19,7 @@ class AppBarBitMe extends StatefulWidget implements PreferredSizeWidget{
 
 }
 class _AppBarBitMeState extends State<AppBarBitMe> {
+  var authController = Get.find<AuthController>();
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
@@ -54,7 +56,7 @@ class _AppBarBitMeState extends State<AppBarBitMe> {
                   Icons.logout,
                   color: Colors.white,
                 ),
-                onPressed: () => AuthService().signOut(),
+                onPressed: () => authController.signOut(),
               )
           ),
 

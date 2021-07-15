@@ -80,6 +80,7 @@ class _OrderItemListState extends State<OrderItemList> {
       actionExtentRatio: 0.2,
       child: GestureDetector(
         onTap: () {
+
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => PairDetailPage(
                   _orderItem, widget.user.firebaseUser, widget.settings, widget.sqlDatabase)));

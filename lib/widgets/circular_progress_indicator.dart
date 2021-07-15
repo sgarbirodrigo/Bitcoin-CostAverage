@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class CircularProgressIndicatorMy extends StatefulWidget {
-  Color color;
+  final Color color;
+  final String info;
 
-  CircularProgressIndicatorMy({this.color});
+  CircularProgressIndicatorMy({this.color,this.info});
 
   @override
   State<StatefulWidget> createState() {
@@ -18,6 +19,7 @@ class CircularProgressIndicatorMy extends StatefulWidget {
 class _CircularProgressIndicatorMyState extends State<CircularProgressIndicatorMy> {
   @override
   Widget build(BuildContext context) {
+    print("loading reason: ${widget.info}");
     return Container(
       color: Colors.white,
       child: Center(

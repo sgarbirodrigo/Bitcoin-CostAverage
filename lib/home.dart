@@ -1,5 +1,6 @@
 import 'package:Bit.Me/charts/line_chart_mean.dart';
 import 'package:Bit.Me/contants.dart';
+import 'package:Bit.Me/controllers/purchase_controller.dart';
 import 'package:Bit.Me/external/binance_api.dart';
 import 'package:Bit.Me/main_pages/dashboard.dart';
 import 'package:Bit.Me/main_pages/settings.dart';
@@ -16,24 +17,25 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:titled_navigation_bar/titled_navigation_bar.dart';
 import 'CreateEditOrder.dart';
+import 'controllers/auth_controller.dart';
 import 'wizards/IntroductionConnectPage.dart';
 import 'wizards/IntroductionPage.dart';
 import 'main_pages/orders_Page.dart';
 
 class Home extends StatefulWidget {
-  Home({this.title, this.firebaseUser, this.purchaserInfo, this.sql_database});
+  Home({this.firebaseUser, this.sql_database});
 
   SqlDatabase sql_database;
-  PurchaserInfo purchaserInfo;
   final User firebaseUser;
-  final String title;
 
   @override
   _HomeState createState() => _HomeState();
@@ -42,6 +44,7 @@ class Home extends StatefulWidget {
 enum Section { LOGIN, DASHBOARD, ORDERS, HISTORY, SETTINGS }
 
 class _HomeState extends State<Home> {
+  var purchaseController = Get.find<PurchaseController>();
   SettingsApp settings;
   PageController _myPage;
 
@@ -53,7 +56,6 @@ class _HomeState extends State<Home> {
   int _pageIndex = 1;
   Widget body;
   String title = "Bitcoin-Cost Average";
-  bool entitlementIsActive = false;
 
   @override
   void initState() {
@@ -90,36 +92,20 @@ class _HomeState extends State<Home> {
       if (this.settings.base_pair == null &&
           this.user.userData != null &&
           this.user.userData.orders.length > 0) {
+        //print("Total buying: ${this.user.userTotalBuyingAmount}");
         this.settings.updateBasePair(this.user.userTotalBuyingAmount.keys.toList()[0]);
       }
       if (mounted) setState(() {});
     });
     _myPage = PageController(initialPage: 0);
-
-    _checkSubscription();
-    Purchases.addPurchaserInfoUpdateListener((purchaserInfo) async {
-      widget.purchaserInfo = purchaserInfo;
-      print("Updated Purchaser Info: ${purchaserInfo}");
-      _checkSubscription();
-      if (mounted) setState(() {});
-    });
-
     super.initState();
-  }
-
-
-  void _checkSubscription() {
-    (widget.purchaserInfo.entitlements.all[entitlementID] != null &&
-            widget.purchaserInfo.entitlements.all[entitlementID].isActive)
-        ? entitlementIsActive = true
-        : entitlementIsActive = false;
   }
 
   @override
   Widget build(BuildContext context) {
     if (user.userData != null) {
       if (user.userData.hasIntroduced) {
-        if (entitlementIsActive) {
+        if (purchaseController.entitlementIsActive.isTrue || kDebugMode) {
           if (user.userData.hasConnected) {
             return Scaffold(
               key: _scaffoldKey,
@@ -265,7 +251,7 @@ class _HomeState extends State<Home> {
                   return Scaffold(
                     body: SafeArea(
                       child: Center(
-                        child: CircularProgressIndicatorMy(),
+                        child: CircularProgressIndicatorMy(info: "null data.current or packages empty",),
                       ),
                     ),
                   );
@@ -274,7 +260,7 @@ class _HomeState extends State<Home> {
                 return Scaffold(
                   body: SafeArea(
                     child: Center(
-                      child: CircularProgressIndicatorMy(),
+                      child: CircularProgressIndicatorMy(info: "no offerings available",),
                     ),
                   ),
                 );
@@ -289,7 +275,7 @@ class _HomeState extends State<Home> {
       return Scaffold(
         body: SafeArea(
           child: Center(
-            child: CircularProgressIndicatorMy(),
+            child: CircularProgressIndicatorMy(info: "user data == null",),
           ),
         ),
       );

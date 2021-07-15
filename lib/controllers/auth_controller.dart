@@ -1,0 +1,193 @@
+import 'dart:io';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_performance/firebase_performance.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../contants.dart';
+
+class AuthController extends GetxController with StateMixin {
+  final Trace _traceAuthChange = FirebasePerformance.instance.newTrace("trace_authChange_performance");
+  FirebaseAuth _auth;
+  var _user = Rx<User>(null);
+  RxBool rememberMe = false.obs;
+
+
+  User get user => _user.value;
+
+  @override
+  int get hashCode {}
+
+  @override
+  void dispose() {
+    super.dispose();
+    _traceAuthChange.stop();
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    change(this, status: RxStatus.loading());
+    _traceAuthChange.start();
+    _auth = FirebaseAuth.instance;
+    _auth.authStateChanges().listen((User user) {
+      _traceAuthChange.incrementMetric("stateChange_counter", 1);
+      _user.value = user;
+    });
+    change(this, status: RxStatus.success());
+  }
+
+  bool isUserLogged() {
+    if (this.user != null && !this.user.isBlank && !this.user.isAnonymous) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<void> signUp(String user, String password) async {
+    change(this, status: RxStatus.loading());
+    String error;
+    Get.dialog(
+        Center(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+        barrierDismissible: false);
+
+    if (user.isNotEmpty && password.isNotEmpty) {
+      try {
+        _user.value = (await FirebaseAuth.instance
+                .createUserWithEmailAndPassword(email: user, password: password))
+            .user;
+        update();
+        //Get.toNamed(rootRoute);
+      } on FirebaseException catch (e) {
+        print("Auth error: $e");
+        error = e.message;
+      }
+    } else {
+      if (user.isEmpty) {
+        error = "Email cannot be empty.";
+      }
+      if (user.isEmpty) {
+        error = "Password cannot be empty.";
+      }
+    }
+    Get.back();
+    if (error != null) {
+      change(this, status: RxStatus.error(error));
+      callSnackbar("Oops!", error);
+    } else {
+      change(this, status: RxStatus.success());
+    }
+  }
+
+  Future<void> recover(String email) async {
+    change(this, status: RxStatus.loading());
+    String error;
+    Get.dialog(
+        Center(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+        barrierDismissible: false);
+
+    if (email.isNotEmpty) {
+      if (GetUtils.isEmail(email)) {
+        try {
+          await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+          update();
+        } on FirebaseAuthException catch (e) {
+          print("Auth error: $e");
+          error = e.message;
+        }
+      } else {
+        error = "Invalid email.";
+      }
+    } else {
+      error = "Email cannot be empty.";
+    }
+    Get.back();
+    if (error != null) {
+      change(this, status: RxStatus.error(error));
+      callSnackbar("Oops!", error);
+    } else {
+      callSnackbar("Check your email!", "We\'ve sent your instructions.");
+      change(this, status: RxStatus.success());
+    }
+  }
+
+  Future<void> signIn(String user, String password) async {
+    change(this, status: RxStatus.loading());
+    String error;
+    Get.dialog(
+        Center(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+        barrierDismissible: false);
+    if (user.isNotEmpty && password.isNotEmpty) {
+      try {
+        if (!(Platform.isIOS || Platform.isAndroid)) {
+          if (rememberMe.value) {
+            FirebaseAuth.instance.setPersistence(Persistence.SESSION);
+          } else {
+            FirebaseAuth.instance.setPersistence(Persistence.NONE);
+          }
+        }
+        _user.value = (await FirebaseAuth.instance
+                .signInWithEmailAndPassword(email: user, password: password))
+            .user;
+
+        update();
+        //Get.toNamed(rootRoute);
+      } on FirebaseAuthException catch (e) {
+        print("Auth error: $e");
+        if (e.code == 'user-not-found') {
+          error = 'No user found for that email.';
+        } else if (e.code == 'wrong-password') {
+          error = 'Wrong password provided for that user.';
+        } else {
+          error = e.message;
+        }
+      }
+    } else {
+      if (user.isEmpty) {
+        error = "Email cannot be empty.";
+      }
+      if (user.isEmpty) {
+        error = "Password cannot be empty.";
+      }
+    }
+    Get.back();
+    if (error != null) {
+      change(this, status: RxStatus.error(error));
+      callSnackbar("Oops!", error);
+    } else {
+      change(this, status: RxStatus.success());
+    }
+  }
+
+  Future<void> signOut() async {
+    // Show loading widget till we sign out
+    /*Get.dialog(
+        Center(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+        barrierDismissible: false);*/
+    change(this, status: RxStatus.loading());
+    await _auth.signOut();
+    Get.back();
+    // Navigate to Login again
+    //Get.offAllNamed(authenticationPageRoute);
+    change(this, status: RxStatus.success());
+  }
+}

@@ -4,7 +4,6 @@ import 'package:Bit.Me/models/settings_model.dart';
 import 'package:Bit.Me/models/user_model.dart';
 import 'package:Bit.Me/sql_database.dart';
 import 'package:Bit.Me/tools.dart';
-import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -47,35 +46,20 @@ class _PairDetailPageState extends State<PairDetailPage> {
       if (mounted) setState(() {});
     });
   }
+  double getPairPrice(String pair){
+    try {
+      return widget.settings.binanceTicker[pair.replaceAll("/", "")];
+    }catch(e){
+      print("error ticker: $e");
+      return 0;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    /*String timespan_name = "";
-    switch (widget.settings.scaleLineChart) {
-      case ScaleLineChart.WEEK1:
-        timespan_name = "last week";
-        break;
-      case ScaleLineChart.WEEK2:
-        timespan_name = "last two week";
-        break;
-      case ScaleLineChart.MONTH1:
-        timespan_name = "last month";
-        break;
-      case ScaleLineChart.MONTH6:
-        timespan_name = "last six months";
-        break;
-      case ScaleLineChart.YEAR1:
-        timespan_name = "last year";
-        break;
-    }
-*/
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.deepPurple,
-      /*appBar: AppBarBitMe(
-        returnIcon: true,
-        title: "Purchase History",
-      ),*/
       body: SafeArea(
           bottom: false,
           child: Column(
@@ -110,7 +94,7 @@ class _PairDetailPageState extends State<PairDetailPage> {
                         Tooltip(
                             message: 'Price',
                             child: Text(
-                              "${returnCurrencyCorrectedNumber(widget.orderItem.pair.split("/")[1], widget.settings.binanceTicker[widget.orderItem.pair.replaceAll("/", "")])}",
+                              "${returnCurrencyCorrectedNumber(widget.orderItem.pair.split("/")[1], getPairPrice(widget.orderItem.pair))}",
                               style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.white,
@@ -136,7 +120,7 @@ class _PairDetailPageState extends State<PairDetailPage> {
                           ),
                           Text(
                             pairData != null
-                                ? "(${returnCurrencyCorrectedNumber(widget.orderItem.pair.split("/")[1], 0.00000001 /*(widget.settings.binanceTicker[widget.orderItem.pair.replaceAll("/", "")] * pairData.coinAccumulated) - pairData.totalExpended*/)})"
+                                ? "(${returnCurrencyCorrectedNumber(widget.orderItem.pair.split("/")[1],(getPairPrice(widget.orderItem.pair) * pairData.coinAccumulated) - pairData.totalExpended)})"
                                 : "...",
                             style: TextStyle(
                                 fontSize: 16,
@@ -242,7 +226,7 @@ class _PairDetailPageState extends State<PairDetailPage> {
                                   ),
                                   Text(
                                     pairData != null
-                                        ? "${returnCurrencyCorrectedNumber(pairData.pair.split("/")[1], (widget.settings.binanceTicker[pairData.pair.replaceAll("/", "")] * pairData.coinAccumulated))}"
+                                        ? "${returnCurrencyCorrectedNumber(pairData.pair.split("/")[1], (getPairPrice(widget.orderItem.pair) * pairData.coinAccumulated))}"
                                         : "...",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(

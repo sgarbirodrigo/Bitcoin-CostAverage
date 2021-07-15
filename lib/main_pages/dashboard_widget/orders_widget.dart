@@ -97,8 +97,8 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                       style: TextStyle(
                         fontFamily: 'Arial',
                         fontSize: 12,
-                        fontWeight: FontWeight.w100,
-                        color: Colors.black.withOpacity(0.7),
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black.withOpacity(0.9),
                         shadows: <Shadow>[
                           Shadow(
                             offset: Offset(0.5, 0.5),

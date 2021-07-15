@@ -1,4 +1,5 @@
-
+import 'package:Bit.Me/controllers/auth_controller.dart';
+import 'package:get/get.dart';
 import 'package:Bit.Me/external/authService.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +21,7 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController emailTextField = TextEditingController();
   final TextEditingController passwordTextField = TextEditingController();
   final GlobalKey<FormState> _signUpFormKey = GlobalKey<FormState>();
+  var authController = Get.find<AuthController>();
 
   // Run Action When Loading
   bool loading = false;
@@ -54,9 +56,9 @@ class _SignUpState extends State<SignUp> {
               decoration: InputDecoration(labelText: "Email"),
               validator: (email) {
                 if (email.isEmpty) {
-                  return "Please enter an email adress";
+                  return "Please enter an email address";
                 } else if (email.contains("@") == false) {
-                  return "Invalid email adress";
+                  return "Invalid email address";
                 } else if (errorMessage["email"].isNotEmpty) {
                   return errorMessage["email"];
                 }
@@ -132,7 +134,7 @@ class _SignUpState extends State<SignUp> {
                 onPressed: () async {
                   setState(() {
                     errorMessage["email"] = "";
-                    errorMessage["netwrok"] = "";
+                    errorMessage["network"] = "";
                     errorMessage["password"] = "";
                   });
 
@@ -148,21 +150,10 @@ class _SignUpState extends State<SignUp> {
                     setState(() {
                       loading = true;
                     });
-                    await AuthService()
-                        .signUp(emailTextField.text, passwordTextField.text)
-                        .then((value) {
-                      if (value["network"].isNotEmpty) {
-                        widget.authScaffoldKey.currentState
-                            .showSnackBar(widget.networkErrorSnackBar);
-                        setState(() {
-                          loading = false;
-                        });
-                      }
-                      setState(() {
-                        errorMessage = value;
-                        loading = false;
-                      });
-                      _signUpFormKey.currentState.validate();
+                    authController.signUp(emailTextField.text, passwordTextField.text);
+
+                    setState(() {
+                      loading = false;
                     });
                   }
                 },

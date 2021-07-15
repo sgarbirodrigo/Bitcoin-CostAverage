@@ -127,7 +127,7 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                                   style: TextStyle(
                                       fontFamily: 'Arial Rounded MT Bold',
                                       fontSize: 18,
-                                      color: Colors.deepPurple)),
+                                      color: Colors.red)),
                               Column(
                                   children: Iterable<int>.generate(
                                           widget.offering.availablePackages.length)

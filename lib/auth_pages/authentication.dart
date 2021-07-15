@@ -2,7 +2,11 @@
 import 'package:Bit.Me/auth_pages/forgotPassword.dart';
 import 'package:Bit.Me/auth_pages/signIn.dart';
 import 'package:Bit.Me/auth_pages/signUp.dart';
+import 'package:Bit.Me/contants.dart';
+import 'package:Bit.Me/controllers/auth_controller.dart';
+import 'package:Bit.Me/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Authentication extends StatefulWidget {
   @override
@@ -11,6 +15,7 @@ class Authentication extends StatefulWidget {
 
 class _AuthenticationState extends State<Authentication> {
   final GlobalKey<ScaffoldState> _authScaffoldKey = GlobalKey<ScaffoldState>();
+
   PageController authPageController =
       PageController(keepPage: true, initialPage: 1);
   int page = 1;
@@ -68,15 +73,18 @@ class _AuthenticationState extends State<Authentication> {
                   children: [
                     // Logo Template
                     Container(
-                      height: 150,
-                      width: 150,
+                      height: 128,
+                      width: 128,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(75),
                         //color: Colors.grey,
                       ),
                       child: Center(
                           child: Image.asset('assets/images/logo.png')),
+                    ),SizedBox(
+                      height: 8,
                     ),
+                    CustomText(text: "Bitcoin-Cost Average",color: active,size: 24,),
                     SizedBox(
                       height: 30,
                     ),

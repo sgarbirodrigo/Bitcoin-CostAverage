@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 /*
 List<Color> colorsList = [
@@ -15,6 +16,19 @@ List<Color> colorsList = [
   Color(0xff7AC142),
   Color(0xff007CC3)
 ];*/
+
+const rootRoute = "/";
+
+//Authentication
+const authenticationPageRoute = "/";
+const authenticationSignUpPageRoute = "/signup";
+const authenticationRecoveryPageRoute = "/recovery";
+
+Color light = Color(0xFFF7F8FC);
+Color lightGrey = Color(0xFF5A6268);
+Color dark = Color(0xFF363740);
+Color active = Colors.deepPurple;
+
 const greenAppColor = Color(0xff69A67C);
 const redAppColor = Color(0xffA96B6B);
 const List<Color> colorsList = [
@@ -56,6 +70,20 @@ const apiKey = 'bwzpyaCedynvkCMJndIPRCGLWesrHflv';
 //TO DO: add the entitlement ID from the RevenueCat dashboard that is activated upon successful in-app purchase for the duration of the purchase.
 const entitlementID = 'Premium';
 
+final Function(String, String) callSnackbar = (String title, String message) {
+  return Get.snackbar(
+    title,
+    message,
+    duration: Duration(seconds: 5),
+    backgroundColor: lightGrey,
+    colorText: Colors.white,
+    snackPosition: SnackPosition.BOTTOM, padding: EdgeInsets.all(16),margin: EdgeInsets.all(16),borderRadius: 4.0,
+    icon: Icon(
+      Icons.error,
+      color: Colors.white,
+    ),
+  );
+};
 
 // UI Colors
 const kColorBar = Colors.black;

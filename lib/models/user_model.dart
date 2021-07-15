@@ -29,6 +29,8 @@ class UserData {
   bool hasRunFirstWizzardOrder;
   Map<String, OrderItem> orders;
 
+  UserData();
+
   UserData.fromJson(Map<String, dynamic> jsonx) {
     email = jsonx['email'];
     hasIntroduced = jsonx['hasIntroduced'] ?? false;

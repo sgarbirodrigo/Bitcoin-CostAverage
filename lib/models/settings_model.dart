@@ -18,7 +18,7 @@ class SettingsApp {
     scaleLineChart = ScaleLineChart.WEEK1;
     SharedPreferences.getInstance().then((value) {
       preferences = value;
-      this.base_pair = preferences.getString(_base_pair_preference) ?? 'BTC/USDT';
+      this.base_pair = preferences.getString(_base_pair_preference);
       this.scaleLineChart = _getScale();
       this._updateWidgets(this);
     });

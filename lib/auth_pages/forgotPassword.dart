@@ -1,6 +1,7 @@
-
 import 'package:Bit.Me/external/authService.dart';
 import 'package:flutter/material.dart';
+import 'package:Bit.Me/controllers/auth_controller.dart';
+import 'package:get/get.dart';
 
 class ForgotPassword extends StatefulWidget {
   ForgotPassword({
@@ -21,7 +22,7 @@ class ForgotPassword extends StatefulWidget {
 class _ForgotPasswordState extends State<ForgotPassword> {
   final TextEditingController emailTextField = TextEditingController();
   final GlobalKey<FormState> _forgotPasswordFormKey = GlobalKey<FormState>();
-
+  var authController = Get.find<AuthController>();
   // Run Action When Loading
   bool loading = false;
 
@@ -49,7 +50,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     ),
   );
 
-  // Map For Displaying Erorr Messages
+  // Map For Displaying Error Messages
   Map<String, String> errorMessage = {
     "email": "",
     "password": "",
@@ -91,9 +92,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               decoration: InputDecoration(labelText: "Email"),
               validator: (email) {
                 if (email.isEmpty) {
-                  return "Please enter an email adress";
+                  return "Please enter an email address";
                 } else if (email.contains("@") == false) {
-                  return "Invalid email adress";
+                  return "Invalid email address";
                 } else if (errorMessage["email"].isNotEmpty) {
                   return errorMessage["email"];
                 }
@@ -108,11 +109,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             height: 50,
             width: MediaQuery.of(context).size.width,
             child: ElevatedButton(
-
               onPressed: () async {
                 setState(() {
                   errorMessage["email"] = "";
-                  errorMessage["netwrok"] = "";
+                  errorMessage["network"] = "";
                   errorMessage["password"] = "";
                 });
 
@@ -123,36 +123,16 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 // 5. Set State "errorMessage" = value
                 // 6. Check Form Validation Again
                 // 7. If Valid => Sign In
-
-                if (_forgotPasswordFormKey.currentState.validate()) {
-                  setState(() {
-                    loading = true;
-                  });
-                  await AuthService()
-                      .forgotPassword(emailTextField.text)
-                      .then((value) {
-                    if (value["network"].isNotEmpty) {
-                      widget.authScaffoldKey.currentState
-                          .showSnackBar(widget.networkErrorSnackBar);
-                      setState(() {
-                        loading = false;
-                      });
-                    }
-                    setState(() {
-                      errorMessage = value;
-                      loading = false;
-                    });
-
-                    if (_forgotPasswordFormKey.currentState.validate()) {
-                      widget.authScaffoldKey.currentState
-                          .showSnackBar(emailSent);
-                      widget.authPageController.nextPage(
-                        duration: Duration(milliseconds: 700),
-                        curve: Curves.easeInOutCirc,
-                      );
-                    }
-                  });
+                if (!_forgotPasswordFormKey.currentState.validate()) {
+                  return;
                 }
+                setState(() {
+                  loading = true;
+                });
+                authController.recover(emailTextField.text);
+                setState(() {
+                  loading = false;
+                });
               },
               child: loading
                   ? Container(

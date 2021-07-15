@@ -1,5 +1,7 @@
+import 'package:Bit.Me/controllers/auth_controller.dart';
 import 'package:Bit.Me/external/authService.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SignIn extends StatefulWidget {
   SignIn({
@@ -21,6 +23,7 @@ class _SignInState extends State<SignIn> {
   final TextEditingController emailTextField = TextEditingController();
   final TextEditingController passwordTextField = TextEditingController();
   final GlobalKey<FormState> _signInFormKey = GlobalKey<FormState>();
+  var authController = Get.find<AuthController>();
 
   // Run Action When Loading
   bool loading = false;
@@ -54,9 +57,9 @@ class _SignInState extends State<SignIn> {
               decoration: InputDecoration(labelText: "Email"),
               validator: (email) {
                 if (email.isEmpty) {
-                  return "Please enter an email adress";
+                  return "Please enter an email address";
                 } else if (email.contains("@") == false) {
-                  return "Invalid email adress";
+                  return "Invalid email address";
                 } else if (errorMessage["email"].isNotEmpty) {
                   return errorMessage["email"];
                 }
@@ -128,7 +131,7 @@ class _SignInState extends State<SignIn> {
                 onPressed: () async {
                   setState(() {
                     errorMessage["email"] = "";
-                    errorMessage["netwrok"] = "";
+                    errorMessage["network"] = "";
                     errorMessage["password"] = "";
                   });
 
@@ -144,22 +147,10 @@ class _SignInState extends State<SignIn> {
                     setState(() {
                       loading = true;
                     });
-                    await AuthService()
-                        .signIn(emailTextField.text, passwordTextField.text)
-                        .then((value) {
-                      if (value["network"].isNotEmpty) {
-                        widget.authScaffoldKey.currentState
-                            .showSnackBar(widget.networkErrorSnackBar);
-                        setState(() {
-                          loading = false;
-                        });
-                      }
-                      setState(() {
-                        errorMessage = value;
-                        loading = false;
-                      });
+                    authController.signIn(emailTextField.text, passwordTextField.text);
+                    setState(() {
+                      loading = false;
                     });
-                    _signInFormKey.currentState.validate();
                   }
                 },
               ),

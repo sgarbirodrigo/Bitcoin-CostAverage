@@ -8,53 +8,71 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:package_info/package_info.dart';
 import 'package:purchases_flutter/object_wrappers.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'auth_pages/authentication.dart';
+import 'controllers/auth_controller.dart';
+import 'controllers/bindings/auth_binding.dart';
+import 'controllers/purchase_controller.dart';
 import 'external/authService.dart';
 import 'home.dart';
+import 'pages/authentication/authentication.dart';
+import 'pages/authentication/recovery.dart';
+import 'pages/authentication/sign_up.dart';
 
 //1222
-void main() async {
 
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  Get.put(AuthController());
+  Get.put(PurchaseController());
+
+  final Trace traceInit = FirebasePerformance.instance.newTrace("trace_init_performance");
+  await traceInit.start();
+
+  //control device initial settings
   if (Platform.isIOS) {
+    await traceInit.putAttribute("platform", "ios");
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
       statusBarColor: Colors.deepPurple, // Color for Android
       statusBarBrightness: Platform.isAndroid
           ? Brightness.light
           : Brightness.dark, // Dark == white status bar -- for IOS.
     ));
-  }else{
+  } else {
+    await traceInit.putAttribute("platform", "not_ios");
     SystemChrome.setEnabledSystemUIOverlays([]);
   }
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
 
-  bool app_updated = true;
+  //control app version
+  bool appUpdated = true;
   try {
     if (Platform.isAndroid || Platform.isIOS) {
-      app_updated = true;
+      appUpdated = await checkAppVersion();
     }
   } catch (e) {
-    app_updated = true;
+    appUpdated = true;
   }
-  await Purchases.setup(apiKey, observerMode: false);
+  await traceInit.putAttribute("app_update", appUpdated.toString());
+
   SqlDatabase sql_database = SqlDatabase();
   await sql_database.initDB();
-  FirebaseAuth.instance.authStateChanges().listen((firebaseUser) async {
-    if (firebaseUser == null) {
-      await sql_database.deleteDB();
-      await Purchases.reset();
-    }
-  });
+  await traceInit.incrementMetric("local_db_init", 1);
+  await traceInit.stop();
+
   runZonedGuarded(() {
-    runApp(MyApp(app_updated, sql_database));
+    runApp(MyApp(appUpdated, sql_database));
   }, FirebaseCrashlytics.instance.recordError);
 }
 
@@ -75,43 +93,36 @@ Future<bool> checkAppVersion() async {
 class MyApp extends StatelessWidget {
   bool appUpdated;
   SqlDatabase sql_database;
+  Trace traceMain;
+  var authController = Get.find<AuthController>();
+  var purchaseController = Get.find<PurchaseController>();
 
-  MyApp(this.appUpdated, this.sql_database);
+  MyApp(this.appUpdated, this.sql_database) {
+    traceMain = FirebasePerformance.instance.newTrace("trace_init_performance");
+    traceMain.start();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: AppLanguage().appTitle,
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
+      locale: Locale("en", "US"),
+      title: "Bitcoin-Cost Average",
+      //translationsKeys: Messages().keys,
       theme: ThemeData(
+        scaffoldBackgroundColor: light,
+        textTheme:
+            GoogleFonts.mulishTextTheme(Theme.of(context).textTheme).apply(bodyColor: Colors.black),
+        pageTransitionsTheme: PageTransitionsTheme(builders: {
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+        }),
         primarySwatch: Colors.deepPurple,
       ),
-      home: StreamBuilder<User>(
-        stream: AuthService().authStateChanges(),
-        builder: (context, AsyncSnapshot<User> snapshot) {
-          if (this.appUpdated) {
-            if (snapshot.hasData) {
-              FirebaseCrashlytics.instance.setUserIdentifier(snapshot.data.uid);
-              return FutureBuilder<PurchaserInfo>(
-                  future: Purchases.identify(snapshot.data.uid),
-                  builder: (context, purchaserInfoSnapshot) {
-                    if (purchaserInfoSnapshot.hasData) {
-                      print("Purchaser Info: ${purchaserInfoSnapshot.data.activeSubscriptions}");
-                      return Home(
-                          firebaseUser: snapshot.data,
-                          purchaserInfo: purchaserInfoSnapshot.data,
-                          sql_database: sql_database);
-                    } else {
-                      return CircularProgressIndicatorMy();
-                    }
-                  });
-            } else if (snapshot.hasData == false &&
-                snapshot.connectionState == ConnectionState.active) {
-              return Authentication();
-            } else {
-              return CircularProgressIndicatorMy();
-            }
-          } else {
+      initialBinding: AuthBinding(),
+      home: authController.obx(
+        (_controller) {
+          if (!this.appUpdated) {
             return Scaffold(
               body: Container(
                   padding: EdgeInsets.symmetric(horizontal: 32),
@@ -124,7 +135,33 @@ class MyApp extends StatelessWidget {
                   )),
             );
           }
+          if (authController.isUserLogged()) {
+            FirebaseCrashlytics.instance.setUserIdentifier(authController.user.uid);
+            purchaseController.setUser(authController.user.uid);
+            return purchaseController.obx(
+              (_purchaserController) {
+                return Home(firebaseUser: authController.user, sql_database: sql_database);
+              },
+              onLoading: CircularProgressIndicatorMy(info: "loading purchase controller",),
+              onEmpty: CircularProgressIndicatorMy(info: "empty purchase controller",),
+              // here also you can set your own error widget, but by
+              // default will be an Center(child:Text(error))
+              onError: (error) {
+                callSnackbar("Oops!", error);
+                return Home(firebaseUser: authController.user, sql_database: sql_database);
+              },
+            );
+          } else {
+            return Authentication();
+          }
         },
+        // here you can put your custom loading indicator, but
+        // by default would be Center(child:CircularProgressIndicator())
+        onLoading: CircularProgressIndicatorMy(info: "loading auth controller",),
+        onEmpty: CircularProgressIndicatorMy(info: "empty auth controller",),
+        // here also you can set your own error widget, but by
+        // default will be an Center(child:Text(error))
+        onError: (error) => Authentication(),
       ),
     );
   }
