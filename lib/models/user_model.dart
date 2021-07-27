@@ -2,7 +2,9 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
+import 'package:Bit.Me/controllers/database_controller.dart';
 import 'package:Bit.Me/sql_database.dart';
+import 'package:get/get.dart';
 import 'package:path/path.dart';
 import 'package:Bit.Me/external/binance_api.dart';
 import 'package:Bit.Me/external/firestoreService.dart';
@@ -114,16 +116,17 @@ class UserManager {
 
   /*List<OrderItem> orderItems = List();*/
   List<HistoryItem> historyItems = List();
+  Map<String, PairData> pairDataItems = Map();
   Map<String, double> userTotalBuyingAmount = Map();
   Map<String, double> userTotalExpendingAmount = Map();
   Function(UserManager user) onUserDataUpdate;
   Balance balance;
-  Map<String, PairData> pairDataItems = Map();
+
   SettingsApp settings;
   bool isUpdatingHistory = false;
-  SqlDatabase sqlDatabase;
+  var databaseController = Get.put(LocalDatabaseController());
 
-  UserManager(this.sqlDatabase, this.firebaseUser, this.settings, this.onUserDataUpdate) {
+  UserManager(this.firebaseUser, this.settings, this.onUserDataUpdate) {
     updateUser();
     switch (this.settings.scaleLineChart) {
       case ScaleLineChart.WEEK1:
@@ -157,8 +160,8 @@ class UserManager {
   }
 
   void forceUpdateHistoryData(int daysToConsider) async {
-    List<Map<String, dynamic>> db_query =
-        await this.sqlDatabase.database.rawQuery('SELECT * FROM History ORDER BY timestamp DESC');
+    List<Map<String, dynamic>> dbQuery =
+        await databaseController.sql_database.database.rawQuery('SELECT * FROM History ORDER BY timestamp DESC');
 
     Query firestoreHistoryQuery = FirebaseFirestore.instance
         .collection("users")
@@ -169,7 +172,7 @@ class UserManager {
     void addSnapshotToSQLDB(QuerySnapshot historySnapshots) async {
       historySnapshots.docs.forEach((element) async {
         HistoryItem historyItem = HistoryItem.fromJson(element.data());
-        await this.sqlDatabase.database.insert('history', {
+        await databaseController.sql_database.database.insert('history', {
           'id': element.id,
           'timestamp': historyItem.timestamp.millisecondsSinceEpoch,
           'amount': historyItem.order.amount,
@@ -180,19 +183,19 @@ class UserManager {
       });
     }
 
-    if (db_query.length > 0) {
-      Timestamp last_loaded_timestamp =
-          Timestamp.fromMillisecondsSinceEpoch(db_query.first['timestamp']);
-      if (last_loaded_timestamp.toDate().isBefore(DateTime.now().add(Duration(hours: -24)))) {
+    if (dbQuery.length > 0) {
+      Timestamp lastLoadedTimestamp =
+          Timestamp.fromMillisecondsSinceEpoch(dbQuery.first['timestamp']);
+      if (lastLoadedTimestamp.toDate().isBefore(DateTime.now().add(Duration(hours: -24)))) {
         addSnapshotToSQLDB(await firestoreHistoryQuery
-            .where('timestamp', isGreaterThan: last_loaded_timestamp)
+            .where('timestamp', isGreaterThan: lastLoadedTimestamp)
             .get());
       }
     } else {
       addSnapshotToSQLDB(await firestoreHistoryQuery.get());
     }
 
-    List<Map<String, dynamic>> rawQuery = await this.sqlDatabase.database.rawQuery(
+    List<Map<String, dynamic>> rawQuery = await databaseController.sql_database.database.rawQuery(
         'SELECT * FROM History WHERE timestamp>= ${DateTime.now().add(Duration(days: -daysToConsider)).millisecondsSinceEpoch}');
     historyItems.clear();
     pairDataItems.clear();

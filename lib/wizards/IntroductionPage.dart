@@ -1,15 +1,16 @@
+import 'package:Bit.Me/controllers/user_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../models/user_model.dart';
 
 class IntroductionPage extends StatefulWidget {
-  UserManager user;
 
-  IntroductionPage(this.user);
+  IntroductionPage();
 
   @override
   State<StatefulWidget> createState() {
@@ -19,7 +20,7 @@ class IntroductionPage extends StatefulWidget {
 
 class _IntroductionPageState extends State<IntroductionPage> {
   final introKey = GlobalKey<IntroductionScreenState>();
-
+  var userController = Get.find<UserController>();
   Widget _buildImage(String assetName, [double width = 256]) {
     return Image.asset('assets/images/introduction/$assetName', width: width);
   }
@@ -95,10 +96,10 @@ class _IntroductionPageState extends State<IntroductionPage> {
   void updateUser(){
     FirebaseFirestore.instance
         .collection("users")
-        .doc(widget.user.firebaseUser.uid)
+        .doc(userController.user.uid)
         .update({"hasIntroduced": true}).then((value) {
       //Navigator.of(context).pop();
-      widget.user.updateUser();
+      userController.refreshUserData();
     });
   }
 }

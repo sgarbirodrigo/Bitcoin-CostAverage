@@ -6,19 +6,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 
+import 'controllers/user_controller.dart';
 import 'external/BinanceSymbolModel.dart';
 import 'models/schedule_model.dart';
 import 'models/user_model.dart';
 
 class CreateEditOrder extends StatefulWidget {
-  UserManager user;
-
-  CreateEditOrder(this.user, {this.orderItem});
+  CreateEditOrder({this.orderItem});
 
   OrderItem orderItem;
 
@@ -33,6 +33,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
   Map<String, BinanceSymbol> listOfSymbols;
   TextEditingController _amountController = TextEditingController();
   Schedule schedule;
+  var userController = Get.find<UserController>();
   final _formKey = GlobalKey<FormState>();
   List<String> pairs;
 
@@ -108,7 +109,8 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                                 return Row(
                                   children: [
                                     Text(
-                                      value,style: TextStyle(fontSize: 18),
+                                      value,
+                                      style: TextStyle(fontSize: 18),
                                     ),
                                     Icon(
                                       Icons.arrow_drop_down,
@@ -171,8 +173,11 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                                           onPressed: () {
                                             FirebaseFirestore.instance
                                                 .collection("users")
-                                                .doc(widget.user.firebaseUser.uid)
-                                                .update({"orders.${widget.orderItem.pair.replaceAll("/", "_")}": FieldValue.delete()}).then((value) {
+                                                .doc(userController.user.uid)
+                                                .update({
+                                              "orders.${widget.orderItem.pair.replaceAll("/", "_")}":
+                                                  FieldValue.delete()
+                                            }).then((value) {
                                               Navigator.of(context).pop("deleted");
                                             });
                                           },
@@ -190,10 +195,11 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                                 if (result == "deleted") {
                                   Navigator.of(context).pop();
                                 }
-                                widget.user.updateUser();
+                                userController.refreshUserData();
                               },
                               child: Text("DELETE"),
-                              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.red)),
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(Colors.red)),
                             )
                           : Container(),
                       widget.orderItem != null
@@ -215,16 +221,21 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                               );
                               FirebaseFirestore.instance
                                   .collection("users")
-                                  .doc(widget.user.firebaseUser.uid)
-                                  .update({"orders.${newOrder.pair.replaceAll("/", "_")}": newOrder.toJson()}).then((value) {
+                                  .doc(userController.user.uid)
+                                  .update({
+                                "orders.${newOrder.pair.replaceAll("/", "_")}": newOrder.toJson()
+                              }).then((value) {
                                 Navigator.pop(context);
                               });
                             } else {
                               widget.orderItem.updatedTimestamp = Timestamp.now();
                               FirebaseFirestore.instance
                                   .collection("users")
-                                  .doc(widget.user.firebaseUser.uid)
-                                  .update({"orders.${widget.orderItem.pair.replaceAll("/", "_")}": widget.orderItem.toJson()}).then((value) {
+                                  .doc(userController.user.uid)
+                                  .update({
+                                "orders.${widget.orderItem.pair.replaceAll("/", "_")}":
+                                    widget.orderItem.toJson()
+                              }).then((value) {
                                 Navigator.pop(context);
                               });
                             }
@@ -256,10 +267,12 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                           //hintText: "Amount",
                           labelText: "Amount to invest",
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
+                            borderSide:
+                                BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
+                            borderSide:
+                                BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
                           )),
                       keyboardType: TextInputType.numberWithOptions(decimal: true),
                       inputFormatters: <TextInputFormatter>[
@@ -268,9 +281,11 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                       onChanged: (value) {
                         _amountController.text = value.replaceAll(",", ".");
                         if (_amountController.text.contains(".")) {
-                          _amountController.text = "${_amountController.text.split(".")[0]}.${_amountController.text.split(".")[1]}";
+                          _amountController.text =
+                              "${_amountController.text.split(".")[0]}.${_amountController.text.split(".")[1]}";
                         }
-                        _amountController.selection = TextSelection.fromPosition(TextPosition(offset: _amountController.text.length));
+                        _amountController.selection = TextSelection.fromPosition(
+                            TextPosition(offset: _amountController.text.length));
                       },
                       // The validator receives the text that the user has entered.
                       validator: (value) {
@@ -279,7 +294,11 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                         }
                         if (validatePairString(_selectedPair)) {
                           double valueDouble = double.parse(value.replaceAll(",", "."));
-                          double minDouble = double.parse(listOfSymbols[_selectedPair.toString().replaceAll("/", "")].filters[3].minNotional.toString());
+                          double minDouble = double.parse(
+                              listOfSymbols[_selectedPair.toString().replaceAll("/", "")]
+                                  .filters[3]
+                                  .minNotional
+                                  .toString());
                           if (valueDouble < minDouble) {
                             return 'Must be bigger than the minimum amount';
                           }

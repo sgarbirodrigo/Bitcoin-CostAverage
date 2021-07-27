@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:Bit.Me/controllers/database_controller.dart';
+import 'package:Bit.Me/controllers/purchase_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_performance/firebase_performance.dart';
@@ -9,11 +11,14 @@ import 'package:get/get.dart';
 import '../contants.dart';
 
 class AuthController extends GetxController with StateMixin {
-  final Trace _traceAuthChange = FirebasePerformance.instance.newTrace("trace_authChange_performance");
+  var purchaseController = Get.find<PurchaseController>();
+  var databaseController = Get.find<LocalDatabaseController>();
+
+  final Trace _traceAuthChange =
+      FirebasePerformance.instance.newTrace("trace_authChange_performance");
   FirebaseAuth _auth;
   var _user = Rx<User>(null);
   RxBool rememberMe = false.obs;
-
 
   User get user => _user.value;
 
@@ -176,18 +181,21 @@ class AuthController extends GetxController with StateMixin {
 
   Future<void> signOut() async {
     // Show loading widget till we sign out
-    /*Get.dialog(
+    Get.dialog(
         Center(
           child: Center(
             child: CircularProgressIndicator(),
           ),
         ),
-        barrierDismissible: false);*/
+        barrierDismissible: false);
     change(this, status: RxStatus.loading());
     await _auth.signOut();
+    await databaseController.deleteDB();
+    await purchaseController.reset();
     Get.back();
     // Navigate to Login again
     //Get.offAllNamed(authenticationPageRoute);
     change(this, status: RxStatus.success());
+    refresh();
   }
 }

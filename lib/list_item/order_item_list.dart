@@ -1,254 +1,128 @@
 import 'package:Bit.Me/CreateEditOrder.dart';
+import 'package:Bit.Me/controllers/user_controller.dart';
+import 'package:Bit.Me/main_pages/dashboard_widget/orders_widgets/orders_left_column_widget.dart';
+import 'package:Bit.Me/main_pages/dashboard_widget/orders_widgets/orders_right_column_widget.dart';
 import 'package:Bit.Me/models/order_model.dart';
-import 'package:Bit.Me/sql_database.dart';
-import 'package:Bit.Me/tools.dart';
-import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
-import 'package:Bit.Me/widgets/weekindicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-
+import 'package:get/get.dart';
 import '../main_pages/pairdetail_page.dart';
 import '../charts/line_chart_mean.dart';
 import '../contants.dart';
-import '../models/history_model.dart';
-import '../models/settings_model.dart';
 import '../models/user_model.dart';
 
-class OrderItemList extends StatefulWidget {
+class OrderItemList extends StatelessWidget {
+  var userController = Get.find<UserController>();
   int index;
-  UserManager user;
-  SettingsApp settings;
-  SqlDatabase sqlDatabase;
 
-  OrderItemList(this.index, this.user, this.settings,this.sqlDatabase);
-
-  @override
-  State<StatefulWidget> createState() {
-    return _OrderItemListState();
-  }
-}
-
-class _OrderItemListState extends State<OrderItemList> {
-  double appreciation;
+  OrderItemList(this.index);
 
   @override
   Widget build(BuildContext context) {
-    OrderItem _orderItem =
-        widget.user.userData.orders.values.toList()[widget.index];
-    PairData _pairData = widget.user.pairDataItems[_orderItem.pair];
-    //print("_pairData: ${_pairData}");
-    if (_pairData != null &&widget.settings.binanceTicker!=null) {
-      appreciation =
-          (((widget.settings.binanceTicker[_pairData.pair.replaceAll("/", "")] *
-                          _pairData.coinAccumulated) /
-                      _pairData.totalExpended) -
-                  1) *
-              100;
-    } else {
-      appreciation = 0;
-    }
-    ORDER_STATUS order_status;
-    //bool hasProfit = (_variation ?? 0) > 0;
-    if (_orderItem.active) {
-      order_status = ORDER_STATUS.RUNNING;
-    } else {
-      order_status = ORDER_STATUS.PAUSED;
-    }
-    if (_pairData != null) {
-      if (_pairData.historyItems.last.result == TransactinoResult.FAILURE) {
-        order_status = ORDER_STATUS.ERROR;
-      }
-    }
-    Color _selectedColor;
-    switch (order_status) {
-      case ORDER_STATUS.RUNNING:
-        _selectedColor = greenAppColor;
-        break;
-      case ORDER_STATUS.PAUSED:
-        _selectedColor = Colors.grey.withOpacity(0.8);
-        break;
-      case ORDER_STATUS.ERROR:
-        _selectedColor = redAppColor;
-        break;
-      default:
-        _selectedColor = Colors.grey.withOpacity(0.8);
-    }
-    return Slidable(
-      actionPane: SlidableDrawerActionPane(),
-      actionExtentRatio: 0.2,
-      child: GestureDetector(
-        onTap: () {
-
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => PairDetailPage(
-                  _orderItem, widget.user.firebaseUser, widget.settings, widget.sqlDatabase)));
-        },
-        child: Container(
-          height: 72,
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                width: 0.5,
-                color: Colors.black.withOpacity(0.2),
-              ),
-            ),
-          ),
-          padding: EdgeInsets.only(top: 4, bottom: 4, left: 16, right: 8),
-          child: Row(
-            children: [
-              Container(
-                width: 120,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 0),
-                      child: Text(
-                        widget.user.userData.orders.values
-                            .toList()[widget.index]
-                            .pair,
-                        style: TextStyle(
-                            fontFamily: 'Arial',
-                            fontSize: 20,
-                            //fontWeight: FontWeight.w400,
-                            color: Colors.black),
-                      ),
+    return userController.pairData_items.value != null
+        ? Slidable(
+            actionPane: SlidableDrawerActionPane(),
+            actionExtentRatio: 0.2,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        PairDetailPage(userController.user.orders.values.toList()[this.index])));
+              },
+              child: Container(
+                height: 72,
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      width: 0.5,
+                      color: Colors.black.withOpacity(0.2),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 0, bottom: 4),
-                      /*Text(
-                                      ,
-                                      style: TextStyle(
-                                          color: _selectedColor,
-                                          fontSize: 14))*/
-                      child: RichText(
-                        text: TextSpan(
-                            text:
-                                '- ${returnCurrencyCorrectedNumber(_orderItem.pair.split("/")[1], _orderItem.amount)} ',
-                            style: TextStyle(color: _selectedColor, fontSize: 14),
-                            children: [
-                              TextSpan(
-                                  text: "/day",
-                                  style: TextStyle(
-                                      color: _selectedColor, fontSize: 10))
-                            ]),
-                      ),
-                    ),
-                    WeekIndicator(
-                        widget.user.userData.orders.values
-                            .toList()[widget.index]
-                            .schedule,
-                        order_status)
-                  ],
-                ),
-              ),
-              Container(
-                width: 16,
-              ),
-              Expanded(
-                child: _pairData != null
-                    ? PriceAVGChartLine(
-                        user: widget.user,
-                        settings: widget.settings,
-                        pair: _pairData.pair,
-                        color: Colors.deepPurple,
-                      )
-                    : Container(
-                        child: Text(
-                          "Not enough data to show on the selected period.",
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-              ),
-              Container(
-                width: 130,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 0),
-                      child: Text(
-                        getAppreciationConverted(appreciation),
-                        /*widget.settings.binanceTicker != null &&
-                                _pairData != null
-                            ? "${_pairData.percentage_variation.toStringAsFixed(2)} % "
-                            : "...",*/
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontFamily: 'Arial',
-                            fontSize: 20,
-                            //fontWeight: FontWeight.w400,
-                            color: Colors.deepPurple
-                            /*color: hasProfit
-                                              ? */ /*greenAppColor*/ /*
-
-                                              : */ /*redAppColor*/),
-                      ),
-                    ),
-                    /*Container(
-                                  height: 4,
-                                ),*/
-                    Padding(
-                      padding: EdgeInsets.only(top: 0, bottom: 4),
-                      child: Text(
-                          _pairData != null
-                              ? '+${returnCurrencyCorrectedNumber(_pairData.pair.split("/")[0], _pairData.coinAccumulated)}'
-                              : "...",
-                          style: TextStyle(
-                              color: Colors.deepPurple, fontSize: 12)),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      actions: [getChangeActive(_pairData, _orderItem)],
-      secondaryActions: _pairData != null && _pairData.historyItems.length > 0
-          ? [
-              MyIconActionEdit(widget.index),
-              IconSlideAction(
-                iconWidget: Container(
-                  color: Colors.deepPurple.shade300,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.history,
-                        size: 24,
-                        color: Colors.white,
-                      ),
-                      Text(
-                        "History",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                      )
-                    ],
                   ),
                 ),
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => PairDetailPage(
-                          widget.user.userData.orders.values
-                              .toList()[widget.index],
-                          widget.user.firebaseUser,
-                          widget.settings,widget.sqlDatabase)));
-                },
+                padding: EdgeInsets.only(top: 4, bottom: 4, left: 16, right: 8),
+                child: Row(
+                  children: [
+                    OrdersLeftColumnWidget(this.index),
+                    Container(
+                      width: 16,
+                    ),
+                    Expanded(
+                      child: userController.pairData_items.value[
+                                  userController.user.orders.values.toList()[this.index].pair] !=
+                              null
+                          ? PriceAVGChartLine(
+                              pair: userController
+                                  .pairData_items
+                                  .value[
+                                      userController.user.orders.values.toList()[this.index].pair]
+                                  .pair,
+                              color: Colors.deepPurple,
+                            )
+                          : Container(
+                              child: Text(
+                                "Not enough data to show on the selected period.",
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                    ),
+                    OrdersRightColumnWidget(this.index),
+                  ],
+                ),
               ),
-            ]
-          : [
-              MyIconActionEdit(widget.index),
+            ),
+            actions: [
+              getChangeActive(
+                  userController.pairData_items
+                      .value[userController.user.orders.values.toList()[this.index].pair],
+                  userController.user.orders.values.toList()[this.index])
             ],
-    );
+            secondaryActions: userController.pairData_items
+                            .value[userController.user.orders.values.toList()[this.index].pair] !=
+                        null &&
+                    userController
+                            .pairData_items
+                            .value[userController.user.orders.values.toList()[this.index].pair]
+                            .historyItems
+                            .length >
+                        0
+                ? [
+                    MyIconActionEdit(this.index),
+                    IconSlideAction(
+                      iconWidget: Container(
+                        color: Colors.deepPurple.shade300,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.history,
+                              size: 24,
+                              color: Colors.white,
+                            ),
+                            Text(
+                              "History",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.white, fontSize: 16),
+                            )
+                          ],
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => PairDetailPage(
+                                  userController.user.orders.values.toList()[this.index],
+                                )));
+                      },
+                    ),
+                  ]
+                : [
+                    MyIconActionEdit(this.index),
+                  ],
+          )
+        : Container();
   }
 
   IconSlideAction MyIconActionEdit(int index) {
@@ -275,20 +149,19 @@ class _OrderItemListState extends State<OrderItemList> {
       ),
       onTap: () async {
         await showModalBottomSheet(
-          context: context,
+          context: Get.context,
           useRootNavigator: true,
           isScrollControlled: true,
           builder: (context) => Container(
             child: Padding(
               padding: MediaQuery.of(context).viewInsets,
               child: CreateEditOrder(
-                widget.user,
-                orderItem: widget.user.userData.orders.values.toList()[index],
+                orderItem: userController.user.orders.values.toList()[index],
               ),
             ),
           ),
         );
-        widget.user.updateUser();
+        userController.refreshUserData();
       },
     );
   }
@@ -332,17 +205,11 @@ class _OrderItemListState extends State<OrderItemList> {
         ),
       ),
       onTap: () {
-        setState(() {
-          isActivityChanging = true;
-        });
-        FirebaseFirestore.instance
-            .collection("users")
-            .doc(widget.user.firebaseUser.uid)
-            .update({
-          "orders.${orderItem.pair.replaceAll("/", "_")}.active": !isActive
-        }).then((value) {
+        isActivityChanging = true;
+        FirebaseFirestore.instance.collection("users").doc(userController.user.uid).update(
+            {"orders.${orderItem.pair.replaceAll("/", "_")}.active": !isActive}).then((value) {
           isActivityChanging = false;
-          widget.user.updateUser();
+          userController.refreshUserData();
         });
       },
     );

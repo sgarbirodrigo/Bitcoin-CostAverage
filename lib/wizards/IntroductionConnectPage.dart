@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:Bit.Me/controllers/user_controller.dart';
 import 'package:Bit.Me/external/qr_code.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -11,9 +13,7 @@ import '../external/binance_api.dart';
 import '../models/user_model.dart';
 
 class ConnectToBinancePage extends StatefulWidget {
-  UserManager user;
-
-  ConnectToBinancePage(this.user);
+  ConnectToBinancePage();
 
   @override
   State<StatefulWidget> createState() {
@@ -28,6 +28,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
   bool _readingQRCode = false;
   TextEditingController privatekey_controller;
   TextEditingController publickey_controller;
+  var userController = Get.find<UserController>();
 
   Widget _buildImage(String assetName, [double width = 256]) {
     return Image.asset('assets/images/introduction/$assetName', width: width);
@@ -37,18 +38,9 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
   void initState() {
     privatekey_controller = TextEditingController();
     publickey_controller = TextEditingController();
-    FirebaseFirestore.instance
-        .collection("users")
-        .doc(widget.user.firebaseUser.uid)
-        .get()
-        .then((DocumentSnapshot userSnapshot) {
-      if (userSnapshot.data() != null) {
-        publickey_controller.text = UserData.fromJson(userSnapshot.data()).public_key;
-      }
-      if (userSnapshot.data() != null) {
-        privatekey_controller.text = UserData.fromJson(userSnapshot.data()).private_key;
-      }
-    });
+    publickey_controller.text = userController.user.public_key;
+    privatekey_controller.text = userController.user.private_key;
+
     _selectedExchange = _exchanges[0];
   }
 
@@ -359,7 +351,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                                       privatekey_controller.text, publickey_controller.text)) {
                                     FirebaseFirestore.instance
                                         .collection("users")
-                                        .doc(widget.user.firebaseUser.uid)
+                                        .doc(userController.user.uid)
                                         .update({
                                       "private_key": privatekey_controller.text,
                                       "public_key": publickey_controller.text,
@@ -377,7 +369,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                                         });
                                       });
                                     });
-                                    widget.user.updateUser();
+                                    userController.refreshUserData();
                                   } else {
                                     setState(() {
                                       _selectedStatus = 0;

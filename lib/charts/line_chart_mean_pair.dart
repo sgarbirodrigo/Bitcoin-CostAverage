@@ -1,20 +1,20 @@
+import 'package:Bit.Me/controllers/user_controller.dart';
 import 'package:Bit.Me/tools.dart';
 import 'package:Bit.Me/widgets/dashed_line.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'line_chart_mean.dart';
 import '../models/settings_model.dart';
 import '../models/user_model.dart';
 
 class PriceAVGChartLinePair extends StatefulWidget {
-  UserManager user;
-  SettingsApp settings;
   Color color;
   PairData pairData;
 
-  PriceAVGChartLinePair({this.user, this.settings, this.pairData, this.color});
+  PriceAVGChartLinePair({this.pairData, this.color});
 
   @override
   State<StatefulWidget> createState() => PriceAVGChartLinePairState();
@@ -27,7 +27,7 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
   List<FlSpot> avg_price_spots = List();
   double xmin, xmax, ymin, ymax, avgPrice_interval;
   Color _chartLineColor = Colors.deepPurple.withOpacity(1);
-
+  var userController = Get.find<UserController>();
   @override
   void initState() {
     super.initState();
@@ -37,7 +37,7 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
       price_spots.clear();
       avg_price_spots.clear();
       int spots_missing = 0;
-      switch (widget.settings.scaleLineChart) {
+      switch (userController.scaleLineChart.value) {
         case ScaleLineChart.WEEK1:
           spots_missing = 7;
           break;
@@ -283,7 +283,7 @@ class PriceAVGChartLinePairState extends State<PriceAVGChartLinePair> {
           ),
         ),
         AnimatedContainer(
-            height: widget.user.isUpdatingHistory ? 4 : 0,
+            height: userController.isUpdatingHistory.isTrue ? 4 : 0,
             duration: Duration(milliseconds: 250),
             child: LinearProgressIndicator()),
       ],

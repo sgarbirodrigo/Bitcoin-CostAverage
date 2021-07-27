@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
-class AppBarBitMe extends StatefulWidget implements PreferredSizeWidget{
+/*class AppBarBitMe extends StatefulWidget implements PreferredSizeWidget{
   final GlobalKey<ScaffoldState> scaffoldKey;
   final String title;
   final bool returnIcon;
@@ -17,48 +17,51 @@ class AppBarBitMe extends StatefulWidget implements PreferredSizeWidget{
     return _AppBarBitMeState();
   }
 
-}
-class _AppBarBitMeState extends State<AppBarBitMe> {
-  var authController = Get.find<AuthController>();
+}*/
+class AppBarBitMe extends StatelessWidget implements PreferredSizeWidget {
+  final bool returnIcon;
+
+  AppBarBitMe({this.returnIcon = false});
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
       child: Container(
         padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
         child: Stack(children: [
-
           Center(
             child: Text(
-              widget.title,
-              style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white),
+              "Bitcoin-Cost Average",
+              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500, color: Colors.white),
             ),
           ),
           Positioned(
-            top: 0,
-            bottom: 0,
-            left: 0,
-            child: widget.returnIcon?IconButton(
-              icon: Icon(
-                Icons.arrow_back_outlined,
-                color: Colors.white,
-              ),
-              onPressed: () => Navigator.of(context).pop(),
-            ): Icon(null)),
+              top: 0,
+              bottom: 0,
+              left: 0,
+              child: this.returnIcon
+                  ? IconButton(
+                      icon: Icon(
+                        Icons.arrow_back_outlined,
+                        color: Colors.white,
+                      ),
+                      onPressed: () => Navigator.of(context).pop(),
+                    )
+                  : Icon(null)),
           Positioned(
               top: 0,
               bottom: 0,
               right: 0,
-              child:IconButton(
+              child: IconButton(
                 icon: Icon(
                   Icons.logout,
                   color: Colors.white,
                 ),
-                onPressed: () => authController.signOut(),
-              )
-          ),
+                onPressed: () => Get.find<AuthController>().signOut(),
+              )),
 
           /*Positioned(
             top: 0,
@@ -68,13 +71,10 @@ class _AppBarBitMeState extends State<AppBarBitMe> {
           ),*/
         ]),
         decoration: BoxDecoration(
-            gradient: RadialGradient(
-                radius: 6,
-                center: Alignment.centerRight,
-                colors: [
-                  Color(0xff7544AF),
-                  Color(0xff553277),
-                ]),
+            gradient: RadialGradient(radius: 6, center: Alignment.centerRight, colors: [
+              Color(0xff7544AF),
+              Color(0xff553277),
+            ]),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey[800],
@@ -86,5 +86,4 @@ class _AppBarBitMeState extends State<AppBarBitMe> {
       preferredSize: Size(MediaQuery.of(context).size.width, 54.0),
     );
   }
-
 }

@@ -24,6 +24,10 @@ const authenticationPageRoute = "/";
 const authenticationSignUpPageRoute = "/signup";
 const authenticationRecoveryPageRoute = "/recovery";
 
+
+const String base_coin_preference = "base_coin";
+const String scale_line_preference = "scale_line";
+
 Color light = Color(0xFFF7F8FC);
 Color lightGrey = Color(0xFF5A6268);
 Color dark = Color(0xFF363740);
@@ -141,6 +145,8 @@ const userInputDecoration = InputDecoration(
     borderRadius: BorderRadius.all(Radius.circular(kButtonRadius)),
   ),
 );
+
+
 
 enum AppLanguages { EN, PT_BR }
 

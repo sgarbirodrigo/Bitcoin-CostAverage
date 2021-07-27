@@ -1,4 +1,6 @@
 import 'package:Bit.Me/charts/line_chart_mean.dart';
+import 'package:Bit.Me/controllers/binance_controller.dart';
+import 'package:Bit.Me/controllers/user_controller.dart';
 import 'package:Bit.Me/models/order_model.dart';
 import 'package:Bit.Me/models/settings_model.dart';
 import 'package:Bit.Me/models/user_model.dart';
@@ -7,17 +9,15 @@ import 'package:Bit.Me/tools.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 
 import '../list_item/history_list_item.dart';
 import '../charts/line_chart_mean_pair.dart';
 
 class PairDetailPage extends StatefulWidget {
   OrderItem orderItem;
-  User firebaseUser;
-  SettingsApp settings;
-  SqlDatabase sqlDatabase;
 
-  PairDetailPage(this.orderItem, this.firebaseUser, this.settings, this.sqlDatabase);
+  PairDetailPage(this.orderItem);
 
   @override
   State<StatefulWidget> createState() {
@@ -28,27 +28,11 @@ class PairDetailPage extends StatefulWidget {
 class _PairDetailPageState extends State<PairDetailPage> {
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   PairData pairData;
-  UserManager user;
-  double appreciation;
-
-  @override
-  void initState() {
-    user = UserManager(widget.sqlDatabase, widget.firebaseUser, widget.settings, (user) async {
-      this.user = user;
-      pairData = this.user.pairDataItems[widget.orderItem.pair];
-      if (pairData != null) {
-        appreciation = (((widget.settings.binanceTicker[pairData.pair.replaceAll("/", "")] *
-                        pairData.coinAccumulated) /
-                    pairData.totalExpended) -
-                1) *
-            100;
-      }
-      if (mounted) setState(() {});
-    });
-  }
+  var userController = Get.find<UserController>();
+  var binanceController = Get.find<BinanceController>();
   double getPairPrice(String pair){
     try {
-      return widget.settings.binanceTicker[pair.replaceAll("/", "")];
+      return binanceController.tickerPrices[pair.replaceAll("/", "")];
     }catch(e){
       print("error ticker: $e");
       return 0;
@@ -112,7 +96,7 @@ class _PairDetailPageState extends State<PairDetailPage> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            getAppreciationConverted(appreciation),
+                            getAppreciationConverted(userController.pairAppreciation[widget.orderItem.pair]),
                             style: TextStyle(
                                 fontSize: 18,
                                 color: Colors.white,
@@ -158,8 +142,6 @@ class _PairDetailPageState extends State<PairDetailPage> {
                         // height: 30,
                         child: pairData != null && pairData.price_spots.length > 0
                             ? PriceAVGChartLinePair(
-                                user: this.user,
-                                settings: widget.settings,
                                 pairData: pairData,
                                 color: Colors.white)
                             : Container(
@@ -292,7 +274,7 @@ class _PairDetailPageState extends State<PairDetailPage> {
                             TextButton(
                                 style: ButtonStyle(
                                   backgroundColor:
-                                      ScaleLineChart.WEEK1 == widget.settings.scaleLineChart
+                                      ScaleLineChart.WEEK1 == userController.scaleLineChart.value
                                           ? MaterialStateProperty.all<Color>(
                                               Colors.deepPurple.withOpacity(0.2),
                                             )
@@ -300,25 +282,22 @@ class _PairDetailPageState extends State<PairDetailPage> {
                                 ),
                                 onPressed: () {
                                   this.setState(() {
-                                    widget.settings.updateScaleLineChart(ScaleLineChart.WEEK1);
-                                    //interval = (2.0 * (60 * 60 * 24)) - 1;
-                                    this.user.forceUpdateHistoryData(7);
+                                    userController.scaleLineChart.value=(ScaleLineChart.WEEK1);
                                   });
                                 },
                                 child: Text("1W")),
                             TextButton(
                               style: ButtonStyle(
                                 backgroundColor:
-                                    ScaleLineChart.WEEK2 == widget.settings.scaleLineChart
+                                    ScaleLineChart.WEEK2 == userController.scaleLineChart.value
                                         ? MaterialStateProperty.all<Color>(
                                             Colors.deepPurple.withOpacity(0.2))
                                         : null,
                               ),
                               onPressed: () {
                                 this.setState(() {
-                                  widget.settings.updateScaleLineChart(ScaleLineChart.WEEK2);
-                                  //interval = (4.0 * (60 * 60 * 24)) - 1;
-                                  this.user.forceUpdateHistoryData(14);
+                                  userController.scaleLineChart.value=(ScaleLineChart.WEEK2);
+
                                 });
                               },
                               child: Text("2W"),
@@ -326,16 +305,15 @@ class _PairDetailPageState extends State<PairDetailPage> {
                             TextButton(
                               style: ButtonStyle(
                                 backgroundColor:
-                                    ScaleLineChart.MONTH1 == widget.settings.scaleLineChart
+                                    ScaleLineChart.MONTH1 == userController.scaleLineChart.value
                                         ? MaterialStateProperty.all<Color>(
                                             Colors.deepPurple.withOpacity(0.2))
                                         : null,
                               ),
                               onPressed: () {
                                 this.setState(() {
-                                  widget.settings.updateScaleLineChart(ScaleLineChart.MONTH1);
-                                  //interval = (8.0 * (60 * 60 * 24)) - 1;
-                                  this.user.forceUpdateHistoryData(30);
+                                  userController.scaleLineChart.value=(ScaleLineChart.MONTH1);
+
                                 });
                               },
                               child: Text("1M"),
@@ -343,16 +321,15 @@ class _PairDetailPageState extends State<PairDetailPage> {
                             TextButton(
                               style: ButtonStyle(
                                 backgroundColor:
-                                    ScaleLineChart.MONTH6 == widget.settings.scaleLineChart
+                                    ScaleLineChart.MONTH6 == userController.scaleLineChart.value
                                         ? MaterialStateProperty.all<Color>(
                                             Colors.deepPurple.withOpacity(0.2))
                                         : null,
                               ),
                               onPressed: () {
                                 this.setState(() {
-                                  widget.settings.updateScaleLineChart(ScaleLineChart.MONTH6);
-                                  //interval = (28.0 * (60 * 60 * 24)) - 1;
-                                  this.user.forceUpdateHistoryData(180);
+                                  userController.scaleLineChart.value=(ScaleLineChart.MONTH6);
+
                                 });
                               },
                               child: Text("6M"),
@@ -360,16 +337,15 @@ class _PairDetailPageState extends State<PairDetailPage> {
                             TextButton(
                                 style: ButtonStyle(
                                   backgroundColor:
-                                      ScaleLineChart.YEAR1 == widget.settings.scaleLineChart
+                                      ScaleLineChart.YEAR1 == userController.scaleLineChart.value
                                           ? MaterialStateProperty.all<Color>(
                                               Colors.deepPurple.withOpacity(0.2))
                                           : null,
                                 ),
                                 onPressed: () {
                                   this.setState(() {
-                                    widget.settings.updateScaleLineChart(ScaleLineChart.YEAR1);
-                                    //interval = (60.0 * (60 * 60 * 24)) - 1;
-                                    this.user.forceUpdateHistoryData(365);
+                                    userController.scaleLineChart.value=(ScaleLineChart.YEAR1);
+
                                   });
                                 },
                                 child: Text("1Y"))
@@ -426,7 +402,7 @@ class _PairDetailPageState extends State<PairDetailPage> {
                           return HistoryItemList(
                             historyItem:
                                 pairData.historyItems[pairData.historyItems.length - index - 1],
-                            userUid: widget.firebaseUser.uid,
+                            userUid: userController.user.uid,
                           );
                         })
                     : Container(

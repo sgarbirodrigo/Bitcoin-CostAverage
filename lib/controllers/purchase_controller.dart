@@ -12,13 +12,13 @@ class PurchaseController extends GetxController with StateMixin {
   @override
   void onInit() {
     super.onInit();
+    load();
   }
 
   void load() async {
     change(this, status: RxStatus.loading());
     try {
       await Purchases.setup(apiKey, observerMode: false);
-
       change(this, status: RxStatus.success());
     } catch (e) {
       change(this, status: RxStatus.error(e));
@@ -28,8 +28,10 @@ class PurchaseController extends GetxController with StateMixin {
   void setUser(String uid) async {
     change(this, status: RxStatus.loading());
     try {
-      await Purchases.identify(uid);
+      _purchaserInfo.value = await Purchases.identify(uid);
+      //print("purchase update adedd ${_purchaserInfo.value}");
       Purchases.addPurchaserInfoUpdateListener((purchaserInfo) async {
+        //print("purchase update adedd ${purchaserInfo}");
         _purchaserInfo.value = purchaserInfo;
         (_purchaserInfo.value.entitlements.all[entitlementID] != null &&
             _purchaserInfo.value.entitlements.all[entitlementID].isActive)
@@ -39,7 +41,8 @@ class PurchaseController extends GetxController with StateMixin {
       });
       change(this, status: RxStatus.success());
     } catch (e) {
-      change(this, status: RxStatus.error(e));
+      //print("error on identifying: ${e.toString()}");
+      change(this, status: RxStatus.error(e.toString()));
     }
   }
 
@@ -48,4 +51,8 @@ class PurchaseController extends GetxController with StateMixin {
 
   @override
   void onReady() {}
+
+  Future<void> reset() async{
+    await Purchases.reset();
+  }
 }

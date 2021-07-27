@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:Bit.Me/contants.dart';
+import 'package:Bit.Me/controllers/binance_controller.dart';
 import 'package:Bit.Me/sql_database.dart';
 import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,7 +24,9 @@ import 'package:sqflite/sqflite.dart';
 import 'auth_pages/authentication.dart';
 import 'controllers/auth_controller.dart';
 import 'controllers/bindings/auth_binding.dart';
+import 'controllers/database_controller.dart';
 import 'controllers/purchase_controller.dart';
+import 'controllers/user_controller.dart';
 import 'external/authService.dart';
 import 'home.dart';
 import 'pages/authentication/authentication.dart';
@@ -35,8 +38,13 @@ import 'pages/authentication/sign_up.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  Get.put(AuthController());
+
+  Get.put(BinanceController());
   Get.put(PurchaseController());
+  Get.put(LocalDatabaseController(onLoad: () {
+    Get.put(UserController());
+  }));
+  Get.put(AuthController());
 
   final Trace traceInit = FirebasePerformance.instance.newTrace("trace_init_performance");
   await traceInit.start();
@@ -54,7 +62,6 @@ void main() async {
     await traceInit.putAttribute("platform", "not_ios");
     SystemChrome.setEnabledSystemUIOverlays([]);
   }
-
   //control app version
   bool appUpdated = true;
   try {
@@ -66,13 +73,11 @@ void main() async {
   }
   await traceInit.putAttribute("app_update", appUpdated.toString());
 
-  SqlDatabase sql_database = SqlDatabase();
-  await sql_database.initDB();
   await traceInit.incrementMetric("local_db_init", 1);
   await traceInit.stop();
 
   runZonedGuarded(() {
-    runApp(MyApp(appUpdated, sql_database));
+    runApp(MyApp(appUpdated));
   }, FirebaseCrashlytics.instance.recordError);
 }
 
@@ -92,14 +97,10 @@ Future<bool> checkAppVersion() async {
 
 class MyApp extends StatelessWidget {
   bool appUpdated;
-  SqlDatabase sql_database;
-  Trace traceMain;
   var authController = Get.find<AuthController>();
   var purchaseController = Get.find<PurchaseController>();
 
-  MyApp(this.appUpdated, this.sql_database) {
-    traceMain = FirebasePerformance.instance.newTrace("trace_init_performance");
-    traceMain.start();
+  MyApp(this.appUpdated) {
   }
 
   @override
@@ -137,18 +138,24 @@ class MyApp extends StatelessWidget {
           }
           if (authController.isUserLogged()) {
             FirebaseCrashlytics.instance.setUserIdentifier(authController.user.uid);
+            Get.find<UserController>().loadUserData(authController.user.uid);
+            //print("first load user");
             purchaseController.setUser(authController.user.uid);
             return purchaseController.obx(
               (_purchaserController) {
-                return Home(firebaseUser: authController.user, sql_database: sql_database);
+                return Home();
               },
-              onLoading: CircularProgressIndicatorMy(info: "loading purchase controller",),
-              onEmpty: CircularProgressIndicatorMy(info: "empty purchase controller",),
+              onLoading: CircularProgressIndicatorMy(
+                info: "loading purchase controller",
+              ),
+              onEmpty: CircularProgressIndicatorMy(
+                info: "empty purchase controller",
+              ),
               // here also you can set your own error widget, but by
               // default will be an Center(child:Text(error))
               onError: (error) {
                 callSnackbar("Oops!", error);
-                return Home(firebaseUser: authController.user, sql_database: sql_database);
+                return Home();
               },
             );
           } else {
@@ -157,8 +164,12 @@ class MyApp extends StatelessWidget {
         },
         // here you can put your custom loading indicator, but
         // by default would be Center(child:CircularProgressIndicator())
-        onLoading: CircularProgressIndicatorMy(info: "loading auth controller",),
-        onEmpty: CircularProgressIndicatorMy(info: "empty auth controller",),
+        onLoading: CircularProgressIndicatorMy(
+          info: "loading auth controller",
+        ),
+        onEmpty: CircularProgressIndicatorMy(
+          info: "empty auth controller",
+        ),
         // here also you can set your own error widget, but by
         // default will be an Center(child:Text(error))
         onError: (error) => Authentication(),

@@ -1,5 +1,9 @@
+import 'package:Bit.Me/charts/line_chart_mean.dart';
+import 'package:Bit.Me/controllers/auth_controller.dart';
+import 'package:Bit.Me/controllers/binance_controller.dart';
 import 'package:Bit.Me/main_pages/dashboard_widget/chart_widget.dart';
 import 'package:Bit.Me/models/binance_balance_model.dart';
+import 'package:Bit.Me/models/history_model.dart';
 import 'package:Bit.Me/models/order_model.dart';
 import 'package:Bit.Me/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,39 +11,140 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:crypto/crypto.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
+import '../contants.dart';
+import 'database_controller.dart';
+
+class UserController extends GetxController with StateMixin {
+  SharedPreferences preferences;
+
+  var localdatabaseController = Get.find<LocalDatabaseController>();
+  var authController = Get.find<AuthController>();
+  var binanceController = Get.find<BinanceController>();
 
 
-class UserController extends GetxController {
+  var scaleLineChart = Rx<ScaleLineChart>(ScaleLineChart.WEEK1);
+  var selectedScaleText = "1W".obs;
+
   Rx<UserData> _userModel = UserData().obs;
+  var pairData_items = Rx<Map<String, PairData>>({});
+  var pairAppreciation = {}.obs;
+
+  var isUpdatingHistory = false.obs;
+  Rx<String> baseCoin = "".obs;
+  var userTotalBuyingAmount = Map<String, double>().obs;
+  var userTotalExpendingAmount = Map<String, double>().obs;
+  var balance = Balance().obs;
+  var pieChartFormattedData = {}.obs;
 
   UserData get user => _userModel.value;
 
   set user(UserData value) => this._userModel.value = value;
 
+  void setListeners() {
+    this.baseCoin.listen((String newCoin) {
+      this.preferences.setString(base_coin_preference, newCoin);
+    });
+
+    this.scaleLineChart.listen((ScaleLineChart scaleLineChart) {
+      switch (scaleLineChart) {
+        case ScaleLineChart.WEEK1:
+          this.preferences.setString(scale_line_preference, "WEEK1");
+          this.forceUpdateHistoryData(7);
+          this.selectedScaleText.value = "1W";
+          break;
+        case ScaleLineChart.WEEK2:
+          this.preferences.setString(scale_line_preference, "WEEK2");
+          this.forceUpdateHistoryData(14);
+          this.selectedScaleText.value = "2W";
+          break;
+        case ScaleLineChart.MONTH1:
+          this.preferences.setString(scale_line_preference, "MONTH1");
+          this.forceUpdateHistoryData(30);
+          this.selectedScaleText.value = "1M";
+          break;
+        case ScaleLineChart.MONTH6:
+          this.preferences.setString(scale_line_preference, "MONTH6");
+          this.forceUpdateHistoryData(180);
+          this.selectedScaleText.value = "6M";
+          break;
+        case ScaleLineChart.YEAR1:
+          this.preferences.setString(scale_line_preference, "YEAR1");
+          this.forceUpdateHistoryData(365);
+          this.selectedScaleText.value = "1Y";
+          break;
+      }
+    });
+  }
+
+
+  @override
+  void onInit() {
+    super.onInit();
+    loadSharedPreferences();
+
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+
+    this.forceUpdateHistoryData(7);
+    this.selectedScaleText.value = "1W";
+  }
+
+  void loadSharedPreferences() async {
+    await SharedPreferences.getInstance().then((value) {
+      this.preferences = value;
+      this.baseCoin.value = preferences.getString(base_coin_preference);
+      this.scaleLineChart.value = _getScale();
+      setListeners();
+    });
+  }
+
+  ScaleLineChart _getScale() {
+    ScaleLineChart scale = ScaleLineChart.WEEK1;
+    switch (this.preferences.getString(scale_line_preference)) {
+      case "WEEK1":
+        scale = ScaleLineChart.WEEK1;
+        break;
+      case "WEEK2":
+        scale = ScaleLineChart.WEEK2;
+        break;
+      case "MONTH1":
+        scale = ScaleLineChart.MONTH1;
+        break;
+      case "MONTH6":
+        scale = ScaleLineChart.MONTH6;
+        break;
+      case "YEAR1":
+        scale = ScaleLineChart.YEAR1;
+        break;
+    }
+    return scale;
+  }
+
   void clear() {
     _userModel.value = UserData();
   }
 
-  Rx<String> baseCoin = "".obs;
-  var userTotalBuyingAmount = Map<String, double>().obs;
-  var userTotalExpendingAmount = Map<String, double>().obs;
-  var balance = Balance().obs;
-  var tickerPrices = Map<String, double>().obs;
-  var pieChartFormattedData = {}.obs;
-
   void loadUserData(String userId) async {
+    change(null, status: RxStatus.loading());
     return FirebaseFirestore.instance
         .collection("users")
         .doc(userId)
         .get()
-        .then((DocumentSnapshot documentSnapshot) {
+        .then((DocumentSnapshot documentSnapshot) async{
       if (documentSnapshot.exists) {
         this._userModel.value = UserData.fromJson(documentSnapshot.data());
         _calculateUserStats();
-        loadPrices();
+        loadBalance();
         pieChartFormattedData.value = convertUserData();
+        change(null, status: RxStatus.success());
       } else {
         this._userModel.value = null;
+        change(this, status: RxStatus.error("User don\'t exist"));
       }
     });
   }
@@ -120,8 +225,86 @@ class UserController extends GetxController {
     return list;
   }
 
+  void forceUpdateHistoryData(int daysToConsider) async {
+    this.isUpdatingHistory.value = true;
+    try {
+      String userUid = authController.user.uid;
+      List<Map<String, dynamic>> dbQuery = await localdatabaseController.sql_database.database
+          .rawQuery('SELECT * FROM History ORDER BY timestamp DESC');
+
+      //print("load history for: ${userUid}");
+
+      Query firestoreHistoryQuery = FirebaseFirestore.instance
+          .collection("users")
+          .doc(userUid)
+          .collection("history")
+          .orderBy("timestamp", descending: false);
+
+      void addSnapshotToSQLDB(QuerySnapshot historySnapshots) async {
+        historySnapshots.docs.forEach(
+          (element) async {
+            HistoryItem historyItem = HistoryItem.fromJson(element.data());
+            await localdatabaseController.sql_database.database.insert(
+                'history',
+                {
+                  'id': element.id,
+                  'timestamp': historyItem.timestamp.millisecondsSinceEpoch,
+                  'amount': historyItem.order.amount,
+                  'pair': historyItem.order.pair,
+                  'result': historyItem.result.index,
+                  'rawFirestore': json.encode(historyItem.toJson()),
+                },
+                conflictAlgorithm: ConflictAlgorithm.replace);
+          },
+        );
+      }
+
+      if (dbQuery.length > 0) {
+        Timestamp lastLoadedTimestamp =
+            Timestamp.fromMillisecondsSinceEpoch(dbQuery.first['timestamp']);
+        if (lastLoadedTimestamp.toDate().isBefore(DateTime.now().add(Duration(hours: -24)))) {
+          addSnapshotToSQLDB(await firestoreHistoryQuery
+              .where('timestamp', isGreaterThan: lastLoadedTimestamp)
+              .get());
+        }
+      } else {
+        addSnapshotToSQLDB(await firestoreHistoryQuery.get());
+      }
+
+      List<
+          Map<String,
+              dynamic>> rawQuery = await localdatabaseController.sql_database.database.rawQuery(
+          'SELECT * FROM History WHERE timestamp>= ${DateTime.now().add(Duration(days: -daysToConsider)).millisecondsSinceEpoch}');
+
+      //historyItems.clear();
+      pairData_items.value.clear();
+      rawQuery.forEach((element) {
+        HistoryItem historyItem = HistoryItem.fromJson(json.decode(element['rawFirestore']));
+        //historyItems.add(historyItem);
+        if (pairData_items.value[historyItem.order.pair] == null) {
+          pairData_items.value[historyItem.order.pair] = PairData().addHistoryItem(historyItem);
+        } else {
+          pairData_items.value[historyItem.order.pair] =
+              pairData_items.value[historyItem.order.pair].addHistoryItem(historyItem);
+        }
+      });
+      pairData_items.value.forEach((pair, pairData) {
+        print("pair: ${pairData.pair} -  accumulated: ${pairData.coinAccumulated}");
+        this.pairAppreciation[pair] = (((binanceController.tickerPrices[pair.replaceAll("/", "")] * pairData.coinAccumulated) / pairData.totalExpended) - 1) * 100;
+
+        /*this.appreciation[pair] =
+            (((tickerPrices[pair.replaceAll("/", "")] * pairData.coinAccumulated) /
+                pairData.totalExpended) -
+                1) *
+                100;*/
+      });
+    } catch (e) {
+      print("error on load history: ${e.toString()}");
+    }
+    this.isUpdatingHistory.value = false;
+  }
+
   Future<Balance> loadBalance() async {
-    print("load Balance start");
     if (this.user.private_key != null && this.user.public_key != null) {
       int timeStamp = DateTime.now().millisecondsSinceEpoch;
       Map<String, dynamic> parameters = Map();
@@ -145,7 +328,7 @@ class UserController extends GetxController {
       this.balance.value = null;
     }
   }
-
+/*
   Future<void> loadPrices() async {
     final response = await http.get(Uri.https("api.binance.com", "api/v3/ticker/price"));
     if (response.statusCode == 200) {
@@ -154,9 +337,15 @@ class UserController extends GetxController {
         entry[element["symbol"]] = double.parse(element["price"].toString());
       });
       tickerPrices.value = entry;
+
     } else {
-      throw Exception('Failed to load pairs');
+      tickerPrices.value = null;
+      print("response binance: ${response.body}");
     }
+  }*/
+
+  void refreshUserData() {
+    loadUserData(this.user.uid);
   }
 
   Map<String, List<MyChartSectionData>> convertUserData() {
@@ -164,7 +353,7 @@ class UserController extends GetxController {
       Map<String, List<MyChartSectionData>> chartFullData = Map();
       Map<String, double> total = {};
       this.userTotalBuyingAmount.forEach((pair, amount) {
-        double price = tickerPrices["BTC${pair.split("/")[1]}"];
+        double price = binanceController.tickerPrices["BTC${pair.split("/")[1]}"];
         double percentage;
         if (price == null) {
           percentage = amount;
@@ -179,7 +368,7 @@ class UserController extends GetxController {
       });
       //print("total ${total}");
       this.userTotalBuyingAmount.forEach((pair, amount) {
-        double price = tickerPrices["BTC${pair.split("/")[1]}"];
+        double price = binanceController.tickerPrices["BTC${pair.split("/")[1]}"];
         double percentage = 1;
         if (price == null) {
           percentage = amount;
