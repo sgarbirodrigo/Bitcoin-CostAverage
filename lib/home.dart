@@ -63,12 +63,7 @@ class Home extends StatelessWidget {
   var userController = Get.find<UserController>();
   var homeController = Get.put(HomeController());
 
-  Home();
-
   SettingsApp settings;
-
-  //Section section;
-  // UserManager user;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override

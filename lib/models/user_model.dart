@@ -108,6 +108,7 @@ class PairData {
     }
     return this;
   }
+
 }
 
 class UserManager {

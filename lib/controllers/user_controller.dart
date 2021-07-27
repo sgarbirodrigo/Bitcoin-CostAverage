@@ -23,7 +23,6 @@ class UserController extends GetxController with StateMixin {
   var authController = Get.find<AuthController>();
   var binanceController = Get.find<BinanceController>();
 
-
   var scaleLineChart = Rx<ScaleLineChart>(ScaleLineChart.WEEK1);
   var selectedScaleText = "1W".obs;
 
@@ -42,64 +41,71 @@ class UserController extends GetxController with StateMixin {
 
   set user(UserData value) => this._userModel.value = value;
 
-  void setListeners() {
-    this.baseCoin.listen((String newCoin) {
-      this.preferences.setString(base_coin_preference, newCoin);
+  @override
+  void onInit() {
+    super.onInit();
+    SharedPreferences.getInstance().then((value) {
+      this.preferences = value;
+
+      //handling baseCoin preference
+      this.baseCoin.value = preferences.getString(base_coin_preference);
+      this.baseCoin.listen((String newCoin) {
+        this.preferences.setString(base_coin_preference, newCoin);
+      });
+
+      //handling scale preference
+      this.scaleLineChart.listen((ScaleLineChart scaleLineChart) {
+        switch (scaleLineChart) {
+          case ScaleLineChart.WEEK1:
+            print("1w");
+            this.preferences.setString(scale_line_preference, "WEEK1");
+            this.forceUpdateHistoryData(7);
+            this.selectedScaleText.value = "1W";
+            break;
+          case ScaleLineChart.WEEK2:
+            print("2w");
+            this.preferences.setString(scale_line_preference, "WEEK2");
+            this.forceUpdateHistoryData(14);
+            this.selectedScaleText.value = "2W";
+            break;
+          case ScaleLineChart.MONTH1:
+            print("1M");
+            this.preferences.setString(scale_line_preference, "MONTH1");
+            this.forceUpdateHistoryData(30);
+            this.selectedScaleText.value = "1M";
+            break;
+          case ScaleLineChart.MONTH6:
+            print("6M");
+            this.preferences.setString(scale_line_preference, "MONTH6");
+            this.forceUpdateHistoryData(180);
+            this.selectedScaleText.value = "6M";
+            break;
+          case ScaleLineChart.YEAR1:
+            print("1Y");
+            this.preferences.setString(scale_line_preference, "YEAR1");
+            this.forceUpdateHistoryData(365);
+            this.selectedScaleText.value = "1Y";
+            break;
+        }
+      });
+      this.scaleLineChart.value = _getScale();
     });
 
-    this.scaleLineChart.listen((ScaleLineChart scaleLineChart) {
-      switch (scaleLineChart) {
-        case ScaleLineChart.WEEK1:
-          this.preferences.setString(scale_line_preference, "WEEK1");
-          this.forceUpdateHistoryData(7);
-          this.selectedScaleText.value = "1W";
-          break;
-        case ScaleLineChart.WEEK2:
-          this.preferences.setString(scale_line_preference, "WEEK2");
-          this.forceUpdateHistoryData(14);
-          this.selectedScaleText.value = "2W";
-          break;
-        case ScaleLineChart.MONTH1:
-          this.preferences.setString(scale_line_preference, "MONTH1");
-          this.forceUpdateHistoryData(30);
-          this.selectedScaleText.value = "1M";
-          break;
-        case ScaleLineChart.MONTH6:
-          this.preferences.setString(scale_line_preference, "MONTH6");
-          this.forceUpdateHistoryData(180);
-          this.selectedScaleText.value = "6M";
-          break;
-        case ScaleLineChart.YEAR1:
-          this.preferences.setString(scale_line_preference, "YEAR1");
-          this.forceUpdateHistoryData(365);
-          this.selectedScaleText.value = "1Y";
-          break;
+    binanceController.tickerPrices.listen((tickerPrices) {
+      if (tickerPrices.length > 0) {
+        calculateAppreciation();
       }
     });
   }
 
-
-  @override
-  void onInit() {
-    super.onInit();
-    loadSharedPreferences();
-
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
-
-    this.forceUpdateHistoryData(7);
-    this.selectedScaleText.value = "1W";
-  }
-
-  void loadSharedPreferences() async {
-    await SharedPreferences.getInstance().then((value) {
-      this.preferences = value;
-      this.baseCoin.value = preferences.getString(base_coin_preference);
-      this.scaleLineChart.value = _getScale();
-      setListeners();
+  void calculateAppreciation() {
+    pairData_items.value.forEach((pair, pairData) {
+      print("pair: ${pairData.pair} - accumulated: ${pairData.coinAccumulated}");
+      this.pairAppreciation[pair] =
+          (((binanceController.tickerPrices[pair.replaceAll("/", "")] * pairData.coinAccumulated) /
+                      pairData.totalExpended) -
+                  1) *
+              100;
     });
   }
 
@@ -125,9 +131,6 @@ class UserController extends GetxController with StateMixin {
     return scale;
   }
 
-  void clear() {
-    _userModel.value = UserData();
-  }
 
   void loadUserData(String userId) async {
     change(null, status: RxStatus.loading());
@@ -135,7 +138,7 @@ class UserController extends GetxController with StateMixin {
         .collection("users")
         .doc(userId)
         .get()
-        .then((DocumentSnapshot documentSnapshot) async{
+        .then((DocumentSnapshot documentSnapshot) async {
       if (documentSnapshot.exists) {
         this._userModel.value = UserData.fromJson(documentSnapshot.data());
         _calculateUserStats();
@@ -227,7 +230,7 @@ class UserController extends GetxController with StateMixin {
 
   void forceUpdateHistoryData(int daysToConsider) async {
     this.isUpdatingHistory.value = true;
-    try {
+    /*try {*/
       String userUid = authController.user.uid;
       List<Map<String, dynamic>> dbQuery = await localdatabaseController.sql_database.database
           .rawQuery('SELECT * FROM History ORDER BY timestamp DESC');
@@ -288,19 +291,12 @@ class UserController extends GetxController with StateMixin {
               pairData_items.value[historyItem.order.pair].addHistoryItem(historyItem);
         }
       });
-      pairData_items.value.forEach((pair, pairData) {
-        print("pair: ${pairData.pair} -  accumulated: ${pairData.coinAccumulated}");
-        this.pairAppreciation[pair] = (((binanceController.tickerPrices[pair.replaceAll("/", "")] * pairData.coinAccumulated) / pairData.totalExpended) - 1) * 100;
-
-        /*this.appreciation[pair] =
-            (((tickerPrices[pair.replaceAll("/", "")] * pairData.coinAccumulated) /
-                pairData.totalExpended) -
-                1) *
-                100;*/
-      });
-    } catch (e) {
+      if (binanceController.tickerPrices.length > 0) {
+        calculateAppreciation();
+      }
+    /*} catch (e) {
       print("error on load history: ${e.toString()}");
-    }
+    }*/
     this.isUpdatingHistory.value = false;
   }
 
@@ -328,6 +324,7 @@ class UserController extends GetxController with StateMixin {
       this.balance.value = null;
     }
   }
+
 /*
   Future<void> loadPrices() async {
     final response = await http.get(Uri.https("api.binance.com", "api/v3/ticker/price"));

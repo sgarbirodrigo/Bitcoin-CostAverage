@@ -1,19 +1,13 @@
 import 'package:Bit.Me/controllers/user_controller.dart';
-import 'package:Bit.Me/tools.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-import '../models/history_model.dart';
-import '../models/settings_model.dart';
 import '../models/user_model.dart';
 
 enum ScaleLineChart { WEEK1, WEEK2, MONTH1, MONTH6, YEAR1 }
 
 class PriceAVGChartLine extends StatelessWidget {
-  //bool isShowingMainData;
-  //double interval = 1; //intervalo de 24 horas
   PairData _pairData;
   List<FlSpot> price_spots = List();
   double xmin, xmax;
@@ -26,76 +20,102 @@ class PriceAVGChartLine extends StatelessWidget {
 
   void fillLineChart() {
     price_spots.clear();
-    if (_pairData.price_spots.isNotEmpty) {
-      int spotsMissing = 0;
-      switch (userController.scaleLineChart.value) {
-        case ScaleLineChart.WEEK1:
-          spotsMissing = 7 - _pairData.price_spots.length;
-          break;
-        case ScaleLineChart.WEEK2:
-          spotsMissing = 14 - _pairData.price_spots.length;
-          break;
-        case ScaleLineChart.MONTH1:
-          spotsMissing = 30 - _pairData.price_spots.length;
-          break;
-        case ScaleLineChart.MONTH6:
-          spotsMissing = 180 - _pairData.price_spots.length;
-          break;
-        case ScaleLineChart.YEAR1:
-          spotsMissing = 365 - _pairData.price_spots.length;
-          break;
-      }
-      if (spotsMissing > 0) {
-        FlSpot reference = _pairData.price_spots.first;
-        Timestamp firstPoint = Timestamp.fromDate(
-            DateTime.fromMillisecondsSinceEpoch(reference.x.toInt() * 1000)
-                .add(Duration(days: -spotsMissing)));
-        price_spots.add(FlSpot(firstPoint.seconds.toDouble(), reference.y));
-      }
 
-      price_spots.addAll(_pairData.price_spots);
-    } else {
-      int spots_missing = 0;
-      switch (userController.scaleLineChart.value) {
-        case ScaleLineChart.WEEK1:
-          spots_missing = 7;
-          break;
-        case ScaleLineChart.WEEK2:
-          spots_missing = 14;
-          break;
-        case ScaleLineChart.MONTH1:
-          spots_missing = 30;
-          break;
-        case ScaleLineChart.MONTH6:
-          spots_missing = 180;
-          break;
-        case ScaleLineChart.YEAR1:
-          spots_missing = 365;
-          break;
-      }
-      price_spots.add(FlSpot(
-          Timestamp.fromMillisecondsSinceEpoch(
-                  DateTime.now().add(Duration(days: -spots_missing)).millisecondsSinceEpoch)
-              .seconds
-              .toDouble(),
-          1.toDouble()));
-      price_spots.add(FlSpot(Timestamp.now().seconds.toDouble(), 1.toDouble()));
-
-      _pairData.max = 2;
-      _pairData.min = 0;
-      color = Colors.grey;
+    int spotsMissing = 0;
+    switch (userController.scaleLineChart.value) {
+      case ScaleLineChart.WEEK1:
+        spotsMissing = 7 - _pairData.price_spots.length;
+        break;
+      case ScaleLineChart.WEEK2:
+        spotsMissing = 14 - _pairData.price_spots.length;
+        break;
+      case ScaleLineChart.MONTH1:
+        spotsMissing = 30 - _pairData.price_spots.length;
+        break;
+      case ScaleLineChart.MONTH6:
+        spotsMissing = 180 - _pairData.price_spots.length;
+        break;
+      case ScaleLineChart.YEAR1:
+        spotsMissing = 365 - _pairData.price_spots.length;
+        break;
     }
+
+    if (spotsMissing > 0) {
+      FlSpot reference = _pairData.price_spots.first;
+      Timestamp firstPoint = Timestamp.fromDate(
+          DateTime.fromMillisecondsSinceEpoch(reference.x.toInt() * 1000)
+              .add(Duration(days: -spotsMissing)));
+      price_spots.add(FlSpot(firstPoint.seconds.toDouble(), reference.y));
+    }
+
+    price_spots.addAll(_pairData.price_spots);
+  }
+
+  fillChartWithEmptyness() {
+    _pairData = PairData();
+
+    price_spots.clear();
+    int spots_missing = 0;
+
+    switch (userController.scaleLineChart.value) {
+      case ScaleLineChart.WEEK1:
+        spots_missing = 7;
+        break;
+      case ScaleLineChart.WEEK2:
+        spots_missing = 14;
+        break;
+      case ScaleLineChart.MONTH1:
+        spots_missing = 30;
+        break;
+      case ScaleLineChart.MONTH6:
+        spots_missing = 180;
+        break;
+      case ScaleLineChart.YEAR1:
+        spots_missing = 365;
+        break;
+    }
+
+    price_spots.add(FlSpot(
+        Timestamp.fromMillisecondsSinceEpoch(
+                DateTime.now().add(Duration(days: -spots_missing)).millisecondsSinceEpoch)
+            .seconds
+            .toDouble(),
+        1.toDouble()));
+    price_spots.add(FlSpot(Timestamp.now().seconds.toDouble(), 1.toDouble()));
+
+    _pairData.max = 2;
+    _pairData.min = 0;
+    color = Colors.grey;
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       height: 64,
       child: Obx(
         () {
           _pairData = userController.pairData_items.value[pair];
+          print("pairData: ${_pairData.pair}");
+          /*if (_pairData == null) {
+            _pairData = PairData();
+            fillChartWithEmptyness();
+          }else{
+            fillLineChart();
+          }*/
+          /*if (_pairData == null) {
+            _pairData = PairData(
+                pair: pair,
+                max: 2,
+                min: 0,
+                percentage_variation: 0,
+                coinAccumulated: 0,
+                totalExpended: 0,
+                isLoaded: true,
+                avgPrice: 0
+                );
+          }*/
           fillLineChart();
+
           xmax = DateTime.now().millisecondsSinceEpoch / 1000;
           xmin = DateTime.now().add(Duration(days: -7)).millisecondsSinceEpoch / 1000;
           //interval = (1.0 * (60 * 60 * 24)) - 1;
