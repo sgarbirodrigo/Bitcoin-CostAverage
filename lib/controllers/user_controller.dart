@@ -1,12 +1,15 @@
 import 'package:Bit.Me/charts/line_chart_mean.dart';
 import 'package:Bit.Me/controllers/auth_controller.dart';
 import 'package:Bit.Me/controllers/binance_controller.dart';
+import 'package:Bit.Me/controllers/connectivityController.dart';
 import 'package:Bit.Me/main_pages/dashboard_widget/chart_widget.dart';
 import 'package:Bit.Me/models/binance_balance_model.dart';
 import 'package:Bit.Me/models/history_model.dart';
 import 'package:Bit.Me/models/order_model.dart';
 import 'package:Bit.Me/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:crypto/crypto.dart';
@@ -22,6 +25,7 @@ class UserController extends GetxController with StateMixin {
   var localdatabaseController = Get.find<LocalDatabaseController>();
   var authController = Get.find<AuthController>();
   var binanceController = Get.find<BinanceController>();
+  var connectivityController = Get.find<ConnectivityController>();
 
   var scaleLineChart = Rx<ScaleLineChart>(ScaleLineChart.WEEK1);
   var selectedScaleText = "1W".obs;
@@ -55,40 +59,11 @@ class UserController extends GetxController with StateMixin {
 
       //handling scale preference
       this.scaleLineChart.listen((ScaleLineChart scaleLineChart) {
-        switch (scaleLineChart) {
-          case ScaleLineChart.WEEK1:
-            print("1w");
-            this.preferences.setString(scale_line_preference, "WEEK1");
-            this.forceUpdateHistoryData(7);
-            this.selectedScaleText.value = "1W";
-            break;
-          case ScaleLineChart.WEEK2:
-            print("2w");
-            this.preferences.setString(scale_line_preference, "WEEK2");
-            this.forceUpdateHistoryData(14);
-            this.selectedScaleText.value = "2W";
-            break;
-          case ScaleLineChart.MONTH1:
-            print("1M");
-            this.preferences.setString(scale_line_preference, "MONTH1");
-            this.forceUpdateHistoryData(30);
-            this.selectedScaleText.value = "1M";
-            break;
-          case ScaleLineChart.MONTH6:
-            print("6M");
-            this.preferences.setString(scale_line_preference, "MONTH6");
-            this.forceUpdateHistoryData(180);
-            this.selectedScaleText.value = "6M";
-            break;
-          case ScaleLineChart.YEAR1:
-            print("1Y");
-            this.preferences.setString(scale_line_preference, "YEAR1");
-            this.forceUpdateHistoryData(365);
-            this.selectedScaleText.value = "1Y";
-            break;
-        }
+        this.preferences.setString(scale_line_preference, scaleLineChart.toSavingNameString());
+        this.forceUpdateHistoryData(scaleLineChart.toNumberValue());
+        this.selectedScaleText.value = scaleLineChart.toShortNameString();
       });
-      this.scaleLineChart.value = _getScale();
+      this.scaleLineChart.value = _loadScale();
     });
 
     binanceController.tickerPrices.listen((tickerPrices) {
@@ -98,7 +73,41 @@ class UserController extends GetxController with StateMixin {
     });
   }
 
+  /*List<FlSpot> fillPriceSpots() {
+    List<FlSpot> price_spots = List();
+    int spotsMissing = 0;
+    switch (this.scaleLineChart.value) {
+      case ScaleLineChart.WEEK1:
+        spotsMissing = 7 - _pairData.price_spots.length;
+        break;
+      case ScaleLineChart.WEEK2:
+        spotsMissing = 14 - _pairData.price_spots.length;
+        break;
+      case ScaleLineChart.MONTH1:
+        spotsMissing = 30 - _pairData.price_spots.length;
+        break;
+      case ScaleLineChart.MONTH6:
+        spotsMissing = 180 - _pairData.price_spots.length;
+        break;
+      case ScaleLineChart.YEAR1:
+        spotsMissing = 365 - _pairData.price_spots.length;
+        break;
+    }
+
+    if (spotsMissing > 0) {
+      FlSpot reference = _pairData.price_spots.first;
+      Timestamp firstPoint = Timestamp.fromDate(
+          DateTime.fromMillisecondsSinceEpoch(reference.x.toInt() * 1000)
+              .add(Duration(days: -spotsMissing)));
+      price_spots.add(FlSpot(firstPoint.seconds.toDouble(), reference.y));
+    }
+
+    price_spots.addAll(_pairData.price_spots);
+    return price_spots;
+  }*/
+
   void calculateAppreciation() {
+    //todo save last updated price and load everytime from local
     pairData_items.value.forEach((pair, pairData) {
       print("pair: ${pairData.pair} - accumulated: ${pairData.coinAccumulated}");
       this.pairAppreciation[pair] =
@@ -109,7 +118,7 @@ class UserController extends GetxController with StateMixin {
     });
   }
 
-  ScaleLineChart _getScale() {
+  ScaleLineChart _loadScale() {
     ScaleLineChart scale = ScaleLineChart.WEEK1;
     switch (this.preferences.getString(scale_line_preference)) {
       case "WEEK1":
@@ -131,7 +140,6 @@ class UserController extends GetxController with StateMixin {
     return scale;
   }
 
-
   void loadUserData(String userId) async {
     change(null, status: RxStatus.loading());
     return FirebaseFirestore.instance
@@ -142,13 +150,19 @@ class UserController extends GetxController with StateMixin {
       if (documentSnapshot.exists) {
         this._userModel.value = UserData.fromJson(documentSnapshot.data());
         _calculateUserStats();
-        loadBalance();
+
+        if(documentSnapshot.metadata.isFromCache){
+          callErrorSnackbar("Sorry :\'(", "No internet connection.");
+        }else{
+          loadBalance();
+        }
         pieChartFormattedData.value = convertUserData();
         change(null, status: RxStatus.success());
       } else {
         this._userModel.value = null;
         change(this, status: RxStatus.error("User don\'t exist"));
       }
+
     });
   }
 
@@ -230,77 +244,93 @@ class UserController extends GetxController with StateMixin {
 
   void forceUpdateHistoryData(int daysToConsider) async {
     this.isUpdatingHistory.value = true;
-    /*try {*/
-      String userUid = authController.user.uid;
-      List<Map<String, dynamic>> dbQuery = await localdatabaseController.sql_database.database
-          .rawQuery('SELECT * FROM History ORDER BY timestamp DESC');
 
-      //print("load history for: ${userUid}");
+    String userUid = authController.user.uid;
+    List<Map<String, dynamic>> dbQuery = await localdatabaseController.sql_database.database
+        .rawQuery('SELECT * FROM History ORDER BY timestamp DESC');
 
-      Query firestoreHistoryQuery = FirebaseFirestore.instance
-          .collection("users")
-          .doc(userUid)
-          .collection("history")
-          .orderBy("timestamp", descending: false);
+    print("days: -${daysToConsider} / load history local: ${dbQuery.length}");
 
-      void addSnapshotToSQLDB(QuerySnapshot historySnapshots) async {
-        historySnapshots.docs.forEach(
-          (element) async {
-            HistoryItem historyItem = HistoryItem.fromJson(element.data());
-            await localdatabaseController.sql_database.database.insert(
-                'history',
-                {
-                  'id': element.id,
-                  'timestamp': historyItem.timestamp.millisecondsSinceEpoch,
-                  'amount': historyItem.order.amount,
-                  'pair': historyItem.order.pair,
-                  'result': historyItem.result.index,
-                  'rawFirestore': json.encode(historyItem.toJson()),
-                },
-                conflictAlgorithm: ConflictAlgorithm.replace);
-          },
-        );
-      }
+    Query firestoreHistoryQuery = FirebaseFirestore.instance
+        .collection("users")
+        .doc(userUid)
+        .collection("history")
+        .orderBy("timestamp", descending: false);
 
-      if (dbQuery.length > 0) {
-        Timestamp lastLoadedTimestamp =
-            Timestamp.fromMillisecondsSinceEpoch(dbQuery.first['timestamp']);
-        if (lastLoadedTimestamp.toDate().isBefore(DateTime.now().add(Duration(hours: -24)))) {
-          addSnapshotToSQLDB(await firestoreHistoryQuery
+    void addSnapshotToSQLDB(QuerySnapshot historySnapshots) async {
+      historySnapshots.docs.forEach(
+        (element) async {
+          HistoryItem historyItem = HistoryItem.fromJson(element.data());
+          await localdatabaseController.sql_database.database.insert(
+              'history',
+              {
+                'id': element.id,
+                'timestamp': historyItem.timestamp.millisecondsSinceEpoch,
+                'amount': historyItem.order.amount,
+                'pair': historyItem.order.pair,
+                'result': historyItem.result.index,
+                'rawFirestore': json.encode(historyItem.toJson()),
+              },
+              conflictAlgorithm: ConflictAlgorithm.replace);
+        },
+      );
+    }
+
+    if (dbQuery.length > 0) {
+      Timestamp lastLoadedTimestamp =
+          Timestamp.fromMillisecondsSinceEpoch(dbQuery.first['timestamp']);
+
+      print("lastLoadedTimestamp: ${lastLoadedTimestamp.toDate()}");
+
+      if (lastLoadedTimestamp.toDate().isBefore(DateTime.now().add(Duration(hours: -24)))) {
+        if (!connectivityController.isOffline()) {
+          await addSnapshotToSQLDB(await firestoreHistoryQuery
               .where('timestamp', isGreaterThan: lastLoadedTimestamp)
               .get());
-        }
-      } else {
-        addSnapshotToSQLDB(await firestoreHistoryQuery.get());
-      }
-
-      List<
-          Map<String,
-              dynamic>> rawQuery = await localdatabaseController.sql_database.database.rawQuery(
-          'SELECT * FROM History WHERE timestamp>= ${DateTime.now().add(Duration(days: -daysToConsider)).millisecondsSinceEpoch}');
-
-      //historyItems.clear();
-      pairData_items.value.clear();
-      rawQuery.forEach((element) {
-        HistoryItem historyItem = HistoryItem.fromJson(json.decode(element['rawFirestore']));
-        //historyItems.add(historyItem);
-        if (pairData_items.value[historyItem.order.pair] == null) {
-          pairData_items.value[historyItem.order.pair] = PairData().addHistoryItem(historyItem);
         } else {
-          pairData_items.value[historyItem.order.pair] =
-              pairData_items.value[historyItem.order.pair].addHistoryItem(historyItem);
+          callErrorSnackbar("Sorry :\'(", "No internet connection.");
         }
-      });
-      if (binanceController.tickerPrices.length > 0) {
-        calculateAppreciation();
       }
+    } else {
+      if (!connectivityController.isOffline()) {
+        await addSnapshotToSQLDB(await firestoreHistoryQuery.get());
+      } else {
+        callErrorSnackbar("Sorry :\'(", "No internet connection.");
+      }
+    }
+
+    List<
+        Map<String,
+            dynamic>> rawQuery = await localdatabaseController.sql_database.database.rawQuery(
+        'SELECT * FROM History WHERE timestamp>= ${DateTime.now().add(Duration(days: -daysToConsider)).millisecondsSinceEpoch} ORDER BY timestamp ASC');
+
+    pairData_items.value.clear();
+
+    rawQuery.forEach((element) {
+      HistoryItem historyItem = HistoryItem.fromJson(json.decode(element['rawFirestore']));
+
+      if (pairData_items.value[historyItem.order.pair] == null) {
+        pairData_items.value[historyItem.order.pair] = PairData().addHistoryItem(historyItem);
+      } else {
+        pairData_items.value[historyItem.order.pair] =
+            pairData_items.value[historyItem.order.pair].addHistoryItem(historyItem);
+      }
+    });
+
+    if (binanceController.tickerPrices.length > 0) {
+      calculateAppreciation();
+    }
+
     /*} catch (e) {
       print("error on load history: ${e.toString()}");
     }*/
+
     this.isUpdatingHistory.value = false;
+
+    pairData_items.update((val) {});
   }
 
-  Future<Balance> loadBalance() async {
+  Future<void> loadBalance() async {
     if (this.user.private_key != null && this.user.public_key != null) {
       int timeStamp = DateTime.now().millisecondsSinceEpoch;
       Map<String, dynamic> parameters = Map();

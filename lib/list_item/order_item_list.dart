@@ -1,4 +1,5 @@
 import 'package:Bit.Me/CreateEditOrder.dart';
+import 'package:Bit.Me/controllers/connectivityController.dart';
 import 'package:Bit.Me/controllers/user_controller.dart';
 import 'package:Bit.Me/main_pages/dashboard_widget/orders_widgets/orders_left_column_widget.dart';
 import 'package:Bit.Me/main_pages/dashboard_widget/orders_widgets/orders_right_column_widget.dart';
@@ -15,6 +16,7 @@ import '../models/user_model.dart';
 
 class OrderItemList extends StatelessWidget {
   var userController = Get.find<UserController>();
+  var connectivityController = Get.find<ConnectivityController>();
   int index;
 
   OrderItemList(this.index);
@@ -49,24 +51,8 @@ class OrderItemList extends StatelessWidget {
                       width: 16,
                     ),
                     Expanded(
-                      child: userController.pairData_items.value[
-                                  userController.user.orders.values.toList()[this.index].pair] !=
-                              null
-                          ? PriceAVGChartLine(
-                              pair: userController
-                                  .pairData_items
-                                  .value[
-                                      userController.user.orders.values.toList()[this.index].pair]
-                                  .pair,
-                              color: Colors.deepPurple,
-                            )
-                          : Container(
-                              child: Text(
-                                "Not enough data to show on the selected period.",
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                    ),
+                        child: PriceAVGChartLine(
+                            pair: userController.user.orders.values.toList()[this.index].pair)),
                     OrdersRightColumnWidget(this.index),
                   ],
                 ),
@@ -148,20 +134,24 @@ class OrderItemList extends StatelessWidget {
         ),
       ),
       onTap: () async {
-        await showModalBottomSheet(
-          context: Get.context,
-          useRootNavigator: true,
-          isScrollControlled: true,
-          builder: (context) => Container(
-            child: Padding(
-              padding: MediaQuery.of(context).viewInsets,
-              child: CreateEditOrder(
-                orderItem: userController.user.orders.values.toList()[index],
+        if (!connectivityController.isOffline()) {
+          await showModalBottomSheet(
+            context: Get.context,
+            useRootNavigator: true,
+            isScrollControlled: true,
+            builder: (context) => Container(
+              child: Padding(
+                padding: MediaQuery.of(context).viewInsets,
+                child: CreateEditOrder(
+                  orderItem: userController.user.orders.values.toList()[index],
+                ),
               ),
             ),
-          ),
-        );
-        userController.refreshUserData();
+          );
+          userController.refreshUserData();
+        } else {
+          callErrorSnackbar("Sorry :\'(", "No internet connection.");
+        }
       },
     );
   }
@@ -205,12 +195,17 @@ class OrderItemList extends StatelessWidget {
         ),
       ),
       onTap: () {
-        isActivityChanging = true;
-        FirebaseFirestore.instance.collection("users").doc(userController.user.uid).update(
-            {"orders.${orderItem.pair.replaceAll("/", "_")}.active": !isActive}).then((value) {
-          isActivityChanging = false;
+        if (!connectivityController.isOffline()) {
+          isActivityChanging = true;
+          FirebaseFirestore.instance.collection("users").doc(userController.user.uid).update(
+              {"orders.${orderItem.pair.replaceAll("/", "_")}.active": !isActive}).then((value) {
+            isActivityChanging = false;
+            userController.refreshUserData();
+          });
           userController.refreshUserData();
-        });
+        } else {
+          callErrorSnackbar("Sorry :\'(", "No internet connection.");
+        }
       },
     );
   }

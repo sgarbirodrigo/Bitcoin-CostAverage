@@ -71,7 +71,6 @@ class PairData {
   double totalExpended = 0;
   List<FlSpot> price_spots = List();
   List<FlSpot> avg_price_spots = List();
-  bool isLoaded = false;
 
   PairData addHistoryItem(HistoryItem historyItem) {
     this.historyItems.add(historyItem);
@@ -97,14 +96,10 @@ class PairData {
       coinAccumulated += historyItem.response.filled;
       totalExpended += historyItem.response.filled * historyItem.response.price;
       avgPrice = totalExpended / coinAccumulated;
-      //avgPrice =null;
       price_spots
           .add(FlSpot((historyItem.timestamp.seconds).toDouble(), historyItem.response.price));
       avg_price_spots.add(FlSpot((historyItem.timestamp.seconds).toDouble(), avgPrice));
       percentage_variation = getValueVariation(historyItem.response.price, avgPrice);
-      isLoaded = true;
-    } else {
-      isLoaded = false;
     }
     return this;
   }

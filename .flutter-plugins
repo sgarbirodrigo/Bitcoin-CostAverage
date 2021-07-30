@@ -1,6 +1,11 @@
 # This is a generated file; do not edit or check into version control.
 cloud_firestore=/Users/sgarbi/Development/flutter/.pub-cache/hosted/pub.dartlang.org/cloud_firestore-2.3.0/
 cloud_firestore_web=/Users/sgarbi/Development/flutter/.pub-cache/hosted/pub.dartlang.org/cloud_firestore_web-2.2.0/
+connectivity_plus=/Users/sgarbi/Development/flutter/.pub-cache/hosted/pub.dartlang.org/connectivity_plus-1.0.6/
+connectivity_plus_linux=/Users/sgarbi/Development/flutter/.pub-cache/hosted/pub.dartlang.org/connectivity_plus_linux-1.0.3/
+connectivity_plus_macos=/Users/sgarbi/Development/flutter/.pub-cache/hosted/pub.dartlang.org/connectivity_plus_macos-1.0.2/
+connectivity_plus_web=/Users/sgarbi/Development/flutter/.pub-cache/hosted/pub.dartlang.org/connectivity_plus_web-1.0.2/
+connectivity_plus_windows=/Users/sgarbi/Development/flutter/.pub-cache/hosted/pub.dartlang.org/connectivity_plus_windows-1.0.2/
 firebase_analytics=/Users/sgarbi/Development/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_analytics-8.1.2/
 firebase_analytics_web=/Users/sgarbi/Development/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_analytics_web-0.3.0+1/
 firebase_auth=/Users/sgarbi/Development/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_auth-2.0.0/

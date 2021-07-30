@@ -3,42 +3,77 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import '../models/user_model.dart';
+import '../tools.dart';
 
 enum ScaleLineChart { WEEK1, WEEK2, MONTH1, MONTH6, YEAR1 }
 
+extension ScaleLineExtension on ScaleLineChart {
+  int toNumberValue() {
+    switch (this) {
+      case ScaleLineChart.WEEK1:
+        return 7;
+      case ScaleLineChart.WEEK2:
+        return 14;
+      case ScaleLineChart.MONTH1:
+        return 30;
+      case ScaleLineChart.MONTH6:
+        return 180;
+      case ScaleLineChart.YEAR1:
+        return 365;
+      default:
+        return 7;
+    }
+  }
+
+  String toShortNameString() {
+    switch (this) {
+      case ScaleLineChart.WEEK1:
+        return "1W";
+      case ScaleLineChart.WEEK2:
+        return "2W";
+      case ScaleLineChart.MONTH1:
+        return "1M";
+      case ScaleLineChart.MONTH6:
+        return "6M";
+      case ScaleLineChart.YEAR1:
+        return "1Y";
+      default:
+        return "1W";
+    }
+  }
+
+  String toSavingNameString() {
+    switch (this) {
+      case ScaleLineChart.WEEK1:
+        return "WEEK1";
+      case ScaleLineChart.WEEK2:
+        return "WEEK2";
+      case ScaleLineChart.MONTH1:
+        return "MONTH1";
+      case ScaleLineChart.MONTH6:
+        return "MONTH6";
+      case ScaleLineChart.YEAR1:
+        return "YEAR1";
+      default:
+        return "WEEK1";
+    }
+  }
+}
+
 class PriceAVGChartLine extends StatelessWidget {
-  PairData _pairData;
-  List<FlSpot> price_spots = List();
-  double xmin, xmax;
-  String pair;
-  Color color;
+  final String pair;
 
   var userController = Get.find<UserController>();
 
-  PriceAVGChartLine({this.pair, this.color});
+  PriceAVGChartLine({this.pair});
 
-  void fillLineChart() {
-    price_spots.clear();
+  List<FlSpot> fillLineChart(_pairData) {
+    List<FlSpot> price_spots = List();
 
-    int spotsMissing = 0;
-    switch (userController.scaleLineChart.value) {
-      case ScaleLineChart.WEEK1:
-        spotsMissing = 7 - _pairData.price_spots.length;
-        break;
-      case ScaleLineChart.WEEK2:
-        spotsMissing = 14 - _pairData.price_spots.length;
-        break;
-      case ScaleLineChart.MONTH1:
-        spotsMissing = 30 - _pairData.price_spots.length;
-        break;
-      case ScaleLineChart.MONTH6:
-        spotsMissing = 180 - _pairData.price_spots.length;
-        break;
-      case ScaleLineChart.YEAR1:
-        spotsMissing = 365 - _pairData.price_spots.length;
-        break;
-    }
+    int spotsMissing =
+        userController.scaleLineChart.value.toNumberValue() - _pairData.price_spots.length;
 
     if (spotsMissing > 0) {
       FlSpot reference = _pairData.price_spots.first;
@@ -49,43 +84,54 @@ class PriceAVGChartLine extends StatelessWidget {
     }
 
     price_spots.addAll(_pairData.price_spots);
+    return price_spots;
   }
 
-  fillChartWithEmptyness() {
-    _pairData = PairData();
-
-    price_spots.clear();
-    int spots_missing = 0;
-
-    switch (userController.scaleLineChart.value) {
-      case ScaleLineChart.WEEK1:
-        spots_missing = 7;
-        break;
-      case ScaleLineChart.WEEK2:
-        spots_missing = 14;
-        break;
-      case ScaleLineChart.MONTH1:
-        spots_missing = 30;
-        break;
-      case ScaleLineChart.MONTH6:
-        spots_missing = 180;
-        break;
-      case ScaleLineChart.YEAR1:
-        spots_missing = 365;
-        break;
-    }
+  List<FlSpot> getEmptyPriceSpots() {
+    List<FlSpot> price_spots = List();
 
     price_spots.add(FlSpot(
-        Timestamp.fromMillisecondsSinceEpoch(
-                DateTime.now().add(Duration(days: -spots_missing)).millisecondsSinceEpoch)
+        Timestamp.fromMillisecondsSinceEpoch(DateTime.now()
+                .add(Duration(days: -userController.scaleLineChart.value.toNumberValue()))
+                .millisecondsSinceEpoch)
             .seconds
             .toDouble(),
         1.toDouble()));
     price_spots.add(FlSpot(Timestamp.now().seconds.toDouble(), 1.toDouble()));
 
-    _pairData.max = 2;
-    _pairData.min = 0;
-    color = Colors.grey;
+    return price_spots;
+  }
+
+  double getMinDateTimeTimestamp() {
+    switch (userController.scaleLineChart.value) {
+      case ScaleLineChart.WEEK1:
+        return DateTime.now().add(Duration(days: -7)).millisecondsSinceEpoch / 1000;
+        break;
+      case ScaleLineChart.WEEK2:
+        return DateTime.now().add(Duration(days: -14)).millisecondsSinceEpoch / 1000;
+        break;
+      case ScaleLineChart.MONTH1:
+        return DateTime.now().add(Duration(days: -30)).millisecondsSinceEpoch / 1000;
+        break;
+      case ScaleLineChart.MONTH6:
+        return DateTime.now().add(Duration(days: -180)).millisecondsSinceEpoch / 1000;
+        break;
+      case ScaleLineChart.YEAR1:
+        return DateTime.now().add(Duration(days: -365)).millisecondsSinceEpoch / 1000;
+        break;
+    }
+  }
+
+  double getXMin() {
+    return Timestamp.fromMillisecondsSinceEpoch(DateTime.now()
+            .add(Duration(days: -userController.scaleLineChart.value.toNumberValue()))
+            .millisecondsSinceEpoch)
+        .seconds
+        .toDouble();
+  }
+
+  double getXMax() {
+    return Timestamp.now().seconds.toDouble();
   }
 
   @override
@@ -94,54 +140,44 @@ class PriceAVGChartLine extends StatelessWidget {
       height: 64,
       child: Obx(
         () {
-          _pairData = userController.pairData_items.value[pair];
-          print("pairData: ${_pairData.pair}");
-          /*if (_pairData == null) {
-            _pairData = PairData();
-            fillChartWithEmptyness();
-          }else{
-            fillLineChart();
-          }*/
-          /*if (_pairData == null) {
-            _pairData = PairData(
-                pair: pair,
-                max: 2,
-                min: 0,
-                percentage_variation: 0,
-                coinAccumulated: 0,
-                totalExpended: 0,
-                isLoaded: true,
-                avgPrice: 0
-                );
-          }*/
-          fillLineChart();
-
-          xmax = DateTime.now().millisecondsSinceEpoch / 1000;
-          xmin = DateTime.now().add(Duration(days: -7)).millisecondsSinceEpoch / 1000;
-          //interval = (1.0 * (60 * 60 * 24)) - 1;
-          switch (userController.scaleLineChart.value) {
-            case ScaleLineChart.WEEK1:
-              xmin = DateTime.now().add(Duration(days: -7)).millisecondsSinceEpoch / 1000;
-              break;
-            case ScaleLineChart.WEEK2:
-              xmin = DateTime.now().add(Duration(days: -14)).millisecondsSinceEpoch / 1000;
-              break;
-            case ScaleLineChart.MONTH1:
-              xmin = DateTime.now().add(Duration(days: -30)).millisecondsSinceEpoch / 1000;
-              break;
-            case ScaleLineChart.MONTH6:
-              xmin = DateTime.now().add(Duration(days: -180)).millisecondsSinceEpoch / 1000;
-              break;
-            case ScaleLineChart.YEAR1:
-              xmin = DateTime.now().add(Duration(days: -365)).millisecondsSinceEpoch / 1000;
-              break;
+          Color color = Colors.deepPurple;
+          if (userController.pairData_items.value[pair] == null) {
+            color = Colors.grey;
+            return Center(
+              child: Text(
+                "Not enough data to show on the selected period.",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12),
+              ),
+            );
           }
+          //print("${this.pair.replaceAll("/", "_")} - orders: ${userController.user.orders[this.pair.replaceAll("/", "_")]}");
+          if (!userController.user.orders[this.pair.replaceAll("/", "_")].active) {
+            color = Colors.grey;
+          }
+          List<FlSpot> price_spots = List();
+          if (DateTime.fromMillisecondsSinceEpoch(userController.pairData_items.value[pair].price_spots.first.x.toInt() * 1000).isAfter(
+              DateTime.now()
+                  .add(Duration(days: -userController.scaleLineChart.value.toNumberValue())))) {
+            price_spots.add(FlSpot(
+                DateTime.now()
+                        .add(Duration(days: -userController.scaleLineChart.value.toNumberValue()))
+                        .millisecondsSinceEpoch /
+                    1000,
+                userController.pairData_items.value[pair].price_spots.first.y));
+          }
+          price_spots.addAll(userController.pairData_items.value[pair].price_spots);
+
           return LineChart(
             LineChartData(
               lineTouchData: LineTouchData(
                 enabled: false,
-                touchTooltipData: null,
-                handleBuiltInTouches: false,
+                /*touchTooltipData: LineTouchTooltipData(
+                    getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
+                      return null;
+                    }),*/
+                //touchCallback: (LineTouchResponse touchResponse) {},
+                //handleBuiltInTouches: false,
               ),
               clipData: FlClipData.vertical(),
               gridData: FlGridData(
@@ -178,13 +214,19 @@ class PriceAVGChartLine extends StatelessWidget {
                   ),
                 ),
               ),
-              minX: xmin,
-              maxX: xmax,
-              maxY: _pairData.max * 1.01,
-              minY: _pairData.min * 0.95,
+              minX: getXMin(),
+              maxX: getXMax(),
+              maxY: userController.pairData_items.value[pair] != null
+                  ? userController.pairData_items.value[pair].max * 1.01
+                  : 2,
+              minY: userController.pairData_items.value[pair] != null
+                  ? userController.pairData_items.value[pair].min * 0.95
+                  : 0,
               lineBarsData: [
                 LineChartBarData(
-                  spots: price_spots,
+                  spots: userController.pairData_items.value[pair] != null
+                      ? price_spots
+                      : getEmptyPriceSpots(),
                   isCurved: true,
                   curveSmoothness: 0,
                   colors: [
@@ -199,7 +241,6 @@ class PriceAVGChartLine extends StatelessWidget {
                           radius: 2,
                           color: color,
                           strokeWidth: 0,
-                          //trokeColor: Colors.green
                         );
                       }),
                   belowBarData: BarAreaData(
@@ -212,11 +253,11 @@ class PriceAVGChartLine extends StatelessWidget {
                     gradientFrom: const Offset(0, 0),
                     gradientTo: const Offset(0, 1),
                   ),
-                  /*gradientTo: Offset(0, 0),
-          gradientFrom: Offset(0, 0),*/
                 ),
                 LineChartBarData(
-                  spots: _pairData.avg_price_spots,
+                  spots: userController.pairData_items.value[pair] != null
+                      ? userController.pairData_items.value[pair].avg_price_spots
+                      : null,
                   isCurved: true,
                   curveSmoothness: 0.2,
                   dashArray: [8, 8],

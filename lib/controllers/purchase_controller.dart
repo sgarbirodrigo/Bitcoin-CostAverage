@@ -41,7 +41,7 @@ class PurchaseController extends GetxController with StateMixin {
       });
       change(this, status: RxStatus.success());
     } catch (e) {
-      //print("error on identifying: ${e.toString()}");
+      print("error on identifying: ${e.toString()}");
       change(this, status: RxStatus.error(e.toString()));
     }
   }

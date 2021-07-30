@@ -29,6 +29,7 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:titled_navigation_bar/titled_navigation_bar.dart';
 import 'CreateEditOrder.dart';
 import 'controllers/auth_controller.dart';
+import 'controllers/connectivityController.dart';
 import 'controllers/user_controller.dart';
 import 'wizards/IntroductionConnectPage.dart';
 import 'wizards/IntroductionPage.dart';
@@ -62,6 +63,7 @@ class Home extends StatelessWidget {
   var purchaseController = Get.find<PurchaseController>();
   var userController = Get.find<UserController>();
   var homeController = Get.put(HomeController());
+  var connectivityController = Get.find<ConnectivityController>();
 
   SettingsApp settings;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -137,13 +139,18 @@ class Home extends StatelessWidget {
                     ),
                     icon: ElevatedButton(
                       onPressed: () async {
-                        await showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return Dialog(child: CreateEditOrder());
-                          },
-                        );
-                        userController.refreshUserData();
+                        if (!connectivityController.isOffline()) {
+                          await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Dialog(child: CreateEditOrder());
+                            },
+                          );
+                          userController.refreshUserData();
+                        } else {
+                          callErrorSnackbar("Sorry :\'(", "No internet connection.");
+                        }
+
                       },
                       child: Icon(
                         Icons.add,

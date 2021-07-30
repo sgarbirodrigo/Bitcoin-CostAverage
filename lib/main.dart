@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:Bit.Me/contants.dart';
 import 'package:Bit.Me/controllers/binance_controller.dart';
+import 'package:Bit.Me/controllers/connectivityController.dart';
 import 'package:Bit.Me/sql_database.dart';
 import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -45,6 +46,7 @@ void main() async {
     Get.put(UserController());
   }));
   Get.put(AuthController());
+  Get.put(ConnectivityController());
 
   final Trace traceInit = FirebasePerformance.instance.newTrace("trace_init_performance");
   await traceInit.start();
@@ -100,8 +102,7 @@ class MyApp extends StatelessWidget {
   var authController = Get.find<AuthController>();
   var purchaseController = Get.find<PurchaseController>();
 
-  MyApp(this.appUpdated) {
-  }
+  MyApp(this.appUpdated) {}
 
   @override
   Widget build(BuildContext context) {

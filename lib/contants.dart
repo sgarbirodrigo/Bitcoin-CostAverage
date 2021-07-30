@@ -24,7 +24,6 @@ const authenticationPageRoute = "/";
 const authenticationSignUpPageRoute = "/signup";
 const authenticationRecoveryPageRoute = "/recovery";
 
-
 const String base_coin_preference = "base_coin";
 const String scale_line_preference = "scale_line";
 
@@ -81,12 +80,26 @@ final Function(String, String) callSnackbar = (String title, String message) {
     duration: Duration(seconds: 5),
     backgroundColor: lightGrey,
     colorText: Colors.white,
-    snackPosition: SnackPosition.BOTTOM, padding: EdgeInsets.all(16),margin: EdgeInsets.all(16),borderRadius: 4.0,
+    snackPosition: SnackPosition.BOTTOM,
+    padding: EdgeInsets.all(16),
+    margin: EdgeInsets.all(16),
+    borderRadius: 4.0,
     icon: Icon(
       Icons.error,
       color: Colors.white,
     ),
   );
+};
+final Function(String, String) callErrorSnackbar = (String title, String message) {
+  return Get.showSnackbar(GetBar(
+    message: message,
+    icon: Icon(
+      Icons.wifi_off_sharp,
+      color: Colors.white,
+    ),
+    backgroundColor: Colors.red,
+    duration: Duration(seconds: 4),
+  ));
 };
 
 // UI Colors
@@ -145,8 +158,6 @@ const userInputDecoration = InputDecoration(
     borderRadius: BorderRadius.all(Radius.circular(kButtonRadius)),
   ),
 );
-
-
 
 enum AppLanguages { EN, PT_BR }
 
