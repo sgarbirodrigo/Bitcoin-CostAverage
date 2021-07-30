@@ -28,11 +28,7 @@ import 'controllers/bindings/auth_binding.dart';
 import 'controllers/database_controller.dart';
 import 'controllers/purchase_controller.dart';
 import 'controllers/user_controller.dart';
-import 'external/authService.dart';
 import 'home.dart';
-import 'pages/authentication/authentication.dart';
-import 'pages/authentication/recovery.dart';
-import 'pages/authentication/sign_up.dart';
 
 //1222
 
@@ -130,7 +126,7 @@ class MyApp extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 32),
                   child: Center(
                     child: Text(
-                      "Sorry for the inconvenient but you must update your app to keep using the app.\n:\'(",
+                      "Sorry for the inconvenient but you must update your app to keep using.\n:\'(",
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 24),
                     ),

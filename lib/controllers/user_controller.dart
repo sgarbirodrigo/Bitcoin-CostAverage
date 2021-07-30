@@ -3,21 +3,20 @@ import 'package:Bit.Me/controllers/auth_controller.dart';
 import 'package:Bit.Me/controllers/binance_controller.dart';
 import 'package:Bit.Me/controllers/connectivityController.dart';
 import 'package:Bit.Me/main_pages/dashboard_widget/chart_widget.dart';
-import 'package:Bit.Me/models/binance_balance_model.dart';
 import 'package:Bit.Me/models/history_model.dart';
 import 'package:Bit.Me/models/order_model.dart';
 import 'package:Bit.Me/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:crypto/crypto.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import '../contants.dart';
 import 'database_controller.dart';
+
+class HistoryController extends GetxController with StateMixin{
+
+}
 
 class UserController extends GetxController with StateMixin {
   SharedPreferences preferences;
@@ -28,9 +27,9 @@ class UserController extends GetxController with StateMixin {
   var connectivityController = Get.find<ConnectivityController>();
 
   var scaleLineChart = Rx<ScaleLineChart>(ScaleLineChart.WEEK1);
-  var selectedScaleText = "1W".obs;
 
   Rx<UserData> _userModel = UserData().obs;
+
   var pairData_items = Rx<Map<String, PairData>>({});
   var pairAppreciation = {}.obs;
 
@@ -38,7 +37,8 @@ class UserController extends GetxController with StateMixin {
   Rx<String> baseCoin = "".obs;
   var userTotalBuyingAmount = Map<String, double>().obs;
   var userTotalExpendingAmount = Map<String, double>().obs;
-  var balance = Balance().obs;
+
+  //var balance = Balance().obs;
   var pieChartFormattedData = {}.obs;
 
   UserData get user => _userModel.value;
@@ -61,7 +61,6 @@ class UserController extends GetxController with StateMixin {
       this.scaleLineChart.listen((ScaleLineChart scaleLineChart) {
         this.preferences.setString(scale_line_preference, scaleLineChart.toSavingNameString());
         this.forceUpdateHistoryData(scaleLineChart.toNumberValue());
-        this.selectedScaleText.value = scaleLineChart.toShortNameString();
       });
       this.scaleLineChart.value = _loadScale();
     });
@@ -151,10 +150,10 @@ class UserController extends GetxController with StateMixin {
         this._userModel.value = UserData.fromJson(documentSnapshot.data());
         _calculateUserStats();
 
-        if(documentSnapshot.metadata.isFromCache){
+        if (documentSnapshot.metadata.isFromCache) {
           callErrorSnackbar("Sorry :\'(", "No internet connection.");
-        }else{
-          loadBalance();
+        } else {
+          binanceController.loadBalance(this.user.public_key, this.user.private_key);
         }
         pieChartFormattedData.value = convertUserData();
         change(null, status: RxStatus.success());
@@ -162,12 +161,10 @@ class UserController extends GetxController with StateMixin {
         this._userModel.value = null;
         change(this, status: RxStatus.error("User don\'t exist"));
       }
-
     });
   }
 
   void _calculateUserStats() {
-    //reset all data before reload
     Map<String, double> temporaryBuying = Map();
     Map<String, double> temporaryExpending = Map();
     temporaryBuying.keys.forEach((key) {
@@ -249,7 +246,7 @@ class UserController extends GetxController with StateMixin {
     List<Map<String, dynamic>> dbQuery = await localdatabaseController.sql_database.database
         .rawQuery('SELECT * FROM History ORDER BY timestamp DESC');
 
-    print("days: -${daysToConsider} / load history local: ${dbQuery.length}");
+    //print("days: -${daysToConsider} / load history local: ${dbQuery.length}");
 
     Query firestoreHistoryQuery = FirebaseFirestore.instance
         .collection("users")
@@ -280,7 +277,7 @@ class UserController extends GetxController with StateMixin {
       Timestamp lastLoadedTimestamp =
           Timestamp.fromMillisecondsSinceEpoch(dbQuery.first['timestamp']);
 
-      print("lastLoadedTimestamp: ${lastLoadedTimestamp.toDate()}");
+      //print("lastLoadedTimestamp: ${lastLoadedTimestamp.toDate()}");
 
       if (lastLoadedTimestamp.toDate().isBefore(DateTime.now().add(Duration(hours: -24)))) {
         if (!connectivityController.isOffline()) {
@@ -330,6 +327,7 @@ class UserController extends GetxController with StateMixin {
     pairData_items.update((val) {});
   }
 
+/*
   Future<void> loadBalance() async {
     if (this.user.private_key != null && this.user.public_key != null) {
       int timeStamp = DateTime.now().millisecondsSinceEpoch;
@@ -353,7 +351,7 @@ class UserController extends GetxController with StateMixin {
     } else {
       this.balance.value = null;
     }
-  }
+  }*/
 
 /*
   Future<void> loadPrices() async {

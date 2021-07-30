@@ -12,6 +12,7 @@ import 'package:Bit.Me/purchase/paywall.dart';
 import 'package:Bit.Me/purchase/paywall_bca.dart';
 import 'package:Bit.Me/purchase/paywall_bcav2.dart';
 import 'package:Bit.Me/sql_database.dart';
+import 'package:Bit.Me/widgets/bottomnavigation_bar.dart';
 import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:Bit.Me/widgets/appbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -38,9 +39,9 @@ import 'main_pages/orders_Page.dart';
 enum Section { LOGIN, DASHBOARD, ORDERS, HISTORY, SETTINGS }
 
 class HomeController extends GetxController {
-  var _myPage = PageController(initialPage: 0).obs;
+  var pageController = PageController(initialPage: 0).obs;
   var pages = [DashboardBitMe(), OrdersPage(), SettingsPage()];
-  var _pageIndex = 1.obs;
+  var pageIndex = 1.obs;
 
   @override
   void onInit() {
@@ -50,10 +51,10 @@ class HomeController extends GetxController {
   void setPage(int index) {
     if (index != 0) {
       //print("jumping to $index");
-      _myPage.value.jumpToPage(index >= 1 ? index - 1 : index);
-      _pageIndex.value = index;
+      pageController.value.jumpToPage(index >= 1 ? index - 1 : index);
+      pageIndex.value = index;
     } else {
-      _pageIndex.value = _pageIndex.value;
+      pageIndex.value = pageIndex.value;
     }
   }
 }
@@ -70,14 +71,12 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   // print("Home");
+    // print("Home");
     return userController.obx(
         (_) {
-          //print("0");
           if (!userController.user.hasIntroduced) {
             return IntroductionPage();
           }
-          //print("1");
           if (purchaseController.entitlementIsActive.isFalse && !kDebugMode) {
             return FutureBuilder(
               future: Purchases.getOfferings(),
@@ -114,76 +113,16 @@ class Home extends StatelessWidget {
               },
             );
           }
-          //print("2");
           if (!userController.user.hasConnected) {
             return ConnectToBinancePage();
           }
-          //print("3");
-          //normal paid user access now
           return Scaffold(
             key: _scaffoldKey,
             appBar: AppBarBitMe(),
             backgroundColor: Color(0xffF9F8FD),
-            bottomNavigationBar: TitledBottomNavigationBar(
-                currentIndex: homeController._pageIndex.value,
-                reverse: true,
-                onTap: (index) {
-                  homeController.setPage(index);
-                },
-                items: [
-                  TitledNavigationBarItem(
-                    title: Text(
-                      '',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.deepPurple),
-                    ),
-                    icon: ElevatedButton(
-                      onPressed: () async {
-                        if (!connectivityController.isOffline()) {
-                          await showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Dialog(child: CreateEditOrder());
-                            },
-                          );
-                          userController.refreshUserData();
-                        } else {
-                          callErrorSnackbar("Sorry :\'(", "No internet connection.");
-                        }
-
-                      },
-                      child: Icon(
-                        Icons.add,
-                        size: 24,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  TitledNavigationBarItem(
-                    title: Text('Home'),
-                    icon: Icon(
-                      Icons.home,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  TitledNavigationBarItem(
-                    title: Text('Orders'),
-                    icon: Icon(
-                      Icons.list_alt_sharp,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  TitledNavigationBarItem(
-                    title: Text('Settings'),
-                    icon: Icon(
-                      Icons.settings_outlined,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ]),
+            bottomNavigationBar: MyBottomNavigationBar(),
             body: PageView.builder(
-                controller: homeController._myPage.value,
-                //onPageChanged: yourController.selectedPagexNumber,
+                controller: homeController.pageController.value,
                 itemCount: homeController.pages.length,
                 physics: NeverScrollableScrollPhysics(),
                 onPageChanged: (index) {
@@ -194,10 +133,6 @@ class Home extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return homeController.pages[index];
                 }),
-            /*body: Obx(()=>PageView(
-                physics: NeverScrollableScrollPhysics(),
-                controller: homeController._myPage.value,
-                children: <Widget>[DashboardBitMe(), OrdersPage(), SettingsPage()])),*/
           );
         },
         onLoading: CircularProgressIndicatorMy(

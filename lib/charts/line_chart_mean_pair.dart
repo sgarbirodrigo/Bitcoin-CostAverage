@@ -205,15 +205,15 @@ class PriceAVGChartLinePair extends StatelessWidget {
                           colors: [
                             this.color,
                           ],
-                          barWidth: 4,
+                          barWidth: userController.scaleLineChart.value.getChartDotSize(),
                           isStrokeCapRound: true,
                           dotData: FlDotData(
                               show: true,
                               getDotPainter: (spot, percent, barData, index) {
                                 return FlDotCirclePainter(
-                                  radius: 4,
+                                  radius: userController.scaleLineChart.value.getChartDotSize()/1.5,
                                   color: Colors.deepPurple,
-                                  strokeWidth: 2,
+                                  strokeWidth: userController.scaleLineChart.value.getChartDotSize()/2,
                                   strokeColor: this.color,
                                   //trokeColor: Colors.green
                                 );

@@ -1,3 +1,4 @@
+import 'package:Bit.Me/controllers/binance_controller.dart';
 import 'package:Bit.Me/controllers/user_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,7 @@ import '../../../tools.dart';
 
 class ChartTabWidget extends StatelessWidget {
   var userController = Get.find<UserController>();
-
+  var binanceController = Get.find<BinanceController>();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -20,7 +21,6 @@ class ChartTabWidget extends StatelessWidget {
       ),
       child: Center(
         child: Obx(() {
-          print("balance: ${userController.balance.value.balancesMapped}");
           return Container(
             //color: Colors.red,
             alignment: Alignment.center,
@@ -81,14 +81,14 @@ class ChartTabWidget extends StatelessWidget {
                             height: 0,
                           ),
                           Visibility(
-                            visible: userController.balance.value != null &&
-                                userController.balance.value.balancesMapped != null,
+                            visible: binanceController.balance.value != null &&
+                                binanceController.balance.value.balancesMapped != null,
                             child: Text(
-                              userController.balance.value != null &&
-                                      userController.balance.value.balancesMapped != null
+                              binanceController.balance.value != null &&
+                                  binanceController.balance.value.balancesMapped != null
                                   ? "${returnCurrencyCorrectedNumber(
                                       coins[index],
-                                      userController.balance.value.balancesMapped[coins[index]],
+                                binanceController.balance.value.balancesMapped[coins[index]],
                                     )}"
                                   : "",
                               style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400),

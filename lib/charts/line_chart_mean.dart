@@ -60,6 +60,42 @@ extension ScaleLineExtension on ScaleLineChart {
         return "WEEK1";
     }
   }
+
+  int getDaysInterval(){
+    switch (this) {
+      case ScaleLineChart.WEEK1:
+        return 1;
+      case ScaleLineChart.WEEK2:
+        return 2;
+      case ScaleLineChart.MONTH1:
+        return 4;
+      case ScaleLineChart.MONTH6:
+        return 14;
+      case ScaleLineChart.YEAR1:
+        return 28;
+      default:
+        return 1;
+    }
+  }
+
+
+
+  double getChartDotSize(){
+    switch (this) {
+      case ScaleLineChart.WEEK1:
+        return 4;
+      case ScaleLineChart.WEEK2:
+        return 4;
+      case ScaleLineChart.MONTH1:
+        return 4;
+      case ScaleLineChart.MONTH6:
+        return 3;
+      case ScaleLineChart.YEAR1:
+        return 2;
+      default:
+        return 4;
+    }
+  }
 }
 
 class PriceAVGChartLine extends StatelessWidget {
@@ -156,8 +192,9 @@ class PriceAVGChartLine extends StatelessWidget {
             color = Colors.grey;
           }
           List<FlSpot> price_spots = List();
-          if (DateTime.fromMillisecondsSinceEpoch(userController.pairData_items.value[pair].price_spots.first.x.toInt() * 1000).isAfter(
-              DateTime.now()
+          if (DateTime.fromMillisecondsSinceEpoch(
+                  userController.pairData_items.value[pair].price_spots.first.x.toInt() * 1000)
+              .isAfter(DateTime.now()
                   .add(Duration(days: -userController.scaleLineChart.value.toNumberValue())))) {
             price_spots.add(FlSpot(
                 DateTime.now()
@@ -172,12 +209,10 @@ class PriceAVGChartLine extends StatelessWidget {
             LineChartData(
               lineTouchData: LineTouchData(
                 enabled: false,
-                /*touchTooltipData: LineTouchTooltipData(
-                    getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
-                      return null;
-                    }),*/
-                //touchCallback: (LineTouchResponse touchResponse) {},
-                //handleBuiltInTouches: false,
+                handleBuiltInTouches: false,
+                touchCallback: (LineTouchResponse touchResponse) {
+                  return null;
+                },
               ),
               clipData: FlClipData.vertical(),
               gridData: FlGridData(
@@ -270,7 +305,6 @@ class PriceAVGChartLine extends StatelessWidget {
                     show: false,
                   ),
                   belowBarData: BarAreaData(
-                      //show: true,
                       ),
                 )
               ],

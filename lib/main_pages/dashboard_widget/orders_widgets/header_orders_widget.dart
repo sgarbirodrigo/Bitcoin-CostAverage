@@ -82,7 +82,7 @@ class OrdersHeaderWidget extends StatelessWidget {
                   }
                 },
                 child: Container(
-                  child: Obx(() => Text(userController.selectedScaleText.value)),
+                  child: Obx(() => Text(userController.scaleLineChart.value.toShortNameString())),
                 )),
           ),
           Container(
