@@ -6,13 +6,14 @@ import 'package:Bit.Me/tools.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-
+import 'package:Bit.Me/controllers/history_controller.dart';
 import '../list_item/history_list_item.dart';
 import '../charts/line_chart_mean_pair.dart';
 
 class PairDetailPage extends StatelessWidget {
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   var userController = Get.find<UserController>();
+  var historyController = Get.find<HistoryController>();
   var binanceController = Get.find<BinanceController>();
   OrderItem orderItem;
 
@@ -87,15 +88,15 @@ class PairDetailPage extends StatelessWidget {
                             children: [
                               Text(
                                 getAppreciationConverted(
-                                    userController.pairAppreciation[this.orderItem.pair]),
+                                    historyController.pairAppreciation[this.orderItem.pair]),
                                 style: TextStyle(
                                     fontSize: 18,
                                     color: Colors.white,
                                     fontFamily: 'Arial Rounded MT Bold'),
                               ),
                               Text(
-                                userController.pairData_items.value[this.orderItem.pair] != null
-                                    ? "(${returnCurrencyCorrectedNumber(this.orderItem.pair.split("/")[1], (getPairPrice(this.orderItem.pair) * userController.pairData_items.value[this.orderItem.pair].coinAccumulated) - userController.pairData_items.value[this.orderItem.pair].totalExpended)})"
+                                historyController.pairData_items.value[this.orderItem.pair] != null
+                                    ? "(${returnCurrencyCorrectedNumber(this.orderItem.pair.split("/")[1], (getPairPrice(this.orderItem.pair) * historyController.pairData_items.value[this.orderItem.pair].coinAccumulated) - historyController.pairData_items.value[this.orderItem.pair].totalExpended)})"
                                     : "...",
                                 style: TextStyle(
                                     fontSize: 16,
@@ -131,8 +132,8 @@ class PairDetailPage extends StatelessWidget {
                         color: Colors.grey.shade50,
                       ),*/
                           // height: 30,
-                          child: userController.pairData_items.value[this.orderItem.pair] != null &&
-                                  userController.pairData_items.value[this.orderItem.pair]
+                          child: historyController.pairData_items.value[this.orderItem.pair] != null &&
+                                  historyController.pairData_items.value[this.orderItem.pair]
                                           .price_spots.length >
                                       0
                               ? PriceAVGChartLinePair(this.orderItem.pair)
@@ -179,8 +180,8 @@ class PairDetailPage extends StatelessWidget {
                                       style: TextStyle(color: Colors.white),
                                     ),
                                     Text(
-                                      userController.pairData_items.value[this.orderItem.pair] != null
-                                          ? "${returnCurrencyCorrectedNumber(this.orderItem.pair.split("/")[1], userController.pairData_items.value[this.orderItem.pair].totalExpended)}"
+                                      historyController.pairData_items.value[this.orderItem.pair] != null
+                                          ? "${returnCurrencyCorrectedNumber(this.orderItem.pair.split("/")[1], historyController.pairData_items.value[this.orderItem.pair].totalExpended)}"
                                           : "...",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
@@ -199,8 +200,8 @@ class PairDetailPage extends StatelessWidget {
                                     style: TextStyle(color: Colors.white),
                                   ),
                                   Text(
-                                    userController.pairData_items.value[this.orderItem.pair] != null
-                                        ? "${returnCurrencyCorrectedNumber(this.orderItem.pair.split("/")[1], (getPairPrice(this.orderItem.pair) *userController.pairData_items.value[this.orderItem.pair].coinAccumulated))}"
+                                    historyController.pairData_items.value[this.orderItem.pair] != null
+                                        ? "${returnCurrencyCorrectedNumber(this.orderItem.pair.split("/")[1], (getPairPrice(this.orderItem.pair) *historyController.pairData_items.value[this.orderItem.pair].coinAccumulated))}"
                                         : "...",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
@@ -374,14 +375,14 @@ class PairDetailPage extends StatelessWidget {
                     clipBehavior: Clip.antiAlias,
                     margin: EdgeInsets.only(bottom: 0, left: 8, right: 8, top: 0),
                     elevation: 2,
-                    child: userController.pairData_items.value[this.orderItem.pair] != null
+                    child: historyController.pairData_items.value[this.orderItem.pair] != null
                         ? ListView.builder(
                         scrollDirection: Axis.vertical,
-                        itemCount: userController.pairData_items.value[this.orderItem.pair].historyItems.length,
+                        itemCount: historyController.pairData_items.value[this.orderItem.pair].historyItems.length,
                         itemBuilder: (context, index) {
                           return HistoryItemList(
                             historyItem:
-                            userController.pairData_items.value[this.orderItem.pair].historyItems[userController.pairData_items.value[this.orderItem.pair].historyItems.length - index - 1],
+                            historyController.pairData_items.value[this.orderItem.pair].historyItems[historyController.pairData_items.value[this.orderItem.pair].historyItems.length - index - 1],
                             userUid: userController.user.uid,
                           );
                         })

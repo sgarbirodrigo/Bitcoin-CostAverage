@@ -7,7 +7,7 @@ import 'package:Bit.Me/models/order_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';import 'package:Bit.Me/controllers/history_controller.dart';
 import 'package:get/get.dart';
 import '../main_pages/pairdetail_page.dart';
 import '../charts/line_chart_mean.dart';
@@ -16,6 +16,7 @@ import '../models/user_model.dart';
 
 class OrderItemList extends StatelessWidget {
   var userController = Get.find<UserController>();
+  var historyController = Get.find<HistoryController>();
   var connectivityController = Get.find<ConnectivityController>();
   int index;
 
@@ -23,7 +24,7 @@ class OrderItemList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return userController.pairData_items.value != null
+    return historyController.pairData_items.value != null
         ? Slidable(
             actionPane: SlidableDrawerActionPane(),
             actionExtentRatio: 0.2,
@@ -60,14 +61,14 @@ class OrderItemList extends StatelessWidget {
             ),
             actions: [
               getChangeActive(
-                  userController.pairData_items
+                  historyController.pairData_items
                       .value[userController.user.orders.values.toList()[this.index].pair],
                   userController.user.orders.values.toList()[this.index])
             ],
-            secondaryActions: userController.pairData_items
+            secondaryActions: historyController.pairData_items
                             .value[userController.user.orders.values.toList()[this.index].pair] !=
                         null &&
-                    userController
+                    historyController
                             .pairData_items
                             .value[userController.user.orders.values.toList()[this.index].pair]
                             .historyItems

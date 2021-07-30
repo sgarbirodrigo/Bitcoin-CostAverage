@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import '../contants.dart';
-import '../list_item/order_item_list.dart';
+import '../list_item/order_item_list.dart';import 'package:Bit.Me/controllers/history_controller.dart';
 /*
 class OrdersPage extends StatefulWidget {
   OrdersPage();
@@ -25,6 +25,7 @@ class OrdersPage extends StatefulWidget {
 
 class OrdersPage extends StatelessWidget {
   var userController = Get.find<UserController>();
+  var historyController = Get.find<HistoryController>();
 
   @override
   Widget build(BuildContext context) {
@@ -96,13 +97,13 @@ class OrdersPage extends StatelessWidget {
             ),
           ),
         ),
-        Obx(
+        /*Obx(
           () => AnimatedContainer(
-            height: userController.isUpdatingHistory.isTrue ? 4 : 0,
+            height: historyController.isUpdatingHistory.isTrue ? 4 : 0,
             duration: Duration(milliseconds: 250),
             child: LinearProgressIndicator(),
           ),
-        ),
+        ),*/
         Obx(() => Container(
               decoration: BoxDecoration(
                 boxShadow: <BoxShadow>[

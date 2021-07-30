@@ -18,9 +18,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:package_info/package_info.dart';
-import 'package:purchases_flutter/object_wrappers.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
-import 'package:sqflite/sqflite.dart';
 
 import 'auth_pages/authentication.dart';
 import 'controllers/auth_controller.dart';
@@ -29,7 +26,7 @@ import 'controllers/database_controller.dart';
 import 'controllers/purchase_controller.dart';
 import 'controllers/user_controller.dart';
 import 'home.dart';
-
+import 'package:Bit.Me/controllers/history_controller.dart';
 //1222
 
 void main() async {
@@ -41,6 +38,7 @@ void main() async {
   Get.put(LocalDatabaseController(onLoad: () {
     Get.put(UserController());
   }));
+
   Get.put(AuthController());
   Get.put(ConnectivityController());
 

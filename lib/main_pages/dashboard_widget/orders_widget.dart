@@ -3,10 +3,11 @@ import 'package:Bit.Me/main_pages/dashboard_widget/orders_widgets/header_orders_
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import '../../list_item/order_item_list.dart';
+import '../../list_item/order_item_list.dart';import 'package:Bit.Me/controllers/history_controller.dart';
 
 class OrdersWidget extends StatelessWidget {
   var userController = Get.find<UserController>();
+  var historyController = Get.find<HistoryController>();
 
   @override
   Widget build(BuildContext context) {
@@ -14,10 +15,10 @@ class OrdersWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       children: [
         OrdersHeaderWidget(),
-        Obx(() => AnimatedContainer(
-            height: userController.isUpdatingHistory.isTrue ? 4 : 0,
+        /*Obx(() => AnimatedContainer(
+            height: historyController.isUpdatingHistory.isTrue ? 4 : 0,
             duration: Duration(milliseconds: 250),
-            child: LinearProgressIndicator())),
+            child: LinearProgressIndicator())),*/
         Obx(() => Container(
               decoration: BoxDecoration(
                 boxShadow: <BoxShadow>[

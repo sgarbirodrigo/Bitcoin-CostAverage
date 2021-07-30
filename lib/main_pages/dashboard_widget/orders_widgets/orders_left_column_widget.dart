@@ -4,12 +4,13 @@ import 'package:Bit.Me/widgets/weekindicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:Bit.Me/controllers/history_controller.dart';
 import '../../../contants.dart';
 import '../../../tools.dart';
 
 class OrdersLeftColumnWidget extends StatelessWidget{
   var userController = Get.find<UserController>();
+  var historyController = Get.find<HistoryController>();
   final int index;
   OrdersLeftColumnWidget(this.index);
 
@@ -24,10 +25,10 @@ class OrdersLeftColumnWidget extends StatelessWidget{
         } else {
           orderStatus = ORDER_STATUS.PAUSED;
         }
-        if (userController.pairData_items.value[
+        if (historyController.pairData_items.value[
         userController.user.orders.values.toList()[this.index].pair] !=
             null) {
-          if (userController
+          if (historyController
               .pairData_items
               .value[
           userController.user.orders.values.toList()[this.index].pair]

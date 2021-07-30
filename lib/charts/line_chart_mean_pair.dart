@@ -1,3 +1,4 @@
+import 'package:Bit.Me/controllers/history_controller.dart';
 import 'package:Bit.Me/controllers/user_controller.dart';
 import 'package:Bit.Me/tools.dart';
 import 'package:Bit.Me/widgets/dashed_line.dart';
@@ -18,6 +19,7 @@ class PriceAVGChartLinePair extends StatelessWidget {
   double ymin, ymax;
   Color _chartLineColor = Colors.deepPurple.withOpacity(1);
   var userController = Get.find<UserController>();
+  var historyController = Get.find<HistoryController>();
   String pair;
   Color color = Colors.white;
 
@@ -92,7 +94,7 @@ class PriceAVGChartLinePair extends StatelessWidget {
                             children: [
                               TextSpan(
                                 text:
-                                    '${"Price: "}  ${returnCurrencyCorrectedNumber(userController.pairData_items.value[this.pair].pair.split("/")[1], touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 0 : 1].y)}',
+                                    '${"Price: "}  ${returnCurrencyCorrectedNumber(historyController.pairData_items.value[this.pair].pair.split("/")[1], touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 0 : 1].y)}',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.normal,
@@ -101,7 +103,7 @@ class PriceAVGChartLinePair extends StatelessWidget {
                             ]);
 
                         LineTooltipItem _avgTooltip = LineTooltipItem(
-                          "Average: ${returnCurrencyCorrectedNumber(userController.pairData_items.value[this.pair].pair.split("/")[1], touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 1 : 0].y)}",
+                          "Average: ${returnCurrencyCorrectedNumber(historyController.pairData_items.value[this.pair].pair.split("/")[1], touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 1 : 0].y)}",
                           TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.normal,
@@ -153,7 +155,7 @@ class PriceAVGChartLinePair extends StatelessWidget {
                     ),
                     margin: 12,
                     getTitles: (value) {
-                      if (userController.pairData_items.value[this.pair] == null) {
+                      if (historyController.pairData_items.value[this.pair] == null) {
                         return "";
                       }
                       Timestamp timestamp =
@@ -165,16 +167,16 @@ class PriceAVGChartLinePair extends StatelessWidget {
                       }
 
                       if (timestamp.seconds ==
-                              userController.pairData_items.value[this.pair].price_spots.first.x ||
+                              historyController.pairData_items.value[this.pair].price_spots.first.x ||
                           timestamp.seconds ==
-                              userController.pairData_items.value[this.pair].price_spots.last.x) {
+                              historyController.pairData_items.value[this.pair].price_spots.last.x) {
                         return "";
                       }
                       return xTitle;
                     },
                   ),
                   leftTitles: SideTitles(
-                          interval: userController.pairData_items.value[this.pair].avgPrice * 0.05,
+                          interval: historyController.pairData_items.value[this.pair].avgPrice * 0.05,
                           showTitles: true,
                           reservedSize: 0,
                           getTextStyles: (value) => const TextStyle(
@@ -197,9 +199,9 @@ class PriceAVGChartLinePair extends StatelessWidget {
                 maxY: ymax,
                 minY: ymin,
                 lineBarsData: [
-                  userController.pairData_items.value[this.pair].price_spots != null
+                  historyController.pairData_items.value[this.pair].price_spots != null
                       ? LineChartBarData(
-                          spots: userController.pairData_items.value[this.pair].price_spots,
+                          spots: historyController.pairData_items.value[this.pair].price_spots,
                           isCurved: true,
                           curveSmoothness: 0,
                           colors: [
@@ -232,9 +234,9 @@ class PriceAVGChartLinePair extends StatelessWidget {
           gradientFrom: Offset(0, 0),*/
                         )
                       : null,
-                  userController.pairData_items.value[this.pair].avg_price_spots != null
+                  historyController.pairData_items.value[this.pair].avg_price_spots != null
                       ? LineChartBarData(
-                          spots: userController.pairData_items.value[this.pair].avg_price_spots,
+                          spots: historyController.pairData_items.value[this.pair].avg_price_spots,
                           isCurved: true,
                           curveSmoothness: 0.1,
                           dashArray: [8, 8],
@@ -258,10 +260,10 @@ class PriceAVGChartLinePair extends StatelessWidget {
             );
           }),
         ),
-        Obx(() => AnimatedContainer(
-            height: userController.isUpdatingHistory.isTrue ? 4 : 0,
+       /* Obx(() => AnimatedContainer(
+            height: historyController.isUpdatingHistory.isTrue ? 4 : 0,
             duration: Duration(milliseconds: 250),
-            child: LinearProgressIndicator())),
+            child: LinearProgressIndicator())),*/
       ],
     );
   }

@@ -1,9 +1,11 @@
 import 'package:Bit.Me/controllers/user_controller.dart';
+import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart';import 'package:Bit.Me/controllers/history_controller.dart';
 import 'package:intl/intl.dart';
+import '../contants.dart';
 import '../models/user_model.dart';
 import '../tools.dart';
 
@@ -102,6 +104,7 @@ class PriceAVGChartLine extends StatelessWidget {
   final String pair;
 
   var userController = Get.find<UserController>();
+  var historyController = Get.find<HistoryController>();
 
   PriceAVGChartLine({this.pair});
 
@@ -172,12 +175,164 @@ class PriceAVGChartLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return historyController.obx(
+          (_historyController) {
+            Color color = Colors.deepPurple;
+            if (historyController.pairData_items.value[pair] == null) {
+              color = Colors.grey;
+              return Center(
+                child: Text(
+                  "Not enough data to show on the selected period.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 12),
+                ),
+              );
+            }
+            //print("${this.pair.replaceAll("/", "_")} - orders: ${userController.user.orders[this.pair.replaceAll("/", "_")]}");
+            if (!userController.user.orders[this.pair.replaceAll("/", "_")].active) {
+              color = Colors.grey;
+            }
+            List<FlSpot> price_spots = List();
+            if (DateTime.fromMillisecondsSinceEpoch(
+                historyController.pairData_items.value[pair].price_spots.first.x.toInt() * 1000)
+                .isAfter(DateTime.now()
+                .add(Duration(days: -userController.scaleLineChart.value.toNumberValue())))) {
+              price_spots.add(FlSpot(
+                  DateTime.now()
+                      .add(Duration(days: -userController.scaleLineChart.value.toNumberValue()))
+                      .millisecondsSinceEpoch /
+                      1000,
+                  historyController.pairData_items.value[pair].price_spots.first.y));
+            }
+            price_spots.addAll(historyController.pairData_items.value[pair].price_spots);
+
+            return LineChart(
+              LineChartData(
+                lineTouchData: LineTouchData(
+                  enabled: false,
+                  handleBuiltInTouches: false,
+                  touchCallback: (LineTouchResponse touchResponse) {
+                    return null;
+                  },
+                ),
+                clipData: FlClipData.vertical(),
+                gridData: FlGridData(
+                  show: false,
+                ),
+                titlesData: FlTitlesData(
+                  bottomTitles: SideTitles(
+                    showTitles: false,
+                  ),
+                  leftTitles: SideTitles(
+                    showTitles: false,
+                    reservedSize: 90,
+                    margin: 0,
+                    getTitles: (value) {
+                      return null;
+                    },
+                  ),
+                ),
+                borderData: FlBorderData(
+                  show: true,
+                  border: const Border(
+                    bottom: BorderSide(
+                      color: Colors.transparent,
+                      //width: 1,
+                    ),
+                    left: BorderSide(
+                      color: Colors.transparent,
+                    ),
+                    right: BorderSide(
+                      color: Colors.transparent,
+                    ),
+                    top: BorderSide(
+                      color: Colors.transparent,
+                    ),
+                  ),
+                ),
+                minX: getXMin(),
+                maxX: getXMax(),
+                maxY: historyController.pairData_items.value[pair] != null
+                    ? historyController.pairData_items.value[pair].max * 1.01
+                    : 2,
+                minY: historyController.pairData_items.value[pair] != null
+                    ? historyController.pairData_items.value[pair].min * 0.95
+                    : 0,
+                lineBarsData: [
+                  LineChartBarData(
+                    spots: historyController.pairData_items.value[pair] != null
+                        ? price_spots
+                        : getEmptyPriceSpots(),
+                    isCurved: true,
+                    curveSmoothness: 0,
+                    colors: [
+                      color,
+                    ],
+                    barWidth: 2,
+                    isStrokeCapRound: true,
+                    dotData: FlDotData(
+                        show: true,
+                        getDotPainter: (spot, percent, barData, index) {
+                          return FlDotCirclePainter(
+                            radius: 2,
+                            color: color,
+                            strokeWidth: 0,
+                          );
+                        }),
+                    belowBarData: BarAreaData(
+                      show: true,
+                      colors: [
+                        color.withOpacity(0.5),
+                        color.withOpacity(0.0),
+                      ],
+                      gradientColorStops: [0.1, 1.0],
+                      gradientFrom: const Offset(0, 0),
+                      gradientTo: const Offset(0, 1),
+                    ),
+                  ),
+                  LineChartBarData(
+                    spots: historyController.pairData_items.value[pair] != null
+                        ? historyController.pairData_items.value[pair].avg_price_spots
+                        : null,
+                    isCurved: true,
+                    curveSmoothness: 0.2,
+                    dashArray: [8, 8],
+                    colors: [
+                      color,
+                    ],
+                    barWidth: 2,
+                    isStrokeCapRound: false,
+                    dotData: FlDotData(
+                      show: false,
+                    ),
+                    belowBarData: BarAreaData(
+                    ),
+                  )
+                ],
+              ),
+              swapAnimationCurve: Curves.linear,
+              swapAnimationDuration: Duration(milliseconds: 250),
+            );
+      },
+      onLoading: CircularProgressIndicatorMy(
+        info: "loading history controller",
+      ),
+      onEmpty: CircularProgressIndicatorMy(
+        info: "empty history controller",
+      ),
+      // here also you can set your own error widget, but by
+      // default will be an Center(child:Text(error))
+      onError: (error) {
+        callSnackbar("Oops!", error);
+        return Container();
+      },
+    );
     return Container(
       height: 64,
       child: Obx(
         () {
           Color color = Colors.deepPurple;
-          if (userController.pairData_items.value[pair] == null) {
+          if (historyController.pairData_items.value[pair] == null) {
             color = Colors.grey;
             return Center(
               child: Text(
@@ -193,7 +348,7 @@ class PriceAVGChartLine extends StatelessWidget {
           }
           List<FlSpot> price_spots = List();
           if (DateTime.fromMillisecondsSinceEpoch(
-                  userController.pairData_items.value[pair].price_spots.first.x.toInt() * 1000)
+                  historyController.pairData_items.value[pair].price_spots.first.x.toInt() * 1000)
               .isAfter(DateTime.now()
                   .add(Duration(days: -userController.scaleLineChart.value.toNumberValue())))) {
             price_spots.add(FlSpot(
@@ -201,9 +356,9 @@ class PriceAVGChartLine extends StatelessWidget {
                         .add(Duration(days: -userController.scaleLineChart.value.toNumberValue()))
                         .millisecondsSinceEpoch /
                     1000,
-                userController.pairData_items.value[pair].price_spots.first.y));
+                historyController.pairData_items.value[pair].price_spots.first.y));
           }
-          price_spots.addAll(userController.pairData_items.value[pair].price_spots);
+          price_spots.addAll(historyController.pairData_items.value[pair].price_spots);
 
           return LineChart(
             LineChartData(
@@ -251,15 +406,15 @@ class PriceAVGChartLine extends StatelessWidget {
               ),
               minX: getXMin(),
               maxX: getXMax(),
-              maxY: userController.pairData_items.value[pair] != null
-                  ? userController.pairData_items.value[pair].max * 1.01
+              maxY: historyController.pairData_items.value[pair] != null
+                  ? historyController.pairData_items.value[pair].max * 1.01
                   : 2,
-              minY: userController.pairData_items.value[pair] != null
-                  ? userController.pairData_items.value[pair].min * 0.95
+              minY: historyController.pairData_items.value[pair] != null
+                  ? historyController.pairData_items.value[pair].min * 0.95
                   : 0,
               lineBarsData: [
                 LineChartBarData(
-                  spots: userController.pairData_items.value[pair] != null
+                  spots: historyController.pairData_items.value[pair] != null
                       ? price_spots
                       : getEmptyPriceSpots(),
                   isCurved: true,
@@ -290,8 +445,8 @@ class PriceAVGChartLine extends StatelessWidget {
                   ),
                 ),
                 LineChartBarData(
-                  spots: userController.pairData_items.value[pair] != null
-                      ? userController.pairData_items.value[pair].avg_price_spots
+                  spots: historyController.pairData_items.value[pair] != null
+                      ? historyController.pairData_items.value[pair].avg_price_spots
                       : null,
                   isCurved: true,
                   curveSmoothness: 0.2,

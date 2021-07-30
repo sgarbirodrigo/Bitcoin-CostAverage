@@ -13,27 +13,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import '../contants.dart';
 import 'database_controller.dart';
+import 'history_controller.dart';
 
-class HistoryController extends GetxController with StateMixin{
-
-}
 
 class UserController extends GetxController with StateMixin {
   SharedPreferences preferences;
-
-  var localdatabaseController = Get.find<LocalDatabaseController>();
-  var authController = Get.find<AuthController>();
   var binanceController = Get.find<BinanceController>();
-  var connectivityController = Get.find<ConnectivityController>();
+  var historyController = Get.put(HistoryController());
 
   var scaleLineChart = Rx<ScaleLineChart>(ScaleLineChart.WEEK1);
 
   Rx<UserData> _userModel = UserData().obs;
 
-  var pairData_items = Rx<Map<String, PairData>>({});
-  var pairAppreciation = {}.obs;
-
-  var isUpdatingHistory = false.obs;
+  //var isUpdatingHistory = false.obs;
   Rx<String> baseCoin = "".obs;
   var userTotalBuyingAmount = Map<String, double>().obs;
   var userTotalExpendingAmount = Map<String, double>().obs;
@@ -60,17 +52,13 @@ class UserController extends GetxController with StateMixin {
       //handling scale preference
       this.scaleLineChart.listen((ScaleLineChart scaleLineChart) {
         this.preferences.setString(scale_line_preference, scaleLineChart.toSavingNameString());
-        this.forceUpdateHistoryData(scaleLineChart.toNumberValue());
+        historyController.forceUpdateHistoryData(scaleLineChart.toNumberValue());
       });
       this.scaleLineChart.value = _loadScale();
     });
-
-    binanceController.tickerPrices.listen((tickerPrices) {
-      if (tickerPrices.length > 0) {
-        calculateAppreciation();
-      }
-    });
   }
+
+
 
   /*List<FlSpot> fillPriceSpots() {
     List<FlSpot> price_spots = List();
@@ -104,18 +92,6 @@ class UserController extends GetxController with StateMixin {
     price_spots.addAll(_pairData.price_spots);
     return price_spots;
   }*/
-
-  void calculateAppreciation() {
-    //todo save last updated price and load everytime from local
-    pairData_items.value.forEach((pair, pairData) {
-      print("pair: ${pairData.pair} - accumulated: ${pairData.coinAccumulated}");
-      this.pairAppreciation[pair] =
-          (((binanceController.tickerPrices[pair.replaceAll("/", "")] * pairData.coinAccumulated) /
-                      pairData.totalExpended) -
-                  1) *
-              100;
-    });
-  }
 
   ScaleLineChart _loadScale() {
     ScaleLineChart scale = ScaleLineChart.WEEK1;
@@ -237,94 +213,6 @@ class UserController extends GetxController with StateMixin {
       list.remove(key);
     });
     return list;
-  }
-
-  void forceUpdateHistoryData(int daysToConsider) async {
-    this.isUpdatingHistory.value = true;
-
-    String userUid = authController.user.uid;
-    List<Map<String, dynamic>> dbQuery = await localdatabaseController.sql_database.database
-        .rawQuery('SELECT * FROM History ORDER BY timestamp DESC');
-
-    //print("days: -${daysToConsider} / load history local: ${dbQuery.length}");
-
-    Query firestoreHistoryQuery = FirebaseFirestore.instance
-        .collection("users")
-        .doc(userUid)
-        .collection("history")
-        .orderBy("timestamp", descending: false);
-
-    void addSnapshotToSQLDB(QuerySnapshot historySnapshots) async {
-      historySnapshots.docs.forEach(
-        (element) async {
-          HistoryItem historyItem = HistoryItem.fromJson(element.data());
-          await localdatabaseController.sql_database.database.insert(
-              'history',
-              {
-                'id': element.id,
-                'timestamp': historyItem.timestamp.millisecondsSinceEpoch,
-                'amount': historyItem.order.amount,
-                'pair': historyItem.order.pair,
-                'result': historyItem.result.index,
-                'rawFirestore': json.encode(historyItem.toJson()),
-              },
-              conflictAlgorithm: ConflictAlgorithm.replace);
-        },
-      );
-    }
-
-    if (dbQuery.length > 0) {
-      Timestamp lastLoadedTimestamp =
-          Timestamp.fromMillisecondsSinceEpoch(dbQuery.first['timestamp']);
-
-      //print("lastLoadedTimestamp: ${lastLoadedTimestamp.toDate()}");
-
-      if (lastLoadedTimestamp.toDate().isBefore(DateTime.now().add(Duration(hours: -24)))) {
-        if (!connectivityController.isOffline()) {
-          await addSnapshotToSQLDB(await firestoreHistoryQuery
-              .where('timestamp', isGreaterThan: lastLoadedTimestamp)
-              .get());
-        } else {
-          callErrorSnackbar("Sorry :\'(", "No internet connection.");
-        }
-      }
-    } else {
-      if (!connectivityController.isOffline()) {
-        await addSnapshotToSQLDB(await firestoreHistoryQuery.get());
-      } else {
-        callErrorSnackbar("Sorry :\'(", "No internet connection.");
-      }
-    }
-
-    List<
-        Map<String,
-            dynamic>> rawQuery = await localdatabaseController.sql_database.database.rawQuery(
-        'SELECT * FROM History WHERE timestamp>= ${DateTime.now().add(Duration(days: -daysToConsider)).millisecondsSinceEpoch} ORDER BY timestamp ASC');
-
-    pairData_items.value.clear();
-
-    rawQuery.forEach((element) {
-      HistoryItem historyItem = HistoryItem.fromJson(json.decode(element['rawFirestore']));
-
-      if (pairData_items.value[historyItem.order.pair] == null) {
-        pairData_items.value[historyItem.order.pair] = PairData().addHistoryItem(historyItem);
-      } else {
-        pairData_items.value[historyItem.order.pair] =
-            pairData_items.value[historyItem.order.pair].addHistoryItem(historyItem);
-      }
-    });
-
-    if (binanceController.tickerPrices.length > 0) {
-      calculateAppreciation();
-    }
-
-    /*} catch (e) {
-      print("error on load history: ${e.toString()}");
-    }*/
-
-    this.isUpdatingHistory.value = false;
-
-    pairData_items.update((val) {});
   }
 
 /*
