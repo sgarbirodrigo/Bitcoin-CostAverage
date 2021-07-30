@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../sql_database.dart';
+import '../external/sql_database.dart';
 
 class LocalDatabaseController extends GetxController with StateMixin {
   final SqlDatabase sql_database = SqlDatabase();

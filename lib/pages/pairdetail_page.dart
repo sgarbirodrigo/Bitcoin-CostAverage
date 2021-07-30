@@ -34,7 +34,7 @@ class PairDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: Colors.deepPurple,
+      backgroundColor: Color(0xff553277),
       body: SafeArea(
           bottom: false,
           child: Column(
@@ -161,7 +161,7 @@ class PairDetailPage extends StatelessWidget {
                                 ],
                               ),*/
                     Obx(()=>Card(
-                      color: Color(0xff825CC5),
+                      color: Color(0xff825CC5).withOpacity(0.7),
                       elevation: 2,
                       margin: EdgeInsets.only(top: 8, left: 8, right: 8, bottom: 8),
                       child: Container(

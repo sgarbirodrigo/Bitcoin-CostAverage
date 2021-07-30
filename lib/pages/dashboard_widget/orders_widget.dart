@@ -1,5 +1,5 @@
 import 'package:Bit.Me/controllers/user_controller.dart';
-import 'package:Bit.Me/main_pages/dashboard_widget/orders_widgets/header_orders_widget.dart';
+import 'package:Bit.Me/pages/dashboard_widget/orders_widgets/header_orders_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';

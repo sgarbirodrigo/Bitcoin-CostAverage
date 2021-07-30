@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:Bit.Me/contants.dart';
 import 'package:Bit.Me/controllers/binance_controller.dart';
 import 'package:Bit.Me/controllers/connectivityController.dart';
-import 'package:Bit.Me/sql_database.dart';
+import 'package:Bit.Me/external/sql_database.dart';
 import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -56,7 +56,10 @@ void main() async {
     ));
   } else {
     await traceInit.putAttribute("platform", "not_ios");
-    SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
+      statusBarColor: Color(0xff553277),
+    ));
+    //SystemChrome.setEnabledSystemUIOverlays([]);
   }
   //control app version
   bool appUpdated = true;

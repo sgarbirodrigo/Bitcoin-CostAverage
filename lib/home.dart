@@ -4,14 +4,14 @@ import 'package:Bit.Me/contants.dart';
 import 'package:Bit.Me/controllers/database_controller.dart';
 import 'package:Bit.Me/controllers/purchase_controller.dart';
 import 'package:Bit.Me/external/binance_api.dart';
-import 'package:Bit.Me/main_pages/dashboard.dart';
-import 'package:Bit.Me/main_pages/settings.dart';
+import 'package:Bit.Me/pages/dashboard.dart';
+import 'package:Bit.Me/pages/settings.dart';
 import 'package:Bit.Me/models/settings_model.dart';
 import 'package:Bit.Me/models/user_model.dart';
 import 'package:Bit.Me/purchase/paywall.dart';
 import 'package:Bit.Me/purchase/paywall_bca.dart';
 import 'package:Bit.Me/purchase/paywall_bcav2.dart';
-import 'package:Bit.Me/sql_database.dart';
+import 'package:Bit.Me/external/sql_database.dart';
 import 'package:Bit.Me/widgets/bottomnavigation_bar.dart';
 import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:Bit.Me/widgets/appbar.dart';
@@ -34,7 +34,7 @@ import 'controllers/connectivityController.dart';
 import 'controllers/user_controller.dart';
 import 'wizards/IntroductionConnectPage.dart';
 import 'wizards/IntroductionPage.dart';
-import 'main_pages/orders_Page.dart';
+import 'pages/orders_Page.dart';
 
 enum Section { LOGIN, DASHBOARD, ORDERS, HISTORY, SETTINGS }
 

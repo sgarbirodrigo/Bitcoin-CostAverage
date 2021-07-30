@@ -1,15 +1,15 @@
 import 'package:Bit.Me/CreateEditOrder.dart';
 import 'package:Bit.Me/controllers/connectivityController.dart';
 import 'package:Bit.Me/controllers/user_controller.dart';
-import 'package:Bit.Me/main_pages/dashboard_widget/orders_widgets/orders_left_column_widget.dart';
-import 'package:Bit.Me/main_pages/dashboard_widget/orders_widgets/orders_right_column_widget.dart';
+import 'package:Bit.Me/pages/dashboard_widget/orders_widgets/orders_left_column_widget.dart';
+import 'package:Bit.Me/pages/dashboard_widget/orders_widgets/orders_right_column_widget.dart';
 import 'package:Bit.Me/models/order_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';import 'package:Bit.Me/controllers/history_controller.dart';
 import 'package:get/get.dart';
-import '../main_pages/pairdetail_page.dart';
+import '../pages/pairdetail_page.dart';
 import '../charts/line_chart_mean.dart';
 import '../contants.dart';
 import '../models/user_model.dart';

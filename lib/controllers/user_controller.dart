@@ -2,7 +2,7 @@ import 'package:Bit.Me/charts/line_chart_mean.dart';
 import 'package:Bit.Me/controllers/auth_controller.dart';
 import 'package:Bit.Me/controllers/binance_controller.dart';
 import 'package:Bit.Me/controllers/connectivityController.dart';
-import 'package:Bit.Me/main_pages/dashboard_widget/chart_widget.dart';
+import 'package:Bit.Me/pages/dashboard_widget/chart_widget.dart';
 import 'package:Bit.Me/models/history_model.dart';
 import 'package:Bit.Me/models/order_model.dart';
 import 'package:Bit.Me/models/user_model.dart';

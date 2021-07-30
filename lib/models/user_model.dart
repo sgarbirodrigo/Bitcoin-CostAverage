@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
 import 'package:Bit.Me/controllers/database_controller.dart';
-import 'package:Bit.Me/sql_database.dart';
+import 'package:Bit.Me/external/sql_database.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart';
 import 'package:Bit.Me/external/binance_api.dart';

@@ -6,31 +6,19 @@ import '../contants.dart';
 
 enum ORDER_STATUS { RUNNING, PAUSED, ERROR }
 
-class WeekIndicator extends StatefulWidget {
-  Schedule schedule;
-  ORDER_STATUS order_status;
-  WeekIndicator(this.schedule,this.order_status);
 
-  @override
-  State<StatefulWidget> createState() {
-    return _WeekIndicatorState();
-  }
-}
-
-class _WeekIndicatorState extends State<WeekIndicator> {
+class WeekIndicator extends StatelessWidget {
   Color _selectedColor;
   TextStyle _selectedTextStyle = TextStyle(color: Colors.white);
   TextStyle _notSelectedTextStyle;
   Color _notSelectedColor;
-  @override
-  void initState() {
-    super.initState();
+  double borderRadius = 4;
 
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    switch(widget.order_status){
+  final Schedule schedule;
+  final ORDER_STATUS order_status;
+  
+  WeekIndicator(this.schedule,this.order_status){
+    switch(order_status){
       case ORDER_STATUS.RUNNING:
         _selectedColor = greenAppColor;
         break;
@@ -45,7 +33,10 @@ class _WeekIndicatorState extends State<WeekIndicator> {
     }
     _notSelectedTextStyle = TextStyle(color: _selectedColor);
     _notSelectedColor = _selectedColor.withOpacity(0.2);
-    double borderRadius = 4;
+  }
+  
+  @override
+  Widget build(BuildContext context) {
     return Container(
       height: 18,
       width: 128,
@@ -67,8 +58,8 @@ class _WeekIndicatorState extends State<WeekIndicator> {
               //width: _width + 8,
               //padding: EdgeInsets.only(left: 4, right: 2,),
               decoration: BoxDecoration(
-                color: widget.schedule != null
-                    ? (widget.schedule.monday
+                color: schedule != null
+                    ? (schedule.monday
                         ? _selectedColor
                         : _notSelectedColor)
                     : _notSelectedColor,
@@ -83,8 +74,8 @@ class _WeekIndicatorState extends State<WeekIndicator> {
               child: Text(
                 "M",
                 textAlign: TextAlign.center,
-                style: widget.schedule != null
-                    ? (widget.schedule.monday
+                style: schedule != null
+                    ? (schedule.monday
                         ? _selectedTextStyle
                         : _notSelectedTextStyle)
                     : _notSelectedTextStyle,
@@ -100,16 +91,16 @@ class _WeekIndicatorState extends State<WeekIndicator> {
               alignment: Alignment.center,
               //width: _width,
               //padding: EdgeInsets.only(left: 2, right: 2),
-              color: widget.schedule != null
-                  ? (widget.schedule.tuesday
+              color: schedule != null
+                  ? (schedule.tuesday
                       ? _selectedColor
                       : _notSelectedColor)
                   : _notSelectedColor,
               child: Text(
                 "T",
                 textAlign: TextAlign.center,
-                style: widget.schedule != null
-                    ? (widget.schedule.tuesday
+                style: schedule != null
+                    ? (schedule.tuesday
                         ? _selectedTextStyle
                         : _notSelectedTextStyle)
                     : _notSelectedTextStyle,
@@ -125,16 +116,16 @@ class _WeekIndicatorState extends State<WeekIndicator> {
               alignment: Alignment.center,
               //width: _width,
               //padding: EdgeInsets.only(left: 2, right: 2, ),
-              color: widget.schedule != null
-                  ? (widget.schedule.wednesday
+              color: schedule != null
+                  ? (schedule.wednesday
                       ? _selectedColor
                       : _notSelectedColor)
                   : _notSelectedColor,
               child: Text(
                 "W",
                 textAlign: TextAlign.center,
-                style: widget.schedule != null
-                    ? (widget.schedule.wednesday
+                style: schedule != null
+                    ? (schedule.wednesday
                         ? _selectedTextStyle
                         : _notSelectedTextStyle)
                     : _notSelectedTextStyle,
@@ -150,16 +141,16 @@ class _WeekIndicatorState extends State<WeekIndicator> {
               alignment: Alignment.center,
               // width: _width,
               //padding: EdgeInsets.only(left: 2, right: 2, ),
-              color: widget.schedule != null
-                  ? (widget.schedule.thursday
+              color: schedule != null
+                  ? (schedule.thursday
                       ? _selectedColor
                       : _notSelectedColor)
                   : _notSelectedColor,
               child: Text(
                 "T",
                 textAlign: TextAlign.center,
-                style: widget.schedule != null
-                    ? (widget.schedule.thursday
+                style: schedule != null
+                    ? (schedule.thursday
                         ? _selectedTextStyle
                         : _notSelectedTextStyle)
                     : _notSelectedTextStyle,
@@ -175,16 +166,16 @@ class _WeekIndicatorState extends State<WeekIndicator> {
               alignment: Alignment.center,
               //width: _width,
               //padding: EdgeInsets.only(left: 2, right: 2, ),
-              color: widget.schedule != null
-                  ? (widget.schedule.friday
+              color: schedule != null
+                  ? (schedule.friday
                       ? _selectedColor
                       : _notSelectedColor)
                   : _notSelectedColor,
               child: Text(
                 "F",
                 textAlign: TextAlign.center,
-                style: widget.schedule != null
-                    ? (widget.schedule.friday
+                style: schedule != null
+                    ? (schedule.friday
                         ? _selectedTextStyle
                         : _notSelectedTextStyle)
                     : _notSelectedTextStyle,
@@ -200,16 +191,16 @@ class _WeekIndicatorState extends State<WeekIndicator> {
               alignment: Alignment.center,
               //width: _width,
               //padding: EdgeInsets.only(left: 2, right: 2,),
-              color: widget.schedule != null
-                  ? (widget.schedule.saturday
+              color: schedule != null
+                  ? (schedule.saturday
                       ? _selectedColor
                       : _notSelectedColor)
                   : _notSelectedColor,
               child: Text(
                 "S",
                 textAlign: TextAlign.center,
-                style: widget.schedule != null
-                    ? (widget.schedule.saturday
+                style: schedule != null
+                    ? (schedule.saturday
                         ? _selectedTextStyle
                         : _notSelectedTextStyle)
                     : _notSelectedTextStyle,
@@ -226,8 +217,8 @@ class _WeekIndicatorState extends State<WeekIndicator> {
               //width: _width + 4,
               //padding: EdgeInsets.only(left: 2, right: 8, ),
               decoration: BoxDecoration(
-                color: widget.schedule != null
-                    ? (widget.schedule.sunday
+                color: schedule != null
+                    ? (schedule.sunday
                         ? _selectedColor
                         : _notSelectedColor)
                     : _notSelectedColor,
@@ -238,8 +229,8 @@ class _WeekIndicatorState extends State<WeekIndicator> {
               child: Text(
                 "S",
                 textAlign: TextAlign.center,
-                style: widget.schedule != null
-                    ? (widget.schedule.sunday
+                style: schedule != null
+                    ? (schedule.sunday
                         ? _selectedTextStyle
                         : _notSelectedTextStyle)
                     : _notSelectedTextStyle,
