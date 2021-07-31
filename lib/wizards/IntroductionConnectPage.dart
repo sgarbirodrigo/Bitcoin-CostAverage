@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'package:Bit.Me/controllers/auth_controller.dart';
 import 'package:Bit.Me/controllers/user_controller.dart';
 import 'package:Bit.Me/external/qr_code.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -29,6 +31,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
   TextEditingController privatekey_controller;
   TextEditingController publickey_controller;
   var userController = Get.find<UserController>();
+  var authController = Get.find<AuthController>();
 
   Widget _buildImage(String assetName, [double width = 256]) {
     return Image.asset('assets/images/introduction/$assetName', width: width);
@@ -119,6 +122,13 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                     ],
                   ),
                 ),
+                kDebugMode
+                    ? ElevatedButton(
+                        onPressed: () {
+                          authController.signOut();
+                        },
+                        child: Text("logOut"))
+                    : Container()
               ],
             ),
           ),
@@ -164,6 +174,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                 ? QRViewExample((Barcode barcode) {
                     try {
                       Map<String, dynamic> response = jsonDecode(barcode.code);
+                      print("resp: $response");
                       if (response["apiKey"] != null && response["secretKey"] != null) {
                         publickey_controller.text = response["apiKey"];
                         privatekey_controller.text = response["secretKey"];
@@ -171,9 +182,11 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                           _readingQRCode = false;
                         });
                       } else {
+                        print("invalid QRCODE");
                         //todo add snackbar invalid qrcode
                       }
                     } catch (e) {
+                      print("invalid QRCODE ${e}");
                       //todo add snackbar invalid qrcode
                     }
                   })
@@ -364,9 +377,10 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                                         });
                                       if (mounted) setState(() {});
                                       Future.delayed(const Duration(milliseconds: 4000), () {
-                                        setState(() {
-                                          _selectedStatus = 0;
-                                        });
+                                        if (mounted)
+                                          setState(() {
+                                            _selectedStatus = 0;
+                                          });
                                       });
                                     });
                                     userController.refreshUserData();

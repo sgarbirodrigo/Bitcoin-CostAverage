@@ -16,7 +16,7 @@ class PurchaseController extends GetxController with StateMixin {
   }
 
   void load() async {
-    change(this, status: RxStatus.loading());
+    //change(this, status: RxStatus.loading());
     try {
       await Purchases.setup(apiKey, observerMode: false);
       change(this, status: RxStatus.success());

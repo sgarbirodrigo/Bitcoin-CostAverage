@@ -55,20 +55,15 @@ class AuthController extends GetxController with StateMixin {
   Future<void> signUp(String user, String password) async {
     change(this, status: RxStatus.loading());
     String error;
-    Get.dialog(
-        Center(
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
-        ),
-        barrierDismissible: false);
 
     if (user.isNotEmpty && password.isNotEmpty) {
       try {
         _user.value = (await FirebaseAuth.instance
                 .createUserWithEmailAndPassword(email: user, password: password))
             .user;
-        update();
+        print("pre-user signed: ${_user.value}");
+        //update();
+        //print("pro-user signed: ${_user.value}");
         //Get.toNamed(rootRoute);
       } on FirebaseException catch (e) {
         print("Auth error: $e");
@@ -82,31 +77,26 @@ class AuthController extends GetxController with StateMixin {
         error = "Password cannot be empty.";
       }
     }
-    Get.back();
     if (error != null) {
       change(this, status: RxStatus.error(error));
+      print("error signup: $error");
       callSnackbar("Oops!", error);
     } else {
+      print("success ");
       change(this, status: RxStatus.success());
     }
+    update();
   }
 
   Future<void> recover(String email) async {
     change(this, status: RxStatus.loading());
     String error;
-    Get.dialog(
-        Center(
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
-        ),
-        barrierDismissible: false);
 
     if (email.isNotEmpty) {
       if (GetUtils.isEmail(email)) {
         try {
           await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-          update();
+          //update();
         } on FirebaseAuthException catch (e) {
           print("Auth error: $e");
           error = e.message;
@@ -117,7 +107,6 @@ class AuthController extends GetxController with StateMixin {
     } else {
       error = "Email cannot be empty.";
     }
-    Get.back();
     if (error != null) {
       change(this, status: RxStatus.error(error));
       callSnackbar("Oops!", error);
@@ -125,18 +114,19 @@ class AuthController extends GetxController with StateMixin {
       callSnackbar("Check your email!", "We\'ve sent your instructions.");
       change(this, status: RxStatus.success());
     }
+    update();
   }
 
   Future<void> signIn(String user, String password) async {
     change(this, status: RxStatus.loading());
     String error;
-    Get.dialog(
+    /*Get.dialog(
         Center(
           child: Center(
             child: CircularProgressIndicator(),
           ),
         ),
-        barrierDismissible: false);
+        barrierDismissible: false);*/
     if (user.isNotEmpty && password.isNotEmpty) {
       try {
         if (!(Platform.isIOS || Platform.isAndroid)) {
@@ -150,7 +140,7 @@ class AuthController extends GetxController with StateMixin {
                 .signInWithEmailAndPassword(email: user, password: password))
             .user;
 
-        update();
+        //update();
         //Get.toNamed(rootRoute);
       } on FirebaseAuthException catch (e) {
         print("Auth error: $e");
@@ -170,29 +160,30 @@ class AuthController extends GetxController with StateMixin {
         error = "Password cannot be empty.";
       }
     }
-    Get.back();
+    //Get.back();
     if (error != null) {
       change(this, status: RxStatus.error(error));
       callSnackbar("Oops!", error);
     } else {
       change(this, status: RxStatus.success());
     }
+    update();
   }
 
   Future<void> signOut() async {
     // Show loading widget till we sign out
-    Get.dialog(
+    /*Get.dialog(
         Center(
           child: Center(
             child: CircularProgressIndicator(),
           ),
         ),
-        barrierDismissible: false);
+        barrierDismissible: false);*/
     change(this, status: RxStatus.loading());
     await _auth.signOut();
     await databaseController.deleteDB();
     await purchaseController.reset();
-    Get.back();
+    //Get.back();
     // Navigate to Login again
     //Get.offAllNamed(authenticationPageRoute);
     change(this, status: RxStatus.success());

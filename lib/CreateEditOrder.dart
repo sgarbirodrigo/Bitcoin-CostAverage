@@ -289,22 +289,26 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                       },
                       // The validator receives the text that the user has entered.
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter some value';
-                        }
-                        if (validatePairString(_selectedPair)) {
-                          double valueDouble = double.parse(value.replaceAll(",", "."));
-                          double minDouble = double.parse(
-                              listOfSymbols[_selectedPair.toString().replaceAll("/", "")]
-                                  .filters[3]
-                                  .minNotional
-                                  .toString());
-                          if (valueDouble < minDouble) {
-                            return 'Must be bigger than the minimum amount';
+                        try {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some value';
                           }
+                          if (validatePairString(_selectedPair)) {
+                            double valueDouble = double.parse(value.replaceAll(",", "."));
+                            double minDouble = double.parse(
+                                listOfSymbols[_selectedPair.toString().replaceAll("/", "")]
+                                    .filters[3]
+                                    .minNotional
+                                    .toString());
+                            if (valueDouble < minDouble) {
+                              return 'Must be bigger than the minimum amount';
+                            }
+                          }
+                          _selectedAmount = double.parse(value.replaceAll(",", "."));
+                          return null;
+                        }catch(e){
+                          return "Invalid number";
                         }
-                        _selectedAmount = double.parse(value.replaceAll(",", "."));
-                        return null;
                       },
                     ),
                   ),

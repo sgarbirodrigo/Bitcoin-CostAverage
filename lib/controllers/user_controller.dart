@@ -197,7 +197,11 @@ class UserController extends GetxController with StateMixin {
     userTotalBuyingAmount.value = temporaryBuying;
     //{BTC: 0.0014, BRL: 560}
     userTotalExpendingAmount.value = temporaryExpending;
-    baseCoin.value = userTotalExpendingAmount.keys.first;
+    if(userTotalExpendingAmount.length>0) {
+      baseCoin.value = userTotalExpendingAmount.keys.first;
+    }else{
+      baseCoin.value = "USDT";
+    }
   }
 
   Map<String, double> _deleteEmptyMapItemList(Map<String, double> list) {

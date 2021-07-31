@@ -90,6 +90,7 @@ final Function(String, String) callSnackbar = (String title, String message) {
     ),
   );
 };
+
 final Function(String, String) callErrorSnackbar = (String title, String message) {
   return Get.showSnackbar(GetBar(
     message: message,

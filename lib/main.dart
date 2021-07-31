@@ -127,7 +127,7 @@ class MyApp extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 32),
                   child: Center(
                     child: Text(
-                      "Sorry for the inconvenient but you must update your app to keep using.\n:\'(",
+                      "Sorry for the inconvenient but you must update your app.\n:\'(",
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 24),
                     ),
@@ -170,7 +170,10 @@ class MyApp extends StatelessWidget {
         ),
         // here also you can set your own error widget, but by
         // default will be an Center(child:Text(error))
-        onError: (error) => Authentication(),
+        onError: (error) {
+          print("main userController error $error");
+          return Authentication();
+        },
       ),
     );
   }

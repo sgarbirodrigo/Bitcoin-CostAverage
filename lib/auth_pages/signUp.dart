@@ -152,14 +152,11 @@ class _SignUpState extends State<SignUp> {
                     // 7. If Valid => Home
 
                     if (_signUpFormKey.currentState.validate()) {
-                      setState(() {
-                        loading = true;
-                      });
+                      if (mounted)
+                        setState(() {
+                          loading = true;
+                        });
                       authController.signUp(emailTextField.text, passwordTextField.text);
-
-                      setState(() {
-                        loading = false;
-                      });
                     }
                   } else {
                     callErrorSnackbar("Sorry :\'(", "No internet connection.");

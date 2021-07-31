@@ -90,14 +90,17 @@ class SettingsPage extends StatelessWidget {
                             ? QRViewExample((Barcode barcode) {
                                 try {
                                   Map<String, dynamic> response = jsonDecode(barcode.code);
+                                  print("response: $response");
                                   if (response["apiKey"] != null && response["secretKey"] != null) {
                                     settingsController.publickey.value = response["apiKey"];
                                     settingsController.privatekey.value = response["secretKey"];
                                     settingsController._readingQRCode.value = false;
                                   } else {
+                                    print("invalid QRCODE");
                                     //todo add snackbar invalid qrcode
                                   }
                                 } catch (e) {
+                                  print("invalid QRCODE ${e}");
                                   //todo add snackbar invalid qrcode
                                 }
                               })
