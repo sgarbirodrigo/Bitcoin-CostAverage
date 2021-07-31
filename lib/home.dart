@@ -64,6 +64,7 @@ class Home extends StatelessWidget {
   var authController = Get.find<AuthController>();
   var purchaseController = Get.find<PurchaseController>();
   var userController = Get.find<UserController>();
+
   //var homeController = Get.put(HomeController());
   var connectivityController = Get.find<ConnectivityController>();
 
@@ -78,7 +79,8 @@ class Home extends StatelessWidget {
           if (!userController.user.hasIntroduced) {
             return IntroductionPage();
           }
-          if (purchaseController.entitlementIsActive.isFalse && !kDebugMode) {
+          if (((purchaseController.entitlementIsActive.isFalse) && !kDebugMode) &&
+              !userController.user.active) {
             return FutureBuilder(
               future: Purchases.getOfferings(),
               builder: (context, AsyncSnapshot<Offerings> offerings) {

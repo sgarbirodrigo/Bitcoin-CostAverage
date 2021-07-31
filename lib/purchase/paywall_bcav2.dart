@@ -81,6 +81,7 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                                   carouselController: buttonCarouselController,
                                   options: CarouselOptions(
                                       autoPlay: true,
+                                      autoPlayAnimationDuration: Duration(seconds: 5),
                                       enlargeCenterPage: true,
                                       viewportFraction: 1,
                                       aspectRatio: 3.5,
@@ -168,9 +169,8 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                                       ),
                                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                           RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(24),
-                                        side: BorderSide(color: Colors.deepPurple)
-                                      )),
+                                              borderRadius: BorderRadius.circular(24),
+                                              side: BorderSide(color: Colors.deepPurple))),
                                       padding: MaterialStateProperty.all(
                                           EdgeInsets.symmetric(horizontal: 32, vertical: 8)),
                                     ),
@@ -185,9 +185,11 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                                                   : "${widget.offering.availablePackages[entry].product.title}"
                                                       .split("(")[0],
                                               style: TextStyle(
-                                                  color: widget.offering.availablePackages[entry].product.identifier
-                                                      .contains("anual")
-                                                      ? Colors.white:Colors.deepPurple,
+                                                  color: widget.offering.availablePackages[entry]
+                                                          .product.identifier
+                                                          .contains("anual")
+                                                      ? Colors.white
+                                                      : Colors.deepPurple,
                                                   fontFamily: 'Arial Rounded MT Bold',
                                                   fontSize: 20),
                                             ),
@@ -199,9 +201,11 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                                                   ? "R\$ 29.90/month - R\$ 309.90"
                                                   : "${widget.offering.availablePackages[entry].product.identifier.contains("anual") ? "${getCurrencySymbolFromCode(widget.offering.availablePackages[entry].product.currencyCode)} ${(widget.offering.availablePackages[entry].product.price / 12).toStringAsFixed(2)}/month - ${getCurrencySymbolFromCode(widget.offering.availablePackages[entry].product.currencyCode)} ${(widget.offering.availablePackages[entry].product.price).toStringAsFixed(2)}" : "${getCurrencySymbolFromCode(widget.offering.availablePackages[entry].product.currencyCode)} ${(widget.offering.availablePackages[entry].product.price).toStringAsFixed(2)}/month"}",
                                               style: TextStyle(
-                                                  color: widget.offering.availablePackages[entry].product.identifier
-                                                      .contains("anual")
-                                                      ? Colors.white:Colors.deepPurple,
+                                                  color: widget.offering.availablePackages[entry]
+                                                          .product.identifier
+                                                          .contains("anual")
+                                                      ? Colors.white
+                                                      : Colors.deepPurple,
                                                   fontFamily: 'Arial',
                                                   fontSize: 16),
                                             )

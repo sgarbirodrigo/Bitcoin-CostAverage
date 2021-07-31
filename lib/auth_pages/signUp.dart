@@ -152,10 +152,6 @@ class _SignUpState extends State<SignUp> {
                     // 7. If Valid => Home
 
                     if (_signUpFormKey.currentState.validate()) {
-                      if (mounted)
-                        setState(() {
-                          loading = true;
-                        });
                       authController.signUp(emailTextField.text, passwordTextField.text);
                     }
                   } else {

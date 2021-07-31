@@ -51,7 +51,7 @@ class UserController extends GetxController with StateMixin {
       //handling scale preference
       this.scaleLineChart.listen((ScaleLineChart scaleLineChart) {
         this.preferences.setString(scale_line_preference, scaleLineChart.toSavingNameString());
-        historyController.forceUpdateHistoryData(scaleLineChart.toNumberValue());
+          historyController.forceUpdateHistoryData(scaleLineChart.toNumberValue());
       });
       this.scaleLineChart.value = _loadScale();
     });
@@ -197,9 +197,9 @@ class UserController extends GetxController with StateMixin {
     userTotalBuyingAmount.value = temporaryBuying;
     //{BTC: 0.0014, BRL: 560}
     userTotalExpendingAmount.value = temporaryExpending;
-    if(userTotalExpendingAmount.length>0) {
+    if (userTotalExpendingAmount.length > 0) {
       baseCoin.value = userTotalExpendingAmount.keys.first;
-    }else{
+    } else {
       baseCoin.value = "USDT";
     }
   }

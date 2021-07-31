@@ -21,18 +21,19 @@ class HistoryController extends GetxController with StateMixin {
   var pairData_items = Rx<Map<String, PairData>>({});
   var pairAppreciation = {}.obs;
 
-  void forceUpdateHistoryData(int daysToConsider) async {
-    change(null, status: RxStatus.loading());
-
-    String userUid = authController.user.uid;
-    List<Map<String, dynamic>> dbQuery = await localdatabaseController.sql_database.database
-        .rawQuery('SELECT * FROM History ORDER BY timestamp DESC');
-
-    Query firestoreHistoryQuery = FirebaseFirestore.instance
+  Query getHistoryQuery(String userUid) {
+    return FirebaseFirestore.instance
         .collection("users")
         .doc(userUid)
         .collection("history")
         .orderBy("timestamp", descending: false);
+  }
+
+  void forceUpdateHistoryData(int daysToConsider) async {
+    change(null, status: RxStatus.loading());
+
+    List<Map<String, dynamic>> dbQuery = await localdatabaseController.sql_database.database
+        .rawQuery('SELECT * FROM History ORDER BY timestamp DESC');
 
     void addSnapshotToSQLDB(QuerySnapshot historySnapshots) async {
       historySnapshots.docs.forEach(
@@ -61,7 +62,7 @@ class HistoryController extends GetxController with StateMixin {
 
       if (lastLoadedTimestamp.toDate().isBefore(DateTime.now().add(Duration(hours: -24)))) {
         if (!connectivityController.isOffline()) {
-          addSnapshotToSQLDB(await firestoreHistoryQuery
+          addSnapshotToSQLDB(await getHistoryQuery(authController.user.uid)
               .where('timestamp', isGreaterThan: lastLoadedTimestamp)
               .get());
         } else {
@@ -70,7 +71,7 @@ class HistoryController extends GetxController with StateMixin {
       }
     } else {
       if (!connectivityController.isOffline()) {
-        addSnapshotToSQLDB(await firestoreHistoryQuery.get());
+        addSnapshotToSQLDB(await getHistoryQuery(authController.user.uid).get());
       } else {
         callErrorSnackbar("Sorry :\'(", "No internet connection.");
       }

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:Bit.Me/controllers/database_controller.dart';
 import 'package:Bit.Me/controllers/purchase_controller.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_performance/firebase_performance.dart';
@@ -81,11 +82,22 @@ class AuthController extends GetxController with StateMixin {
       change(this, status: RxStatus.error(error));
       print("error signup: $error");
       callSnackbar("Oops!", error);
+      update();
     } else {
       print("success ");
-      change(this, status: RxStatus.success());
+
+      //wait to close only when firebase functions finish creation of user directory
+      FirebaseFirestore.instance
+          .collection("users")
+          .doc(_user.value.uid)
+          .snapshots()
+          .listen((event) {
+        if (event.exists) {
+          change(this, status: RxStatus.success());
+          update();
+        }
+      });
     }
-    update();
   }
 
   Future<void> recover(String email) async {
