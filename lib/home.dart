@@ -79,7 +79,7 @@ class Home extends StatelessWidget {
           if (!userController.user.hasIntroduced) {
             return IntroductionPage();
           }
-          if (((purchaseController.entitlementIsActive.isFalse) && !kDebugMode) &&
+          if (((purchaseController.entitlementIsActive.isFalse) /*&& !kDebugMode*/) &&
               !userController.user.active) {
             return FutureBuilder(
               future: Purchases.getOfferings(),

@@ -53,24 +53,25 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                   clipBehavior: Clip.antiAlias,
                   child: Container(
                     //padding: EdgeInsets.only(bottom: 8, left: 8, right: 8, top: 32),
-                    width: MediaQuery.of(context).size.width * 0.9,
+                    width: 300,
                     child: Column(
                       children: [
                         Container(
+                          height: 212,
                           color: Colors.deepPurple,
                           padding: EdgeInsets.only(top: 16),
                           child: Column(
-                            //crossAxisAlignment: CrossAxisAlignment.stretch,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              Text("Premium",
+                              Text("PREMIUM",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontFamily: 'Arial Rounded MT Bold',
                                       fontWeight: FontWeight.w400,
                                       fontSize: 28,
                                       color: Colors.white)),
-                              Container(
-                                color: Colors.deepPurple,
+                              Expanded(
+                                //color: Colors.deepPurple,
                                 child: CarouselSlider.builder(
                                   itemCount: features.length,
                                   itemBuilder: (ctx, index, realIdx) {
@@ -80,9 +81,9 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                                   },
                                   carouselController: buttonCarouselController,
                                   options: CarouselOptions(
-                                      autoPlay: true,
-                                      autoPlayAnimationDuration: Duration(seconds: 5),
-                                      enlargeCenterPage: true,
+                                      autoPlay: true,autoPlayInterval: Duration(seconds: 6),
+                                      //autoPlayAnimationDuration: Duration(seconds: 5),
+                                      enlargeCenterPage: false,
                                       viewportFraction: 1,
                                       aspectRatio: 3.5,
                                       initialPage: 1,
@@ -191,7 +192,7 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                                                       ? Colors.white
                                                       : Colors.deepPurple,
                                                   fontFamily: 'Arial Rounded MT Bold',
-                                                  fontSize: 20),
+                                                  fontSize: 16),
                                             ),
                                             Container(
                                               height: 4,
@@ -207,7 +208,8 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                                                       ? Colors.white
                                                       : Colors.deepPurple,
                                                   fontFamily: 'Arial',
-                                                  fontSize: 16),
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 12),
                                             )
                                           ],
                                         ),
@@ -224,7 +226,7 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                           child: GestureDetector(
                             child: Text(
                               "Restore Purchase",
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                              style: TextStyle(fontWeight: FontWeight.normal, fontSize: 14),
                               // style: _linkStyle,
                             ),
                             onTap: () async {
