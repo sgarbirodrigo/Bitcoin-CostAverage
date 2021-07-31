@@ -1,5 +1,5 @@
 import 'package:Bit.Me/auth_pages/authentication.dart';
-import 'package:Bit.Me/charts/line_chart_mean.dart';
+import 'package:Bit.Me/charts/line_chart_mean_small.dart';
 import 'package:Bit.Me/contants.dart';
 import 'package:Bit.Me/controllers/database_controller.dart';
 import 'package:Bit.Me/controllers/purchase_controller.dart';
@@ -40,12 +40,13 @@ enum Section { LOGIN, DASHBOARD, ORDERS, HISTORY, SETTINGS }
 
 class HomeController extends GetxController {
   var pageController = PageController(initialPage: 0).obs;
-  var pages = [DashboardBitMe(), OrdersPage(), SettingsPage()];
+  List<Widget> pages;
   var pageIndex = 1.obs;
 
   @override
   void onInit() {
     super.onInit();
+    pages = [DashboardBitMe(), OrdersPage(), SettingsPage()];
   }
 
   void setPage(int index) {
@@ -63,7 +64,7 @@ class Home extends StatelessWidget {
   var authController = Get.find<AuthController>();
   var purchaseController = Get.find<PurchaseController>();
   var userController = Get.find<UserController>();
-  var homeController = Get.put(HomeController());
+  //var homeController = Get.put(HomeController());
   var connectivityController = Get.find<ConnectivityController>();
 
   SettingsApp settings;
@@ -116,23 +117,28 @@ class Home extends StatelessWidget {
           if (!userController.user.hasConnected) {
             return ConnectToBinancePage();
           }
+          Get.put(HomeController());
           return Scaffold(
             key: _scaffoldKey,
             appBar: AppBarBitMe(),
             backgroundColor: Color(0xffF9F8FD),
             bottomNavigationBar: MyBottomNavigationBar(),
-            body: PageView.builder(
-                controller: homeController.pageController.value,
-                itemCount: homeController.pages.length,
-                physics: NeverScrollableScrollPhysics(),
-                onPageChanged: (index) {
-                  print("change $index");
+            body: GetBuilder<HomeController>(
+              builder: (controller) {
+                return PageView.builder(
+                    controller: controller.pageController.value,
+                    itemCount: controller.pages.length,
+                    physics: NeverScrollableScrollPhysics(),
+                    onPageChanged: (index) {
+                      print("change $index");
 
-                  //homeController.setPage(index);
-                },
-                itemBuilder: (context, index) {
-                  return homeController.pages[index];
-                }),
+                      //homeController.setPage(index);
+                    },
+                    itemBuilder: (context, index) {
+                      return controller.pages[index];
+                    });
+              },
+            ),
           );
         },
         onLoading: CircularProgressIndicatorMy(

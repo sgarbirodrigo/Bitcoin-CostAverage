@@ -10,7 +10,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';import 'package:Bit.Me/controllers/history_controller.dart';
 import 'package:get/get.dart';
 import '../pages/pairdetail_page.dart';
-import '../charts/line_chart_mean.dart';
+import '../charts/line_chart_mean_small.dart';
 import '../contants.dart';
 import '../models/user_model.dart';
 

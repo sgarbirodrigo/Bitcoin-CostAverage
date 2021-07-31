@@ -15,7 +15,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:sqflite/sqflite.dart';
-import '../charts/line_chart_mean.dart';
+import '../charts/line_chart_mean_small.dart';
 import 'history_model.dart';
 import 'order_model.dart';
 

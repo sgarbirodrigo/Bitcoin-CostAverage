@@ -19,7 +19,6 @@ class _AuthenticationState extends State<Authentication> {
   PageController authPageController =
       PageController(keepPage: true, initialPage: 1);
   int page = 1;
-  // No Internet Connection SnackBar
   SnackBar networkErrorSnackBar = SnackBar(
     content: Row(
       mainAxisAlignment: MainAxisAlignment.center,

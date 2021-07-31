@@ -66,7 +66,7 @@ class ChartWidget extends StatelessWidget {
 
     return Obx(() {
       data = userController.pieChartFormattedData.value[userController.baseCoin.value];
-      //print("data selected: ${data} / coin: ${userController.baseCoin.value}");
+     // print("data selected: ${} / coin: ${userController.baseCoin.value}");
       bool isDataChartLoaded = true;
       if (data == null) {
         isDataChartLoaded = false;

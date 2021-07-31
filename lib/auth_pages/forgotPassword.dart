@@ -1,7 +1,10 @@
+import 'package:Bit.Me/controllers/connectivityController.dart';
 import 'package:Bit.Me/external/authService.dart';
 import 'package:flutter/material.dart';
 import 'package:Bit.Me/controllers/auth_controller.dart';
 import 'package:get/get.dart';
+
+import '../contants.dart';
 
 class ForgotPassword extends StatefulWidget {
   ForgotPassword({
@@ -23,6 +26,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   final TextEditingController emailTextField = TextEditingController();
   final GlobalKey<FormState> _forgotPasswordFormKey = GlobalKey<FormState>();
   var authController = Get.find<AuthController>();
+  var connectivityController = Get.find<ConnectivityController>();
+
   // Run Action When Loading
   bool loading = false;
 
@@ -110,29 +115,33 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             width: MediaQuery.of(context).size.width,
             child: ElevatedButton(
               onPressed: () async {
-                setState(() {
-                  errorMessage["email"] = "";
-                  errorMessage["network"] = "";
-                  errorMessage["password"] = "";
-                });
+                if (!connectivityController.isOffline()) {
+                  setState(() {
+                    errorMessage["email"] = "";
+                    errorMessage["network"] = "";
+                    errorMessage["password"] = "";
+                  });
 
-                // 1. Check Form Validation
-                // 2. Set State "loading" = true
-                // 3. Call "forgotPassword" Future inside AuthService()
-                // 4. Catch NetworkError - Show SnackBar
-                // 5. Set State "errorMessage" = value
-                // 6. Check Form Validation Again
-                // 7. If Valid => Sign In
-                if (!_forgotPasswordFormKey.currentState.validate()) {
-                  return;
+                  // 1. Check Form Validation
+                  // 2. Set State "loading" = true
+                  // 3. Call "forgotPassword" Future inside AuthService()
+                  // 4. Catch NetworkError - Show SnackBar
+                  // 5. Set State "errorMessage" = value
+                  // 6. Check Form Validation Again
+                  // 7. If Valid => Sign In
+                  if (!_forgotPasswordFormKey.currentState.validate()) {
+                    return;
+                  }
+                  setState(() {
+                    loading = true;
+                  });
+                  authController.recover(emailTextField.text);
+                  setState(() {
+                    loading = false;
+                  });
+                } else {
+                  callErrorSnackbar("Sorry :\'(", "No internet connection.");
                 }
-                setState(() {
-                  loading = true;
-                });
-                authController.recover(emailTextField.text);
-                setState(() {
-                  loading = false;
-                });
               },
               child: loading
                   ? Container(

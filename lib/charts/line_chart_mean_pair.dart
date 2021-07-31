@@ -7,7 +7,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'line_chart_mean.dart';
+import 'line_chart_mean_small.dart';
 import '../models/settings_model.dart';
 import '../models/user_model.dart';
 

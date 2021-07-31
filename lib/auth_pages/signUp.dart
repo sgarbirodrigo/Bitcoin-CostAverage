@@ -1,7 +1,10 @@
 import 'package:Bit.Me/controllers/auth_controller.dart';
+import 'package:Bit.Me/controllers/connectivityController.dart';
 import 'package:get/get.dart';
 import 'package:Bit.Me/external/authService.dart';
 import 'package:flutter/material.dart';
+
+import '../contants.dart';
 
 class SignUp extends StatefulWidget {
   SignUp({
@@ -22,6 +25,7 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController passwordTextField = TextEditingController();
   final GlobalKey<FormState> _signUpFormKey = GlobalKey<FormState>();
   var authController = Get.find<AuthController>();
+  var connectivityController = Get.find<ConnectivityController>();
 
   // Run Action When Loading
   bool loading = false;
@@ -116,10 +120,10 @@ class _SignUpState extends State<SignUp> {
             Container(
               height: 50,
               width: MediaQuery.of(context).size.width,
-              child: RaisedButton(
-                shape: RoundedRectangleBorder(
+              child: ElevatedButton(
+                /*shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
+                ),*/
                 child: loading
                     ? Container(
                         height: 18,
@@ -132,29 +136,33 @@ class _SignUpState extends State<SignUp> {
                       )
                     : Text("Sign Up"),
                 onPressed: () async {
-                  setState(() {
-                    errorMessage["email"] = "";
-                    errorMessage["network"] = "";
-                    errorMessage["password"] = "";
-                  });
-
-                  // 1. Check Form Validation
-                  // 2. Set State "loading" = true
-                  // 3. Call "signUp" Future inside AuthService()
-                  // 4. Catch NetworkError - Show SnackBar
-                  // 5. Set State "errorMessage" = value
-                  // 6. Check Form Validation Again
-                  // 7. If Valid => Home
-
-                  if (_signUpFormKey.currentState.validate()) {
+                  if (!connectivityController.isOffline()) {
                     setState(() {
-                      loading = true;
+                      errorMessage["email"] = "";
+                      errorMessage["network"] = "";
+                      errorMessage["password"] = "";
                     });
-                    authController.signUp(emailTextField.text, passwordTextField.text);
 
-                    setState(() {
-                      loading = false;
-                    });
+                    // 1. Check Form Validation
+                    // 2. Set State "loading" = true
+                    // 3. Call "signUp" Future inside AuthService()
+                    // 4. Catch NetworkError - Show SnackBar
+                    // 5. Set State "errorMessage" = value
+                    // 6. Check Form Validation Again
+                    // 7. If Valid => Home
+
+                    if (_signUpFormKey.currentState.validate()) {
+                      setState(() {
+                        loading = true;
+                      });
+                      authController.signUp(emailTextField.text, passwordTextField.text);
+
+                      setState(() {
+                        loading = false;
+                      });
+                    }
+                  } else {
+                    callErrorSnackbar("Sorry :\'(", "No internet connection.");
                   }
                 },
               ),

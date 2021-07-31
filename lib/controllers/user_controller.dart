@@ -1,4 +1,4 @@
-import 'package:Bit.Me/charts/line_chart_mean.dart';
+import 'package:Bit.Me/charts/line_chart_mean_small.dart';
 import 'package:Bit.Me/controllers/auth_controller.dart';
 import 'package:Bit.Me/controllers/binance_controller.dart';
 import 'package:Bit.Me/controllers/connectivityController.dart';
@@ -14,7 +14,6 @@ import 'package:sqflite/sqflite.dart';
 import '../contants.dart';
 import 'database_controller.dart';
 import 'history_controller.dart';
-
 
 class UserController extends GetxController with StateMixin {
   SharedPreferences preferences;
@@ -57,8 +56,6 @@ class UserController extends GetxController with StateMixin {
       this.scaleLineChart.value = _loadScale();
     });
   }
-
-
 
   /*List<FlSpot> fillPriceSpots() {
     List<FlSpot> price_spots = List();
@@ -149,6 +146,7 @@ class UserController extends GetxController with StateMixin {
     });
     if (this._userModel.value != null) {
       this._userModel.value.orders.forEach((String pair, OrderItem element) {
+        print("orders-> ${pair} - > active: ${element.active}");
         double amount = double.parse(element.amount.toString());
         if (element.active) {
           int multiplier = 0;
@@ -264,7 +262,7 @@ class UserController extends GetxController with StateMixin {
   Map<String, List<MyChartSectionData>> convertUserData() {
     try {
       Map<String, List<MyChartSectionData>> chartFullData = Map();
-      Map<String, double> total = {};
+      /*Map<String, double> total = {};
       this.userTotalBuyingAmount.forEach((pair, amount) {
         double price = binanceController.tickerPrices["BTC${pair.split("/")[1]}"];
         double percentage;
@@ -278,24 +276,23 @@ class UserController extends GetxController with StateMixin {
         } else {
           total[pair.split("/")[1]] += percentage;
         }
-      });
+      });*/
       //print("total ${total}");
       this.userTotalBuyingAmount.forEach((pair, amount) {
-        double price = binanceController.tickerPrices["BTC${pair.split("/")[1]}"];
+        //double price = binanceController.tickerPrices["BTC${pair.split("/")[1]}"];
         double percentage = 1;
-        if (price == null) {
+        /*if (price == null) {
           percentage = amount;
-        } else {
-          percentage = amount / price;
-        }
+        } else {*/
+        percentage = amount / this.userTotalExpendingAmount[pair.split("/")[1]];
+        //}
         if (amount >= 0) {
           /*print(
               "pair: $pair - percentage: ${percentage / total[pair.split("/")[1]]} - amount: ${amount}");*/
           if (chartFullData[pair.split("/")[1]] == null) {
             chartFullData[pair.split("/")[1]] = List<MyChartSectionData>();
           }
-          chartFullData[pair.split("/")[1]]
-              .add(MyChartSectionData(pair, percentage / total[pair.split("/")[1]], amount));
+          chartFullData[pair.split("/")[1]].add(MyChartSectionData(pair, percentage /**/, amount));
         }
       });
       return chartFullData;

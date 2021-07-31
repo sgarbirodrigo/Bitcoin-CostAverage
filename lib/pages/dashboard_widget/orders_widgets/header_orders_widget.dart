@@ -1,4 +1,4 @@
-import 'package:Bit.Me/charts/line_chart_mean.dart';
+import 'package:Bit.Me/charts/line_chart_mean_small.dart';
 import 'package:Bit.Me/controllers/user_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
