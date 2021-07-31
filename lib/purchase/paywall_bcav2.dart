@@ -160,6 +160,7 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                                         }
                                       }
                                       setState(() => this.isPaying = false);
+
                                     },
                                     style: ButtonStyle(
                                       backgroundColor: MaterialStateProperty.all(

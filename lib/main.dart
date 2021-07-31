@@ -4,9 +4,11 @@ import 'dart:io';
 import 'package:Bit.Me/contants.dart';
 import 'package:Bit.Me/controllers/binance_controller.dart';
 import 'package:Bit.Me/controllers/connectivityController.dart';
+import 'package:Bit.Me/controllers/deviceController.dart';
 import 'package:Bit.Me/external/sql_database.dart';
 import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:device_info/device_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -33,6 +35,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
+  Get.put(DeviceController());
   Get.put(BinanceController());
   Get.put(PurchaseController());
   Get.put(LocalDatabaseController(onLoad: () {
@@ -50,16 +53,13 @@ void main() async {
     await traceInit.putAttribute("platform", "ios");
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
       statusBarColor: Colors.deepPurple, // Color for Android
-      statusBarBrightness: Platform.isAndroid
-          ? Brightness.light
-          : Brightness.dark, // Dark == white status bar -- for IOS.
+      statusBarBrightness: Brightness.dark, // Dark == white status bar -- for IOS.
     ));
   } else {
     await traceInit.putAttribute("platform", "not_ios");
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
       statusBarColor: Color(0xff553277),
     ));
-    //SystemChrome.setEnabledSystemUIOverlays([]);
   }
   //control app version
   bool appUpdated = true;

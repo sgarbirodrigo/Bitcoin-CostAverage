@@ -2,6 +2,7 @@ import 'package:Bit.Me/auth_pages/authentication.dart';
 import 'package:Bit.Me/charts/line_chart_mean_small.dart';
 import 'package:Bit.Me/contants.dart';
 import 'package:Bit.Me/controllers/database_controller.dart';
+import 'package:Bit.Me/controllers/deviceController.dart';
 import 'package:Bit.Me/controllers/purchase_controller.dart';
 import 'package:Bit.Me/external/binance_api.dart';
 import 'package:Bit.Me/pages/dashboard.dart';
@@ -64,6 +65,7 @@ class Home extends StatelessWidget {
   var authController = Get.find<AuthController>();
   var purchaseController = Get.find<PurchaseController>();
   var userController = Get.find<UserController>();
+  var deviceController = Get.find<DeviceController>();
 
   //var homeController = Get.put(HomeController());
   var connectivityController = Get.find<ConnectivityController>();
@@ -79,8 +81,10 @@ class Home extends StatelessWidget {
           if (!userController.user.hasIntroduced) {
             return IntroductionPage();
           }
-          if (((purchaseController.entitlementIsActive.isFalse) /*&& !kDebugMode*/) &&
-              !userController.user.active) {
+          if (!(purchaseController.entitlementIsActive.isTrue || userController.user.active)) {
+            print("entitlementIsActive: ${purchaseController.entitlementIsActive.value}");
+            print("simul: ${deviceController.isSimulator.isTrue}");
+            print("userController.user.active: ${userController.user.active}");
             return FutureBuilder(
               future: Purchases.getOfferings(),
               builder: (context, AsyncSnapshot<Offerings> offerings) {
@@ -116,6 +120,7 @@ class Home extends StatelessWidget {
               },
             );
           }
+
           if (!userController.user.hasConnected) {
             return ConnectToBinancePage();
           }

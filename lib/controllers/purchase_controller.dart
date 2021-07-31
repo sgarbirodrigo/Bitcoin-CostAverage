@@ -31,13 +31,13 @@ class PurchaseController extends GetxController with StateMixin {
       _purchaserInfo.value = await Purchases.identify(uid);
       //print("purchase update adedd ${_purchaserInfo.value}");
       Purchases.addPurchaserInfoUpdateListener((purchaserInfo) async {
-        //print("purchase update adedd ${purchaserInfo}");
+        print("purchase update adedd ${purchaserInfo}");
         _purchaserInfo.value = purchaserInfo;
         (_purchaserInfo.value.entitlements.all[entitlementID] != null &&
             _purchaserInfo.value.entitlements.all[entitlementID].isActive)
             ? entitlementIsActive.value = true
             : entitlementIsActive.value = false;
-        refresh();
+        update();
       });
       change(this, status: RxStatus.success());
     } catch (e) {

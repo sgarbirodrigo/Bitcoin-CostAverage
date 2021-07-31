@@ -62,16 +62,18 @@ class HistoryController extends GetxController with StateMixin {
 
       if (lastLoadedTimestamp.toDate().isBefore(DateTime.now().add(Duration(hours: -24)))) {
         if (!connectivityController.isOffline()) {
-          addSnapshotToSQLDB(await getHistoryQuery(authController.user.uid)
-              .where('timestamp', isGreaterThan: lastLoadedTimestamp)
-              .get());
+          if (authController.isUserLogged())
+            addSnapshotToSQLDB(await getHistoryQuery(authController.user.uid)
+                .where('timestamp', isGreaterThan: lastLoadedTimestamp)
+                .get());
         } else {
           callErrorSnackbar("Sorry :\'(", "No internet connection.");
         }
       }
     } else {
       if (!connectivityController.isOffline()) {
-        addSnapshotToSQLDB(await getHistoryQuery(authController.user.uid).get());
+        if (authController.isUserLogged())
+          addSnapshotToSQLDB(await getHistoryQuery(authController.user.uid).get());
       } else {
         callErrorSnackbar("Sorry :\'(", "No internet connection.");
       }
