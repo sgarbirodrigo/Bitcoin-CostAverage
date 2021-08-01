@@ -6,6 +6,7 @@ import 'package:Bit.Me/controllers/connectivityController.dart';
 import 'package:Bit.Me/controllers/database_controller.dart';
 import 'package:Bit.Me/models/history_model.dart';
 import 'package:Bit.Me/models/user_model.dart';
+import 'package:Bit.Me/tools.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:sqflite/sqflite.dart';
@@ -20,6 +21,7 @@ class HistoryController extends GetxController with StateMixin {
 
   var pairData_items = Rx<Map<String, PairData>>({});
   var pairAppreciation = {}.obs;
+  var pairAppreciationString = {}.obs;
 
   Query getHistoryQuery(String userUid) {
     return FirebaseFirestore.instance
@@ -128,6 +130,7 @@ class HistoryController extends GetxController with StateMixin {
                       pairData.totalExpended) -
                   1) *
               100;
+      this.pairAppreciationString[pair] = getAppreciationConverted(this.pairAppreciation[pair]);
     });
   }
 }

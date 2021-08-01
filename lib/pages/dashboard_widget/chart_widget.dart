@@ -41,10 +41,59 @@ class MyChartSectionData {
 }
 
 class ChartController extends GetxController {
-  var _multiplierOptions = [1, 4].obs;
-  var _multiplier = 1.obs;
-  var _multiplierIndex = 0.obs;
-  var _multiplierOptionsTitles = ["weekly", "monthly"].obs;
+  var multiplier = Multiplier.WEEKLY.obs;
+
+  _getActualMultiplierPosition() {
+    for (int index = 0; index < Multiplier.values.length; index++) {
+      if (Multiplier.values[index] == multiplier.value) {
+        return index;
+      }
+    }
+  }
+
+  nextMultiplier() {
+    int position = _getActualMultiplierPosition();
+    position++;
+    if (position > Multiplier.values.length - 1) {
+      position = 0;
+    }
+    multiplier.value = Multiplier.values[position];
+  }
+
+  previousMultiplier() {
+    int position = _getActualMultiplierPosition();
+    position--;
+    if (position < 0) {
+      position = Multiplier.values.length - 1;
+    }
+    multiplier.value = Multiplier.values[position];
+  }
+}
+
+enum Multiplier { DAILY, WEEKLY, MONTHLY }
+
+extension MultiplierExtension on Multiplier {
+  toSmallString() {
+    switch (this) {
+      case Multiplier.DAILY:
+        return "daily";
+      case Multiplier.WEEKLY:
+        return "weekly";
+      case Multiplier.MONTHLY:
+        return "monthly";
+    }
+  }
+
+  toNumberMultiplier() {
+    switch (this) {
+      case Multiplier.DAILY:
+        return 1 / 7;
+      case Multiplier.WEEKLY:
+        return 1;
+      case Multiplier.MONTHLY:
+        return 4;
+    }
+  }
 }
 
 class ChartWidget extends StatelessWidget {
@@ -54,19 +103,13 @@ class ChartWidget extends StatelessWidget {
   var userController = Get.find<UserController>();
   var chartController = Get.put(ChartController());
 
-  /*@override
-  void initState() {
-    _multiplier = _multiplierOptions[0];
-    _multiplierIndex = 0;
-  }
-*/
   @override
   Widget build(BuildContext context) {
     double legendHeight = 42;
 
     return Obx(() {
       data = userController.pieChartFormattedData.value[userController.baseCoin.value];
-     // print("data selected: ${} / coin: ${userController.baseCoin.value}");
+      // print("data selected: ${} / coin: ${userController.baseCoin.value}");
       bool isDataChartLoaded = true;
       if (data == null) {
         isDataChartLoaded = false;
@@ -100,58 +143,43 @@ class ChartWidget extends StatelessWidget {
                             padding: EdgeInsets.only(top: 32),
                             child: Text(
                               "${returnCurrencyName(userController.baseCoin.value)} Allocation",
-                              style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
+                              style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500),
                             ),
                           ),
-                          FittedBox(
-                            fit: BoxFit.fitWidth,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                    icon: Icon(
-                                      Icons.chevron_left,
-                                      size: 20,
-                                    ),
-                                    onPressed: () {
-                                      chartController._multiplierIndex.value -= 1;
-                                      if (chartController._multiplierIndex.value < 0) {
-                                        chartController._multiplierIndex.value =
-                                            chartController._multiplierOptions.length - 1;
-                                      }
-
-                                      chartController._multiplier.value =
-                                          chartController._multiplierOptions[
-                                              chartController._multiplierIndex.value];
-                                    }),
-                                Text(
-                                  chartController._multiplierOptionsTitles[
-                                      chartController._multiplierIndex.value],
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontFamily: 'Arial',
-                                      fontSize: 20,
-                                      color: Colors.black.withOpacity(0.7)),
-                                ),
-                                IconButton(
-                                    icon: Icon(
-                                      Icons.chevron_right,
-                                      size: 20,
-                                    ),
-                                    onPressed: () {
-                                      chartController._multiplierIndex.value += 1;
-                                      if (chartController._multiplierIndex.value >
-                                          chartController._multiplierOptions.length - 1) {
-                                        chartController._multiplierIndex.value = 0;
-                                      }
-
-                                      chartController._multiplier.value =
-                                          chartController._multiplierOptions[
-                                              chartController._multiplierIndex.value];
-                                    })
-                              ],
-                            ),
+                          Container(
+                            height: 4,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              headerPrices(
+                                  "Daily Average",
+                                  "~${returnCurrencyCorrectedNumber(userController.baseCoin.value, userController.userTotalExpendingAmount[userController.baseCoin.value] != null ? (userController.userTotalExpendingAmount[userController.baseCoin.value] / 7) : 0.0)}",
+                                  "The average amount of ${userController.baseCoin.value} you are allocating daily on the coins shown below" ),
+                              headerPrices(
+                                  "Weekly",
+                                  returnCurrencyCorrectedNumber(
+                                      userController.baseCoin.value,
+                                      userController.userTotalExpendingAmount[
+                                                  userController.baseCoin.value] !=
+                                              null
+                                          ? (userController.userTotalExpendingAmount[
+                                              userController.baseCoin.value])
+                                          : 0.0),
+                                  "The total amount you are allocating weekly on the coins shown below"),
+                              headerPrices(
+                                  "Monthly",
+                                  returnCurrencyCorrectedNumber(
+                                      userController.baseCoin.value,
+                                      userController.userTotalExpendingAmount[
+                                                  userController.baseCoin.value] !=
+                                              null
+                                          ? (userController.userTotalExpendingAmount[
+                                                  userController.baseCoin.value] *
+                                              4)
+                                          : 0.0),
+                                  "The total amount you are allocating on the coins shown below considering four weeks")
+                            ],
                           ),
                           Container(
                             height: MediaQuery.of(context).size.width * 0.7,
@@ -226,22 +254,59 @@ class ChartWidget extends StatelessWidget {
                                         "Trading",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                            fontFamily: 'Arial',
-                                            fontSize: 24,
+                                            //fontFamily: 'Arial',
+                                            fontSize: 22,
                                             color: Colors.black.withOpacity(0.7)),
                                       ),
                                       FittedBox(
                                         fit: BoxFit.fitWidth,
                                         child: Text(
-                                          "${returnCurrencyCorrectedNumber(userController.baseCoin.value, userController.userTotalExpendingAmount[userController.baseCoin.value] != null ? (userController.userTotalExpendingAmount[userController.baseCoin.value] * chartController._multiplier.value) : 0.0)}",
+                                          "${returnCurrencyCorrectedNumber(userController.baseCoin.value, userController.userTotalExpendingAmount[userController.baseCoin.value] != null ? (userController.userTotalExpendingAmount[userController.baseCoin.value] * chartController.multiplier.value.toNumberMultiplier()) : 0.0)}",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
-                                              fontFamily: 'Arial',
+                                              //fontFamily: 'Arial',
                                               fontSize: 24,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.black),
                                         ),
                                       ),
+                                      FittedBox(
+                                        fit: BoxFit.fitWidth,
+                                        child: Container(
+                                          //color: Colors.red,
+                                          height: 28,
+                                          //fit: BoxFit.fitWidth,
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              IconButton(
+                                                  icon: Icon(
+                                                    Icons.chevron_left,
+                                                    size: 18,
+                                                  ),
+                                                  onPressed: () {
+                                                    chartController.previousMultiplier();
+                                                  }),
+                                              Text(
+                                                chartController.multiplier.value.toSmallString(),
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    color: Colors.black.withOpacity(0.7)),
+                                              ),
+                                              IconButton(
+                                                  icon: Icon(
+                                                    Icons.chevron_right,
+                                                    size: 18,
+                                                  ),
+                                                  onPressed: () {
+                                                    chartController.nextMultiplier();
+                                                  })
+                                            ],
+                                          ),
+                                        ),
+                                      )
                                     ],
                                   )),
                                 ),
@@ -314,7 +379,7 @@ class ChartWidget extends StatelessWidget {
                                                     children: <TextSpan>[
                                                       TextSpan(
                                                         text:
-                                                            '${returnCurrencyCorrectedNumber(data[index].pair.split("/")[1], data[index].amount * chartController._multiplier.value)}',
+                                                            '${returnCurrencyCorrectedNumber(data[index].pair.split("/")[1], data[index].amount * chartController.multiplier.value.toNumberMultiplier())}',
                                                         style: TextStyle(
                                                             color: Colors.black,
                                                             fontWeight: FontWeight.bold),
@@ -350,5 +415,80 @@ class ChartWidget extends StatelessWidget {
                 : ExampleChartPie(),
           ));
     });
+  }
+
+  Widget headerPrices(String title, String value, String message) {
+    return Container(
+      margin: EdgeInsets.only(left: 8, right: 8),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Text(title,
+                  softWrap: true,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.black.withOpacity(0.6),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400)),
+              Container(
+                width: 4,
+              ),
+              MyTooltip(
+                  message: message,
+                  child: Container(
+                    width: 16,
+                    height: 16,
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black.withOpacity(0.4)),
+                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                    child: Center(
+                      child: Text(
+                        "!",
+                        style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black.withOpacity(0.4)),
+                      ),
+                    ),
+                  )),
+            ],
+          ),
+          Text(value,
+              softWrap: true,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Colors.black.withOpacity(1), fontSize: 14, fontWeight: FontWeight.w400))
+        ],
+      ),
+    );
+  }
+}
+
+class MyTooltip extends StatelessWidget {
+  final Widget child;
+  final String message;
+
+  MyTooltip({@required this.message, @required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    final key = GlobalKey<State<Tooltip>>();
+    return Tooltip(
+      key: key,
+      message: message,
+      padding: EdgeInsets.all(20),
+      margin: EdgeInsets.all(20),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => _onTap(key),
+        child: child,
+      ),
+    );
+  }
+
+  void _onTap(GlobalKey key) {
+    final dynamic tooltip = key.currentState;
+    tooltip?.ensureTooltipVisible();
   }
 }

@@ -21,6 +21,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:package_info/package_info.dart';
 
+import 'CustomKeyboard.dart';
 import 'auth_pages/authentication.dart';
 import 'controllers/auth_controller.dart';
 import 'controllers/bindings/auth_binding.dart';
@@ -75,6 +76,7 @@ void main() async {
   await traceInit.incrementMetric("local_db_init", 1);
   await traceInit.stop();
 
+  CustomNumberKeyboard.register();
   runZonedGuarded(() {
     runApp(MyApp(appUpdated));
   }, FirebaseCrashlytics.instance.recordError);

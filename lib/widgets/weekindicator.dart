@@ -6,7 +6,6 @@ import '../contants.dart';
 
 enum ORDER_STATUS { RUNNING, PAUSED, ERROR }
 
-
 class WeekIndicator extends StatelessWidget {
   Color _selectedColor;
   TextStyle _selectedTextStyle = TextStyle(color: Colors.white);

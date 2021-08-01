@@ -5,9 +5,11 @@ import 'package:Bit.Me/pages/dashboard_widget/orders_widgets/orders_left_column_
 import 'package:Bit.Me/pages/dashboard_widget/orders_widgets/orders_right_column_widget.dart';
 import 'package:Bit.Me/models/order_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cool_ui/cool_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';import 'package:Bit.Me/controllers/history_controller.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:Bit.Me/controllers/history_controller.dart';
 import 'package:get/get.dart';
 import '../pages/pairdetail_page.dart';
 import '../charts/line_chart_mean_small.dart';
@@ -20,96 +22,90 @@ class OrderItemList extends StatelessWidget {
   var connectivityController = Get.find<ConnectivityController>();
   int index;
 
-  OrderItemList(this.index);
+  PairData _pairData;
+  OrderItem _orderItem;
+
+  OrderItemList(this.index) {
+    _pairData = historyController
+        .pairData_items.value[userController.user.orders.values.toList()[this.index].pair];
+    _orderItem = userController.user.orders.values.toList()[this.index];
+  }
 
   @override
   Widget build(BuildContext context) {
-    return historyController.pairData_items.value != null
-        ? Slidable(
-            actionPane: SlidableDrawerActionPane(),
-            actionExtentRatio: 0.2,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        PairDetailPage(userController.user.orders.values.toList()[this.index])));
-              },
-              child: Container(
-                height: 72,
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      width: 0.5,
-                      color: Colors.black.withOpacity(0.2),
-                    ),
-                  ),
-                ),
-                padding: EdgeInsets.only(top: 4, bottom: 4, left: 16, right: 8),
-                child: Row(
-                  children: [
-                    OrdersLeftColumnWidget(this.index),
-                    Container(
-                      width: 16,
-                    ),
-                    Expanded(
-                        child: PriceAVGChartLine(
-                            pair: userController.user.orders.values.toList()[this.index].pair)),
-                    OrdersRightColumnWidget(this.index),
-                  ],
+    if (historyController.pairData_items.value == null) {
+      return Container();
+    }
+    return Slidable(
+        actionPane: SlidableDrawerActionPane(),
+        actionExtentRatio: 0.2,
+        child: GestureDetector(
+          onTap: () {
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => PairDetailPage(_orderItem)));
+          },
+          child: Container(
+            height: 72,
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  width: 0.5,
+                  color: Colors.black.withOpacity(0.2),
                 ),
               ),
             ),
-            actions: [
-              getChangeActive(
-                  historyController.pairData_items
-                      .value[userController.user.orders.values.toList()[this.index].pair],
-                  userController.user.orders.values.toList()[this.index])
-            ],
-            secondaryActions: historyController.pairData_items
-                            .value[userController.user.orders.values.toList()[this.index].pair] !=
-                        null &&
-                    historyController
-                            .pairData_items
-                            .value[userController.user.orders.values.toList()[this.index].pair]
-                            .historyItems
-                            .length >
-                        0
-                ? [
-                    MyIconActionEdit(this.index),
-                    IconSlideAction(
-                      iconWidget: Container(
-                        color: Colors.deepPurple.shade300,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.history,
-                              size: 24,
-                              color: Colors.white,
-                            ),
-                            Text(
-                              "History",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: Colors.white, fontSize: 16),
-                            )
-                          ],
+            padding: EdgeInsets.only(top: 4, bottom: 4, left: 16, right: 8),
+            child: Row(
+              children: [
+                OrdersLeftColumnWidget(this.index),
+                Container(
+                  width: 16,
+                ),
+                Expanded(child: PriceAVGChartLine(pair: _orderItem.pair)),
+                OrdersRightColumnWidget(this.index, _orderItem.pair),
+              ],
+            ),
+          ),
+        ),
+        actions: [getChangeActive(_pairData, _orderItem)],
+        secondaryActions: _pairData != null && _pairData.historyItems.length > 0
+            ? [
+                MyIconActionEdit(this.index),
+                IconSlideAction(
+                  iconWidget: Container(
+                    color: Colors.deepPurple.shade300,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.history,
+                          size: 24,
+                          color: Colors.white,
+                        ),
+                        Text(
+                          "History",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        )
+                      ],
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => PairDetailPage(
+                          _orderItem,
                         ),
                       ),
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => PairDetailPage(
-                                  userController.user.orders.values.toList()[this.index],
-                                )));
-                      },
-                    ),
-                  ]
-                : [
-                    MyIconActionEdit(this.index),
-                  ],
-          )
-        : Container();
+                    );
+                  },
+                ),
+              ]
+            : [
+                MyIconActionEdit(this.index),
+              ]);
   }
 
   IconSlideAction MyIconActionEdit(int index) {
@@ -142,9 +138,9 @@ class OrderItemList extends StatelessWidget {
             isScrollControlled: true,
             builder: (context) => Container(
               child: Padding(
-                padding: MediaQuery.of(context).viewInsets,
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                 child: CreateEditOrder(
-                  orderItem: userController.user.orders.values.toList()[index],
+                  orderItem: _orderItem,
                 ),
               ),
             ),

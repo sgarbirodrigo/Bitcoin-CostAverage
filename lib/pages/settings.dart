@@ -31,9 +31,6 @@ class SettingsController extends GetxController {
 }
 
 class SettingsPage extends StatelessWidget {
-  //List<String> _status = ["normal", "saving", "saved"];
-
-
   var userController = Get.find<UserController>();
   var settingsController = Get.put(SettingsController());
   final _formKey = GlobalKey<FormState>();
@@ -278,14 +275,14 @@ class SettingsPage extends StatelessWidget {
                             if (_formKey.currentState.validate()) {
                               settingsController._selectedStatus.value = 1;
                               // print("${_selectedStatus}");
-                              if (await areUserKeysNewCorrect(
-                                  settingsController.privatekey.value,  settingsController.publickey.value)) {
+                              if (await areUserKeysNewCorrect(settingsController.privatekey.value,
+                                  settingsController.publickey.value)) {
                                 FirebaseFirestore.instance
                                     .collection("users")
                                     .doc(userController.user.uid)
                                     .update({
                                   "private_key": settingsController.privatekey.value,
-                                  "public_key":  settingsController.publickey.value,
+                                  "public_key": settingsController.publickey.value,
                                   "lastUpdatedTimestamp": Timestamp.now()
                                 }).then((value) {
                                   settingsController._selectedStatus.value = 2;

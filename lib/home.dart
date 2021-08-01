@@ -41,8 +41,8 @@ enum Section { LOGIN, DASHBOARD, ORDERS, HISTORY, SETTINGS }
 
 class HomeController extends GetxController {
   var pageController = PageController(initialPage: 0).obs;
+  var pageIndex = 0.obs;
   List<Widget> pages;
-  var pageIndex = 1.obs;
 
   @override
   void onInit() {
@@ -51,13 +51,8 @@ class HomeController extends GetxController {
   }
 
   void setPage(int index) {
-    if (index != 0) {
-      //print("jumping to $index");
-      pageController.value.jumpToPage(index >= 1 ? index - 1 : index);
-      pageIndex.value = index;
-    } else {
-      pageIndex.value = pageIndex.value;
-    }
+    pageController.value.jumpToPage(index);
+    //pageIndex.value = index;
   }
 }
 

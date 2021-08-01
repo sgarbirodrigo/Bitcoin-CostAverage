@@ -3,6 +3,7 @@ import 'package:Bit.Me/tools.dart';
 import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:Bit.Me/widgets/weekindicator_editor.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cool_ui/cool_ui.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +13,7 @@ import 'dart:convert';
 
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 
+import 'CustomKeyboard.dart';
 import 'controllers/user_controller.dart';
 import 'external/BinanceSymbolModel.dart';
 import 'models/schedule_model.dart';
@@ -29,7 +31,7 @@ class CreateEditOrder extends StatefulWidget {
 }
 
 class CreateEditOrderState extends State<CreateEditOrder> {
-  String _selectedPair = "BTC/USDT";
+  String _selectedPair;
   Map<String, BinanceSymbol> listOfSymbols;
   TextEditingController _amountController = TextEditingController();
   Schedule schedule;
@@ -62,14 +64,18 @@ class CreateEditOrderState extends State<CreateEditOrder> {
       listOfSymbols.keys.forEach((element) {
         this.pairs.add(listOfSymbols[element].mySymbol);
       });
+      onChangeCoin(this.pairs[0]);
       setState(() {});
     } else {
       throw Exception('Failed to load pairs');
     }
   }
 
+  bool isKeyboardVisible = false;
+
   @override
   void initState() {
+    super.initState();
     if (widget.orderItem != null) {
       _amountController.text = widget.orderItem.amount.toString();
       this.schedule = widget.orderItem.schedule;
@@ -82,7 +88,6 @@ class CreateEditOrderState extends State<CreateEditOrder> {
 
   @override
   Widget build(BuildContext context) {
-    print("selected:${_selectedPair}");
     double _selectedAmount = 0;
     return SafeArea(
       child: this.pairs != null && this.pairs.isNotEmpty
@@ -136,7 +141,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                               searchHint: "Select a pair",
                               onChanged: (value) {
                                 setState(() {
-                                  _selectedPair = value;
+                                  onChangeCoin(value);
                                 });
                               },
                               isExpanded: false,
@@ -253,10 +258,15 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                     color: Theme.of(context).primaryColor,
                   ),
                   Container(
-                    width: 128,
+                    width: 200,
                     padding: EdgeInsets.only(top: 16),
                     child: TextFormField(
+                      showCursor: true,
+                      readOnly: widget.orderItem == null,
+                      enabled: widget.orderItem == null,
+                      //readOnly: true,
                       controller: _amountController,
+                      textAlign: TextAlign.center,
                       decoration: InputDecoration(
                           isDense: true,
                           prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
@@ -274,18 +284,19 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                             borderSide:
                                 BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
                           )),
-                      keyboardType: TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: CustomNumberKeyboard.inputType,
+                      /*keyboardType: TextInputType.numberWithOptions(decimal: true),
                       inputFormatters: <TextInputFormatter>[
-                        //FilteringTextInputFormatter.allow(filterPattern)
-                      ],
+                        FilteringTextInputFormatter.allow(RegExp(r"[0-9]")),
+                      ],*/
                       onChanged: (value) {
-                        _amountController.text = value.replaceAll(",", ".");
+                        /*_amountController.text = value.replaceAll(",", ".");
                         if (_amountController.text.contains(".")) {
                           _amountController.text =
                               "${_amountController.text.split(".")[0]}.${_amountController.text.split(".")[1]}";
                         }
                         _amountController.selection = TextSelection.fromPosition(
-                            TextPosition(offset: _amountController.text.length));
+                            TextPosition(offset: _amountController.text.length));*/
                       },
                       // The validator receives the text that the user has entered.
                       validator: (value) {
@@ -306,7 +317,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                           }
                           _selectedAmount = double.parse(value.replaceAll(",", "."));
                           return null;
-                        }catch(e){
+                        } catch (e) {
                           return "Invalid number";
                         }
                       },
@@ -346,7 +357,6 @@ class CreateEditOrderState extends State<CreateEditOrder> {
             )
           : Container(
               height: 128,
-              /*width: 64,*/
               child: Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -361,5 +371,15 @@ class CreateEditOrderState extends State<CreateEditOrder> {
               ),
             ),
     );
+  }
+
+  void onChangeCoin(String value) {
+    _selectedPair = value;
+    _amountController.text = listOfSymbols[_selectedPair.toString().replaceAll("/", "")]
+        .filters[3]
+        .minNotional
+        .toString();
+    CustomNumberKeyboard.setMinimumAmount(
+        listOfSymbols[_selectedPair.toString().replaceAll("/", "")].filters[3].minNotional);
   }
 }

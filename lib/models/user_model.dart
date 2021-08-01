@@ -65,6 +65,7 @@ class PairData {
   List<HistoryItem> historyItems = List();
   double percentage_variation = 0;
   double coinAccumulated = 0;
+  String coinAccumulatedString = "";
   double avgPrice = 0;
   Timestamp firstTimestamp;
   Timestamp lastTimestamp;
@@ -94,6 +95,7 @@ class PairData {
       }
 
       coinAccumulated += historyItem.response.filled;
+      coinAccumulatedString = returnCurrencyCorrectedNumber(pair.split("/")[0], coinAccumulated);
       totalExpended += historyItem.response.filled * historyItem.response.price;
       avgPrice = totalExpended / coinAccumulated;
       price_spots
