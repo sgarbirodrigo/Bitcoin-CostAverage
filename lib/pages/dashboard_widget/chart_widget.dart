@@ -140,14 +140,14 @@ class ChartWidget extends StatelessWidget {
                       Column(
                         children: [
                           Padding(
-                            padding: EdgeInsets.only(top: 32),
+                            padding: EdgeInsets.only(top: 16),
                             child: Text(
                               "${returnCurrencyName(userController.baseCoin.value)} Allocation",
                               style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500),
                             ),
                           ),
                           Container(
-                            height: 4,
+                            height: 16,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -155,7 +155,7 @@ class ChartWidget extends StatelessWidget {
                               headerPrices(
                                   "Daily Average",
                                   "~${returnCurrencyCorrectedNumber(userController.baseCoin.value, userController.userTotalExpendingAmount[userController.baseCoin.value] != null ? (userController.userTotalExpendingAmount[userController.baseCoin.value] / 7) : 0.0)}",
-                                  "The average amount of ${userController.baseCoin.value} you are allocating daily on the coins shown below" ),
+                                  "The average amount of ${userController.baseCoin.value} you are allocating daily on the coins shown below"),
                               headerPrices(
                                   "Weekly",
                                   returnCurrencyCorrectedNumber(
@@ -182,6 +182,7 @@ class ChartWidget extends StatelessWidget {
                             ],
                           ),
                           Container(
+                            padding: EdgeInsets.only(top: 16),
                             height: MediaQuery.of(context).size.width * 0.7,
                             child: Stack(children: [
                               Center(

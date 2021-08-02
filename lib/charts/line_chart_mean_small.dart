@@ -1,9 +1,12 @@
+import 'dart:ui';
+
 import 'package:Bit.Me/controllers/user_controller.dart';
 import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';import 'package:Bit.Me/controllers/history_controller.dart';
+import 'package:get/get.dart';
+import 'package:Bit.Me/controllers/history_controller.dart';
 import 'package:intl/intl.dart';
 import '../contants.dart';
 import '../models/user_model.dart';
@@ -63,7 +66,7 @@ extension ScaleLineExtension on ScaleLineChart {
     }
   }
 
-  int getDaysInterval(){
+  int getDaysInterval() {
     switch (this) {
       case ScaleLineChart.WEEK1:
         return 1;
@@ -80,9 +83,7 @@ extension ScaleLineExtension on ScaleLineChart {
     }
   }
 
-
-
-  double getChartDotSize(){
+  double getChartDotSize() {
     switch (this) {
       case ScaleLineChart.WEEK1:
         return 4;
@@ -172,7 +173,8 @@ class PriceAVGChartLine extends StatelessWidget {
   double getXMax() {
     return Timestamp.now().seconds.toDouble();
   }
-  Widget lineChart(){
+
+  Widget lineChart() {
     Color color = Colors.deepPurple;
     if (historyController.pairData_items.value[pair] == null) {
       color = Colors.grey;
@@ -190,13 +192,13 @@ class PriceAVGChartLine extends StatelessWidget {
     }
     List<FlSpot> price_spots = List();
     if (DateTime.fromMillisecondsSinceEpoch(
-        historyController.pairData_items.value[pair].price_spots.first.x.toInt() * 1000)
+            historyController.pairData_items.value[pair].price_spots.first.x.toInt() * 1000)
         .isAfter(DateTime.now()
-        .add(Duration(days: -userController.scaleLineChart.value.toNumberValue())))) {
+            .add(Duration(days: -userController.scaleLineChart.value.toNumberValue())))) {
       price_spots.add(FlSpot(
           DateTime.now()
-              .add(Duration(days: -userController.scaleLineChart.value.toNumberValue()))
-              .millisecondsSinceEpoch /
+                  .add(Duration(days: -userController.scaleLineChart.value.toNumberValue()))
+                  .millisecondsSinceEpoch /
               1000,
           historyController.pairData_items.value[pair].price_spots.first.y));
     }
@@ -301,8 +303,7 @@ class PriceAVGChartLine extends StatelessWidget {
             dotData: FlDotData(
               show: false,
             ),
-            belowBarData: BarAreaData(
-            ),
+            belowBarData: BarAreaData(),
           )
         ],
       ),
@@ -313,23 +314,21 @@ class PriceAVGChartLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Obx(()=>lineChart());
     return historyController.obx(
-          (_historyController) {
-            return lineChart();
-      },
-      onLoading: CircularProgressIndicatorMy(
-        info: "loading history controller",
-      ),
-      onEmpty: CircularProgressIndicatorMy(
+      (_historyController) {
+        return lineChart();
+      },onLoading: null,
+      /*onEmpty: CircularProgressIndicatorMy(
         info: "empty history controller",
-      ),
+      ),*/
       // here also you can set your own error widget, but by
       // default will be an Center(child:Text(error))
       onError: (error) {
         callSnackbar("Oops!", error);
         return Container();
       },
-    );
+    );/*
     return Container(
       height: 64,
       child: Obx(
@@ -462,8 +461,7 @@ class PriceAVGChartLine extends StatelessWidget {
                   dotData: FlDotData(
                     show: false,
                   ),
-                  belowBarData: BarAreaData(
-                      ),
+                  belowBarData: BarAreaData(),
                 )
               ],
             ),
@@ -472,6 +470,6 @@ class PriceAVGChartLine extends StatelessWidget {
           );
         },
       ),
-    );
+    );*/
   }
 }

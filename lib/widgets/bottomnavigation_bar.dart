@@ -164,7 +164,7 @@ class _TitledBottomNavigationBarState extends State<TitledBottomNavigationBar> {
                               child: Dialog(child:  CreateEditOrder()));
                         },
                       );
-                      //userController.refreshUserData();
+                      userController.refreshUserData();
                     } else {
                       callErrorSnackbar("Sorry :\'(", "No internet connection.");
                     }

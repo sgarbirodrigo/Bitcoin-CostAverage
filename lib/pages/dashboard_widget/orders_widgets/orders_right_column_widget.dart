@@ -20,21 +20,25 @@ class OrdersRightColumnWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Obx(()=>Padding(
-            padding: EdgeInsets.only(top: 0),
-            child: Text(
-              historyController.pairAppreciationString[this.pair],
-              textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: 'Arial', fontSize: 20, color: Colors.deepPurple),
-            ),
-          )),
-          Obx(()=>Padding(
-            padding: EdgeInsets.only(top: 0, bottom: 4),
-            child: Text(
-              '+${historyController.pairData_items.value[this.pair]!=null ? historyController.pairData_items.value[this.pair].coinAccumulatedString: " 0"}',
-              style: TextStyle(color: Colors.deepPurple, fontSize: 12),
-            ),
-          )),
+          Obx(() => Padding(
+                padding: EdgeInsets.only(top: 0),
+                child: Text(
+                  historyController.pairAppreciationString != null
+                      ? historyController.pairAppreciationString[this.pair] != null
+                          ? historyController.pairAppreciationString[this.pair]
+                          : "..."
+                      : "",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontFamily: 'Arial', fontSize: 20, color: Colors.deepPurple),
+                ),
+              )),
+          Obx(() => Padding(
+                padding: EdgeInsets.only(top: 0, bottom: 4),
+                child: Text(
+                  '${historyController.pairData_items.value[this.pair] != null ? "+${historyController.pairData_items.value[this.pair].coinAccumulatedString}" : "..."}',
+                  style: TextStyle(color: Colors.deepPurple, fontSize: 12),
+                ),
+              )),
         ],
       ),
     );

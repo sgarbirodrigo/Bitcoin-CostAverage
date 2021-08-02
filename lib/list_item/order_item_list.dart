@@ -39,36 +39,30 @@ class OrderItemList extends StatelessWidget {
     return Slidable(
         actionPane: SlidableDrawerActionPane(),
         actionExtentRatio: 0.2,
-        child: GestureDetector(
-          onTap: () {
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => PairDetailPage(_orderItem)));
-          },
-          child: Container(
-            height: 72,
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  width: 0.5,
-                  color: Colors.black.withOpacity(0.2),
-                ),
+        child: Container(
+          height: 72,
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                width: 0.5,
+                color: Colors.black.withOpacity(0.2),
               ),
             ),
-            padding: EdgeInsets.only(top: 4, bottom: 4, left: 16, right: 8),
-            child: Row(
-              children: [
-                OrdersLeftColumnWidget(this.index),
-                Container(
-                  width: 16,
-                ),
-                Expanded(child: PriceAVGChartLine(pair: _orderItem.pair)),
-                OrdersRightColumnWidget(this.index, _orderItem.pair),
-              ],
-            ),
+          ),
+          padding: EdgeInsets.only(top: 4, bottom: 4, left: 16, right: 8),
+          child: Row(
+            children: [
+              OrdersLeftColumnWidget(this.index),
+              Container(
+                width: 16,
+              ),
+              Expanded(child: PriceAVGChartLine(pair: _orderItem.pair)),
+              OrdersRightColumnWidget(this.index, _orderItem.pair),
+            ],
           ),
         ),
         actions: [getChangeActive(_pairData, _orderItem)],
-        secondaryActions: _pairData != null && _pairData.historyItems.length > 0
+        secondaryActions: _pairData != null
             ? [
                 MyIconActionEdit(this.index),
                 IconSlideAction(

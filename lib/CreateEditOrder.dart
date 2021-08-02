@@ -262,7 +262,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                     padding: EdgeInsets.only(top: 16),
                     child: TextFormField(
                       showCursor: true,
-                      readOnly: widget.orderItem == null,
+                      //readOnly: widget.orderItem == null,
                       enabled: widget.orderItem == null,
                       //readOnly: true,
                       controller: _amountController,
