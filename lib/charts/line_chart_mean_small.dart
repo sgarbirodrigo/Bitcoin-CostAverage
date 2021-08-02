@@ -262,14 +262,14 @@ class PriceAVGChartLine extends StatelessWidget {
                 ? price_spots
                 : getEmptyPriceSpots(),
             isCurved: true,
-            curveSmoothness: 0,
+            curveSmoothness: 0.2,
             colors: [
               color,
             ],
             barWidth: 2,
             isStrokeCapRound: true,
             dotData: FlDotData(
-                show: true,
+                show: false,
                 getDotPainter: (spot, percent, barData, index) {
                   return FlDotCirclePainter(
                     radius: 2,
@@ -277,7 +277,7 @@ class PriceAVGChartLine extends StatelessWidget {
                     strokeWidth: 0,
                   );
                 }),
-            belowBarData: BarAreaData(
+            /*belowBarData: BarAreaData(
               show: true,
               colors: [
                 color.withOpacity(0.5),
@@ -286,7 +286,7 @@ class PriceAVGChartLine extends StatelessWidget {
               gradientColorStops: [0.1, 1.0],
               gradientFrom: const Offset(0, 0),
               gradientTo: const Offset(0, 1),
-            ),
+            ),*/
           ),
           LineChartBarData(
             spots: historyController.pairData_items.value[pair] != null
