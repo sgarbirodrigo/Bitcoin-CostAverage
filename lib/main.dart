@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:Bit.Me/contants.dart';
-import 'package:Bit.Me/controllers/binance_controller.dart';
-import 'package:Bit.Me/controllers/connectivityController.dart';
-import 'package:Bit.Me/controllers/deviceController.dart';
-import 'package:Bit.Me/external/sql_database.dart';
-import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
+import 'package:bitcoin_cost_average/contants.dart';
+import 'package:bitcoin_cost_average/controllers/binance_controller.dart';
+import 'package:bitcoin_cost_average/controllers/connectivityController.dart';
+import 'package:bitcoin_cost_average/controllers/deviceController.dart';
+import 'package:bitcoin_cost_average/external/sql_database.dart';
+import 'package:bitcoin_cost_average/widgets/circular_progress_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,7 +29,7 @@ import 'controllers/database_controller.dart';
 import 'controllers/purchase_controller.dart';
 import 'controllers/user_controller.dart';
 import 'home.dart';
-import 'package:Bit.Me/controllers/history_controller.dart';
+import 'package:bitcoin_cost_average/controllers/history_controller.dart';
 //1222
 
 void main() async {

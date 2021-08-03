@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:Bit.Me/controllers/user_controller.dart';
-import 'package:Bit.Me/models/binance_balance_model.dart';
+import 'package:bitcoin_cost_average/controllers/user_controller.dart';
+import 'package:bitcoin_cost_average/models/binance_balance_model.dart';
 import 'package:crypto/crypto.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;

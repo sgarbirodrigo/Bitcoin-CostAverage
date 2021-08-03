@@ -1,4 +1,4 @@
-import 'package:Bit.Me/pages/dashboard_widget/orders_widget.dart';
+import 'package:bitcoin_cost_average/pages/dashboard_widget/orders_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../pages/dashboard_widget/chart_widget.dart';

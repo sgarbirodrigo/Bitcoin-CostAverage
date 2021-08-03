@@ -1,13 +1,13 @@
-import 'package:Bit.Me/charts/line_chart_mean_small.dart';
-import 'package:Bit.Me/controllers/binance_controller.dart';
-import 'package:Bit.Me/controllers/user_controller.dart';
-import 'package:Bit.Me/list_item/history_list_item_v2.dart';
-import 'package:Bit.Me/models/order_model.dart';
-import 'package:Bit.Me/tools.dart';
+import 'package:bitcoin_cost_average/charts/line_chart_mean_small.dart';
+import 'package:bitcoin_cost_average/controllers/binance_controller.dart';
+import 'package:bitcoin_cost_average/controllers/user_controller.dart';
+import 'package:bitcoin_cost_average/list_item/history_list_item_v2.dart';
+import 'package:bitcoin_cost_average/models/order_model.dart';
+import 'package:bitcoin_cost_average/tools.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:Bit.Me/controllers/history_controller.dart';
+import 'package:bitcoin_cost_average/controllers/history_controller.dart';
 import '../charts/line_chart_mean_pair.dart';
 
 class PairDetailPage extends StatelessWidget {

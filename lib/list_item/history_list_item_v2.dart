@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:Bit.Me/tools.dart';
+import 'package:bitcoin_cost_average/tools.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

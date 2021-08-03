@@ -1,7 +1,7 @@
-import 'package:Bit.Me/controllers/user_controller.dart';
+import 'package:bitcoin_cost_average/controllers/user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:Bit.Me/controllers/history_controller.dart';
+import 'package:bitcoin_cost_average/controllers/history_controller.dart';
 import '../../../tools.dart';
 
 class OrdersRightColumnWidget extends StatelessWidget {

@@ -1,4 +1,4 @@
-import 'package:Bit.Me/charts/line_chart_mean_small.dart';
+import 'package:bitcoin_cost_average/charts/line_chart_mean_small.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:package_info/package_info.dart';

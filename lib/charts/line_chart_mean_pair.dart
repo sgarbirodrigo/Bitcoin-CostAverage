@@ -1,7 +1,7 @@
-import 'package:Bit.Me/controllers/history_controller.dart';
-import 'package:Bit.Me/controllers/user_controller.dart';
-import 'package:Bit.Me/tools.dart';
-import 'package:Bit.Me/widgets/dashed_line.dart';
+import 'package:bitcoin_cost_average/controllers/history_controller.dart';
+import 'package:bitcoin_cost_average/controllers/user_controller.dart';
+import 'package:bitcoin_cost_average/tools.dart';
+import 'package:bitcoin_cost_average/widgets/dashed_line.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';

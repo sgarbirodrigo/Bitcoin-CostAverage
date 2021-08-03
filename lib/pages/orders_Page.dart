@@ -1,19 +1,19 @@
-import 'package:Bit.Me/charts/line_chart_mean_small.dart';
-import 'package:Bit.Me/controllers/database_controller.dart';
-import 'package:Bit.Me/controllers/user_controller.dart';
-import 'package:Bit.Me/models/history_model.dart';
-import 'package:Bit.Me/models/settings_model.dart';
-import 'package:Bit.Me/models/user_model.dart';
-import 'package:Bit.Me/pages/pairdetail_page.dart';
-import 'package:Bit.Me/external/sql_database.dart';
-import 'package:Bit.Me/tools.dart';
-import 'package:Bit.Me/widgets/weekindicator.dart';
+import 'package:bitcoin_cost_average/charts/line_chart_mean_small.dart';
+import 'package:bitcoin_cost_average/controllers/database_controller.dart';
+import 'package:bitcoin_cost_average/controllers/user_controller.dart';
+import 'package:bitcoin_cost_average/models/history_model.dart';
+import 'package:bitcoin_cost_average/models/settings_model.dart';
+import 'package:bitcoin_cost_average/models/user_model.dart';
+import 'package:bitcoin_cost_average/pages/pairdetail_page.dart';
+import 'package:bitcoin_cost_average/external/sql_database.dart';
+import 'package:bitcoin_cost_average/tools.dart';
+import 'package:bitcoin_cost_average/widgets/weekindicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import '../contants.dart';
 import '../list_item/order_item_list.dart';
-import 'package:Bit.Me/controllers/history_controller.dart';
+import 'package:bitcoin_cost_average/controllers/history_controller.dart';
 
 class OrdersPageController extends GetxController{
 

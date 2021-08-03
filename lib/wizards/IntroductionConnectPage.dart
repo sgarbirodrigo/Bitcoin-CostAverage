@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'package:Bit.Me/controllers/auth_controller.dart';
-import 'package:Bit.Me/controllers/user_controller.dart';
-import 'package:Bit.Me/external/qr_code.dart';
+import 'package:bitcoin_cost_average/controllers/auth_controller.dart';
+import 'package:bitcoin_cost_average/controllers/user_controller.dart';
+import 'package:bitcoin_cost_average/external/qr_code.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

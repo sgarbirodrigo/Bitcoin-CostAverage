@@ -1,7 +1,7 @@
-import 'package:Bit.Me/models/order_model.dart';
-import 'package:Bit.Me/tools.dart';
-import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
-import 'package:Bit.Me/widgets/weekindicator_editor.dart';
+import 'package:bitcoin_cost_average/models/order_model.dart';
+import 'package:bitcoin_cost_average/tools.dart';
+import 'package:bitcoin_cost_average/widgets/circular_progress_indicator.dart';
+import 'package:bitcoin_cost_average/widgets/weekindicator_editor.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cool_ui/cool_ui.dart';
 import 'package:flutter/cupertino.dart';

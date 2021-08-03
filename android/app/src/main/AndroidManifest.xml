@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.racooney.bit.me">
+    package="com.racooney.bitcoin_cost_average">
    <application
         android:label="Bitcoin-Cost Average"
         android:icon="@mipmap/ic_launcher">

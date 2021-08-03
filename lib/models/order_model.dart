@@ -1,4 +1,4 @@
-import 'package:Bit.Me/models/schedule_model.dart';
+import 'package:bitcoin_cost_average/models/schedule_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OrderItem {

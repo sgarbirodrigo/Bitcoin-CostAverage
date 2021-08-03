@@ -1,4 +1,4 @@
-import 'package:Bit.Me/controllers/user_controller.dart';
+import 'package:bitcoin_cost_average/controllers/user_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

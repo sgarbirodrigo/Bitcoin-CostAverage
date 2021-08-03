@@ -1,5 +1,5 @@
-import 'package:Bit.Me/controllers/binance_controller.dart';
-import 'package:Bit.Me/controllers/user_controller.dart';
+import 'package:bitcoin_cost_average/controllers/binance_controller.dart';
+import 'package:bitcoin_cost_average/controllers/user_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

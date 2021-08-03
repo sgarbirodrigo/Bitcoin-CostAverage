@@ -1,10 +1,10 @@
-import 'package:Bit.Me/controllers/user_controller.dart';
-import 'package:Bit.Me/models/history_model.dart';
-import 'package:Bit.Me/widgets/weekindicator.dart';
+import 'package:bitcoin_cost_average/controllers/user_controller.dart';
+import 'package:bitcoin_cost_average/models/history_model.dart';
+import 'package:bitcoin_cost_average/widgets/weekindicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:Bit.Me/controllers/history_controller.dart';
+import 'package:bitcoin_cost_average/controllers/history_controller.dart';
 import '../../../contants.dart';
 import '../../../tools.dart';
 

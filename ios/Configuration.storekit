@@ -37,7 +37,7 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "com.racooney.bit.me",
+          "productID" : "com.racooney.bitcoin_cost_average",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "monthly_hodler_btc",
           "subscriptionGroupID" : "BC7E7BF5",
@@ -63,7 +63,7 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "com.racooney.bit.me",
+          "productID" : "com.racooney.bitcoin_cost_average",
           "recurringSubscriptionPeriod" : "P1Y",
           "referenceName" : "annualy_hodler_btc",
           "subscriptionGroupID" : "BC7E7BF5",

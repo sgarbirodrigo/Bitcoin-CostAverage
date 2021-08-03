@@ -1,8 +1,8 @@
-import 'package:Bit.Me/chart_widget_emptyexample.dart';
-import 'package:Bit.Me/controllers/user_controller.dart';
-import 'package:Bit.Me/models/settings_model.dart';
-import 'package:Bit.Me/tools.dart';
-import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
+import 'package:bitcoin_cost_average/chart_widget_emptyexample.dart';
+import 'package:bitcoin_cost_average/controllers/user_controller.dart';
+import 'package:bitcoin_cost_average/models/settings_model.dart';
+import 'package:bitcoin_cost_average/tools.dart';
+import 'package:bitcoin_cost_average/widgets/circular_progress_indicator.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

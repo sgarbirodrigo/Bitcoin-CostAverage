@@ -38,8 +38,7 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.racooney.bit.me"
+        applicationId "com.racooney.bitcoin_cost_average"
         minSdkVersion 20
         targetSdkVersion 30
         multiDexEnabled true

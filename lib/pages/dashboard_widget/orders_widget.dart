@@ -1,9 +1,9 @@
-import 'package:Bit.Me/controllers/user_controller.dart';
-import 'package:Bit.Me/pages/dashboard_widget/orders_widgets/header_orders_widget.dart';
+import 'package:bitcoin_cost_average/controllers/user_controller.dart';
+import 'package:bitcoin_cost_average/pages/dashboard_widget/orders_widgets/header_orders_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import '../../list_item/order_item_list.dart';import 'package:Bit.Me/controllers/history_controller.dart';
+import '../../list_item/order_item_list.dart';import 'package:bitcoin_cost_average/controllers/history_controller.dart';
 
 class OrdersWidget extends StatelessWidget {
   var userController = Get.find<UserController>();

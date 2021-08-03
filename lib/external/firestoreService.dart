@@ -1,4 +1,4 @@
-import 'package:Bit.Me/models/user_model.dart';
+import 'package:bitcoin_cost_average/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreDB{

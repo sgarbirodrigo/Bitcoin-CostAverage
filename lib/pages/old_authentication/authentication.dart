@@ -1,5 +1,5 @@
-import 'package:Bit.Me/controllers/auth_controller.dart';
-import 'package:Bit.Me/widgets/custom_text.dart';
+import 'package:bitcoin_cost_average/controllers/auth_controller.dart';
+import 'package:bitcoin_cost_average/widgets/custom_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

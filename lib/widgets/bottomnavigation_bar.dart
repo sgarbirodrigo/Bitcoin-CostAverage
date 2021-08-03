@@ -1,6 +1,6 @@
-import 'package:Bit.Me/controllers/connectivityController.dart';
-import 'package:Bit.Me/controllers/user_controller.dart';
-import 'package:Bit.Me/home.dart';
+import 'package:bitcoin_cost_average/controllers/connectivityController.dart';
+import 'package:bitcoin_cost_average/controllers/user_controller.dart';
+import 'package:bitcoin_cost_average/home.dart';
 import 'package:cool_ui/cool_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

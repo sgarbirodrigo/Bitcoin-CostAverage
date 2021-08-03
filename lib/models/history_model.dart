@@ -1,8 +1,8 @@
 import 'dart:collection';
 import 'dart:convert';
 
-import 'package:Bit.Me/external/binanceOrderMaker.dart';
-import 'package:Bit.Me/models/order_model.dart';
+import 'package:bitcoin_cost_average/external/binanceOrderMaker.dart';
+import 'package:bitcoin_cost_average/models/order_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum TransactinoResult { SUCCESS, FAILURE }

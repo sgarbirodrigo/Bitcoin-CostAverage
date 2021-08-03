@@ -5,8 +5,8 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:Bit.Me/models/user_model.dart';
-import 'package:Bit.Me/tools.dart';
+import 'package:bitcoin_cost_average/models/user_model.dart';
+import 'package:bitcoin_cost_average/tools.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite/sqflite.dart';
 

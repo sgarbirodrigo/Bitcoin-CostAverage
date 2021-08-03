@@ -1,12 +1,12 @@
 import 'dart:convert';
 
-import 'package:Bit.Me/controllers/auth_controller.dart';
-import 'package:Bit.Me/controllers/binance_controller.dart';
-import 'package:Bit.Me/controllers/connectivityController.dart';
-import 'package:Bit.Me/controllers/database_controller.dart';
-import 'package:Bit.Me/models/history_model.dart';
-import 'package:Bit.Me/models/user_model.dart';
-import 'package:Bit.Me/tools.dart';
+import 'package:bitcoin_cost_average/controllers/auth_controller.dart';
+import 'package:bitcoin_cost_average/controllers/binance_controller.dart';
+import 'package:bitcoin_cost_average/controllers/connectivityController.dart';
+import 'package:bitcoin_cost_average/controllers/database_controller.dart';
+import 'package:bitcoin_cost_average/models/history_model.dart';
+import 'package:bitcoin_cost_average/models/user_model.dart';
+import 'package:bitcoin_cost_average/tools.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:sqflite/sqflite.dart';

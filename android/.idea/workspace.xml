@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="1bf7b19f-08f6-4857-a32d-2a347e0ed7f0" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/../.flutter-plugins-dependencies" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/android.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/android.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/google-services.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/google-services.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/debug/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/debug/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/kotlin/com/racooney/bitbybit/standard/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/kotlin/com/racooney/bitbybit/standard/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/profile/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/profile/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ios/Configuration.storekit" beforeDir="false" afterPath="$PROJECT_DIR$/../ios/Configuration.storekit" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ios/Runner.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/../ios/Runner.xcodeproj/project.pbxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ios/Runner/GoogleService-Info.plist" beforeDir="false" afterPath="$PROJECT_DIR$/../ios/Runner/GoogleService-Info.plist" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/CreateEditOrder.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/CreateEditOrder.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/CustomKeyboard.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/CustomKeyboard.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/auth_pages/authentication.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/auth_pages/authentication.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/auth_pages/forgotPassword.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/auth_pages/forgotPassword.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/auth_pages/signIn.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/auth_pages/signIn.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/auth_pages/signUp.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/auth_pages/signUp.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/chart_widget_emptyexample.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/chart_widget_emptyexample.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/charts/line_chart_mean_pair.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/charts/line_chart_mean_pair.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/charts/line_chart_mean_small.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/charts/line_chart_mean_small.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/controllers/auth_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/controllers/auth_controller.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/controllers/binance_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/controllers/binance_controller.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/controllers/history_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/controllers/history_controller.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/controllers/user_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/controllers/user_controller.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/external/binance_api.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/external/binance_api.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/external/firestoreService.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/external/firestoreService.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/home.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/list_item/history_list_item_v2.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/list_item/history_list_item_v2.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/list_item/order_item_list.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/list_item/order_item_list.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/models/history_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/models/history_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/models/order_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/models/order_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/models/settings_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/models/settings_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/models/user_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/models/user_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/dashboard.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/dashboard.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/dashboard_widget/balance_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/dashboard_widget/balance_widget.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/dashboard_widget/chart_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/dashboard_widget/chart_widget.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/dashboard_widget/chart_widgets/tab_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/dashboard_widget/chart_widgets/tab_widget.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/dashboard_widget/orders_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/dashboard_widget/orders_widget.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/dashboard_widget/orders_widgets/header_orders_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/dashboard_widget/orders_widgets/header_orders_widget.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/dashboard_widget/orders_widgets/orders_left_column_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/dashboard_widget/orders_widgets/orders_left_column_widget.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/dashboard_widget/orders_widgets/orders_right_column_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/dashboard_widget/orders_widgets/orders_right_column_widget.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/old_authentication/authentication.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/old_authentication/authentication.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/old_authentication/recovery.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/old_authentication/recovery.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/old_authentication/sign_up.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/old_authentication/sign_up.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/orders_Page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/orders_Page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/pairdetail_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/pairdetail_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/settings.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/settings.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/purchase/paywall_bca.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/purchase/paywall_bca.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/purchase/paywall_bcav2.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/purchase/paywall_bcav2.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/widgets/appbar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/widgets/appbar.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/widgets/bottomnavigation_bar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/widgets/bottomnavigation_bar.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/widgets/weekindicator.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/widgets/weekindicator.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/widgets/weekindicator_editor.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/widgets/weekindicator_editor.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/wizards/IntroductionConnectPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/wizards/IntroductionConnectPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/wizards/IntroductionPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/wizards/IntroductionPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../test/widget_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../test/widget_test.dart" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1wDUbS3A8MGDGoF9CzzhXQDBcjX" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="android.sdk.path" value="$USER_HOME$/Library/Android/sdk" />
+    <property name="dart.analysis.tool.window.visible" value="false" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="show.migrate.to.gradle.popup" value="false" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1bf7b19f-08f6-4857-a32d-2a347e0ed7f0" name="Default Changelist" comment="" />
+      <created>1627992724181</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1627992724181</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

@@ -1,9 +1,9 @@
-import 'package:Bit.Me/auth_pages/forgotPassword.dart';
-import 'package:Bit.Me/auth_pages/signIn.dart';
-import 'package:Bit.Me/auth_pages/signUp.dart';
-import 'package:Bit.Me/contants.dart';
-import 'package:Bit.Me/controllers/auth_controller.dart';
-import 'package:Bit.Me/widgets/custom_text.dart';
+import 'package:bitcoin_cost_average/auth_pages/forgotPassword.dart';
+import 'package:bitcoin_cost_average/auth_pages/signIn.dart';
+import 'package:bitcoin_cost_average/auth_pages/signUp.dart';
+import 'package:bitcoin_cost_average/contants.dart';
+import 'package:bitcoin_cost_average/controllers/auth_controller.dart';
+import 'package:bitcoin_cost_average/widgets/custom_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

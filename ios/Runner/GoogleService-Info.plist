@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.racooney.bit.me</string>
+	<string>com.racooney.bitcoin_cost_average</string>
 	<key>PROJECT_ID</key>
 	<string>contant-buyer</string>
 	<key>STORAGE_BUCKET</key>

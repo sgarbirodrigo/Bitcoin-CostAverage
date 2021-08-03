@@ -1,12 +1,12 @@
 import 'dart:ui';
 
-import 'package:Bit.Me/controllers/user_controller.dart';
-import 'package:Bit.Me/widgets/circular_progress_indicator.dart';
+import 'package:bitcoin_cost_average/controllers/user_controller.dart';
+import 'package:bitcoin_cost_average/widgets/circular_progress_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:Bit.Me/controllers/history_controller.dart';
+import 'package:bitcoin_cost_average/controllers/history_controller.dart';
 import 'package:intl/intl.dart';
 import '../contants.dart';
 import '../models/user_model.dart';

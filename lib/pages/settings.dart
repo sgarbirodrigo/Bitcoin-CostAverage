@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:Bit.Me/controllers/user_controller.dart';
-import 'package:Bit.Me/external/binance_api.dart';
-import 'package:Bit.Me/models/user_model.dart';
-import 'package:Bit.Me/external/qr_code.dart';
+import 'package:bitcoin_cost_average/controllers/user_controller.dart';
+import 'package:bitcoin_cost_average/external/binance_api.dart';
+import 'package:bitcoin_cost_average/models/user_model.dart';
+import 'package:bitcoin_cost_average/external/qr_code.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
