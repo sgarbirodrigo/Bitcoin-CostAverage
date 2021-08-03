@@ -100,61 +100,12 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      IconButton(
+                      /*IconButton(
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          icon: Icon(Icons.close_sharp)),
-                      widget.orderItem == null
-                          ? Expanded(
-                              child: SearchableDropdown.single(
-                              icon: null,
-                              displayClearIcon: false,
-                              selectedValueWidgetFn: (value) {
-                                return Row(
-                                  children: [
-                                    Text(
-                                      value,
-                                      style: TextStyle(fontSize: 18),
-                                    ),
-                                    Icon(
-                                      Icons.arrow_drop_down,
-                                      size: 36,
-                                    ),
-                                  ],
-                                );
-                              },
-                              underline: Container(
-                                color: Theme.of(context).primaryColor,
-                              ),
-                              iconSize: 36,
-                              style: TextStyle(fontSize: 22, color: Colors.black),
-                              items: this.pairs.map((String value) {
-                                //print("value-data: $value");
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
-                              value: _selectedPair,
-                              hint: "Select a pair",
-                              searchHint: "Select a pair",
-                              onChanged: (value) {
-                                setState(() {
-                                  onChangeCoin(value);
-                                });
-                              },
-                              isExpanded: false,
-                            ))
-                          : Expanded(
-                              child: Container(
-                                padding: EdgeInsets.only(top: 16, bottom: 16),
-                                child: Text(widget.orderItem.pair, style: TextStyle(fontSize: 24)),
-                              ),
-                            ),
-                      Container(
-                        width: 16,
-                      ),
+                          icon: Icon(Icons.close_sharp)),*/
+Container(width: 8,),
                       widget.orderItem != null
                           ? ElevatedButton(
                               onPressed: () async {
@@ -207,11 +158,54 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                                   backgroundColor: MaterialStateProperty.all(Colors.red)),
                             )
                           : Container(),
-                      widget.orderItem != null
-                          ? Container(
-                              width: 16,
-                            )
-                          : Container(),
+                      widget.orderItem == null
+                          ? Expanded(
+                          child: SearchableDropdown.single(
+                            icon: null,
+                            displayClearIcon: false,
+                            selectedValueWidgetFn: (value) {
+                              return Row(
+                                children: [
+                                  Text(
+                                    value,
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_drop_down,
+                                    size: 36,
+                                  ),
+                                ],
+                              );
+                            },
+                            underline: Container(
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            iconSize: 36,
+                            style: TextStyle(fontSize: 22, color: Colors.black),
+                            items: this.pairs.map((String value) {
+                              //print("value-data: $value");
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                            value: _selectedPair,
+                            hint: "Select a pair",
+                            searchHint: "Select a pair",
+                            onChanged: (value) {
+                              setState(() {
+                                onChangeCoin(value);
+                              });
+                            },
+                            isExpanded: false,
+                          ))
+                          : Expanded(
+                        child: Container(
+                          //color: Colors.red,
+                          padding: EdgeInsets.only(top: 8, bottom: 16),
+                          child: Center(child: Text(widget.orderItem.pair, style: TextStyle(fontSize: 24)),),
+                        ),
+                      ),
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState.validate()) {
@@ -263,7 +257,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                     child: TextFormField(
                       showCursor: true,
                       //readOnly: widget.orderItem == null,
-                      enabled: widget.orderItem == null,
+                      //enabled: widget.orderItem == null,
                       //readOnly: true,
                       controller: _amountController,
                       textAlign: TextAlign.center,

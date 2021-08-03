@@ -126,6 +126,13 @@ class OrderItemList extends StatelessWidget {
       ),
       onTap: () async {
         if (!connectivityController.isOffline()) {
+          await showDialog(
+            context:  Get.context,
+            builder: (BuildContext context) {
+              return KeyboardRootWidget(
+                  child: Dialog(child:  CreateEditOrder(orderItem: _orderItem,)));
+            },
+          );/*
           await showModalBottomSheet(
             context: Get.context,
             useRootNavigator: true,
@@ -138,7 +145,7 @@ class OrderItemList extends StatelessWidget {
                 ),
               ),
             ),
-          );
+          );*/
           userController.refreshUserData();
         } else {
           callErrorSnackbar("Sorry :\'(", "No internet connection.");

@@ -51,10 +51,10 @@ class UserController extends GetxController with StateMixin {
       //handling scale preference
       this.scaleLineChart.listen((ScaleLineChart scaleLineChart) {
         this.preferences.setString(scale_line_preference, scaleLineChart.toSavingNameString());
-
         historyController.forceUpdateHistoryData(scaleLineChart.toNumberValue());
       });
       this.scaleLineChart.value = _loadScale();
+      historyController.forceUpdateHistoryData(this.scaleLineChart.value.toNumberValue());
     });
   }
 
