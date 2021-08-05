@@ -12,10 +12,9 @@ import '../models/history_model.dart';
 
 class HistoryItemListv2 extends StatelessWidget {
   final HistoryItem historyItem;
-  final String userUid;
   bool success;
 
-  HistoryItemListv2({Key key, this.historyItem, this.userUid}) {
+  HistoryItemListv2({Key key, this.historyItem}) {
     success = historyItem.result == TransactinoResult.SUCCESS;
   }
 
@@ -51,7 +50,7 @@ class HistoryItemListv2 extends StatelessWidget {
                             //color: Colors.black.withOpacity(0.6),
                             fontSize: 14,
                             fontWeight: FontWeight.w400)),
-                    Text(DateFormat("h a").format(historyItem.timestamp.toDate()),
+                    Text(DateFormat("h:mm. a").format(historyItem.timestamp.toDate()),
                         style: TextStyle(
                             //color: Colors.black.withOpacity(0.6),
                             fontSize: 14,

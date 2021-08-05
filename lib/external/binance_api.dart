@@ -22,14 +22,14 @@ Future<Map<String, double>> fetchBinancePairData() async {
     throw Exception('Failed to load pairs');
   }
 }
-
+/*
 Future<bool> areUserKeysSavedCorrect(UserManager user) async {
   if ((await getBinanceBalance(user)) != null) {
     return true;
   } else {
     return false;
   }
-}
+}*/
 Future<bool> areUserKeysNewCorrect(String private_key,String public_key) async {
   int timeStamp = DateTime.now().millisecondsSinceEpoch;
   Map<String, dynamic> parameters = Map();
@@ -52,6 +52,7 @@ Future<bool> areUserKeysNewCorrect(String private_key,String public_key) async {
   }
 }
 
+/*
 
 Future<Balance> getBinanceBalance(UserManager user) async {
   UserData userData = await FirestoreDB.getUserData(user.firebaseUser.uid);
@@ -79,3 +80,4 @@ Future<Balance> getBinanceBalance(UserManager user) async {
     }
   }
 }
+*/

@@ -107,12 +107,15 @@ class PairData {
   }
 
 }
+/*
 
 class UserManager {
   final User firebaseUser;
   UserData userData;
 
-  /*List<OrderItem> orderItems = List();*/
+  */
+/*List<OrderItem> orderItems = List();*//*
+
   List<HistoryItem> historyItems = List();
   Map<String, PairData> pairDataItems = Map();
   Map<String, double> userTotalBuyingAmount = Map();
@@ -212,6 +215,7 @@ class UserManager {
     this.onUserDataUpdate(this);
   }
 
+*/
 /*
 
   void forceUpdateHistoryData2(int daysToConsider) {
@@ -253,7 +257,8 @@ class UserManager {
       this.onUserDataUpdate(this);
     });
   }
-*/
+*//*
+
 
   void _calculateUserStats() {
     //reset all data before reload
@@ -326,3 +331,4 @@ class UserManager {
     return list;
   }
 }
+*/

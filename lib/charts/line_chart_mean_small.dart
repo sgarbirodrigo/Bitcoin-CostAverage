@@ -262,7 +262,7 @@ class PriceAVGChartLine extends StatelessWidget {
                 ? price_spots
                 : getEmptyPriceSpots(),
             isCurved: true,
-            curveSmoothness: 0.2,
+            curveSmoothness: 0.01,
             colors: [
               color,
             ],

@@ -20,6 +20,7 @@ class HistoryController extends GetxController with StateMixin {
   var binanceController = Get.find<BinanceController>();
 
   var pairData_items = Rx<Map<String, PairData>>({});
+  var history_items = [].obs;
   var pairAppreciation = {}.obs;
   var pairAppreciationString = {}.obs;
 
@@ -87,24 +88,27 @@ class HistoryController extends GetxController with StateMixin {
         'SELECT * FROM History WHERE timestamp>= ${DateTime.now().add(Duration(days: -daysToConsider)).millisecondsSinceEpoch} ORDER BY timestamp ASC');
 
     pairData_items.value.clear();
+    history_items.clear();
+    List temporaryHistory = [];
+    Map<String, PairData> temporaryPairData = {};
 
     rawQuery.forEach((element) {
       HistoryItem historyItem = HistoryItem.fromJson(json.decode(element['rawFirestore']));
-      if (pairData_items.value[historyItem.order.pair] == null) {
-        pairData_items.value[historyItem.order.pair] = PairData().addHistoryItem(historyItem);
+      temporaryHistory.add(historyItem);
+      if (temporaryPairData[historyItem.order.pair] == null) {
+        temporaryPairData[historyItem.order.pair] = PairData().addHistoryItem(historyItem);
       } else {
-        pairData_items.value[historyItem.order.pair] =
-            pairData_items.value[historyItem.order.pair].addHistoryItem(historyItem);
+        temporaryPairData[historyItem.order.pair] =
+            temporaryPairData[historyItem.order.pair].addHistoryItem(historyItem);
       }
     });
+
+    pairData_items.value.addAll(temporaryPairData);
+    history_items.addAll(temporaryHistory.reversed);
 
     if (binanceController.tickerPrices.length > 0) {
       calculateAppreciation();
     }
-
-    /*} catch (e) {
-      print("error on load history: ${e.toString()}");
-    }*/
 
     change(null, status: RxStatus.success());
 
@@ -123,6 +127,7 @@ class HistoryController extends GetxController with StateMixin {
 
   void calculateAppreciation() {
     //todo save last updated price and load everytime from local
+    this.pairAppreciationString.clear();
     pairData_items.value.forEach((pair, pairData) {
       print("pair: ${pairData.pair} - accumulated: ${pairData.coinAccumulated}");
       this.pairAppreciation[pair] =
@@ -130,6 +135,7 @@ class HistoryController extends GetxController with StateMixin {
                       pairData.totalExpended) -
                   1) *
               100;
+
       this.pairAppreciationString[pair] = getAppreciationConverted(this.pairAppreciation[pair]);
     });
   }

@@ -40,6 +40,13 @@ class MyBottomNavigationBar extends StatelessWidget {
                     ),
                   ),
                   TitledNavigationBarItem(
+                    title: Text('History'),
+                    icon: Icon(
+                      Icons.history_toggle_off,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  TitledNavigationBarItem(
                     title: Text('Settings'),
                     icon: Icon(
                       Icons.settings_outlined,

@@ -139,7 +139,6 @@ class MyApp extends StatelessWidget {
           if (authController.isUserLogged()) {
             FirebaseCrashlytics.instance.setUserIdentifier(authController.user.uid);
             Get.find<UserController>().loadUserData(authController.user.uid);
-            //print("first load user");
             purchaseController.setUser(authController.user.uid);
             return purchaseController.obx(
               (_purchaserController) {

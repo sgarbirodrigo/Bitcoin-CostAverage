@@ -6,6 +6,7 @@ import 'package:bitcoin_cost_average/controllers/deviceController.dart';
 import 'package:bitcoin_cost_average/controllers/purchase_controller.dart';
 import 'package:bitcoin_cost_average/external/binance_api.dart';
 import 'package:bitcoin_cost_average/pages/dashboard.dart';
+import 'package:bitcoin_cost_average/pages/history_page.dart';
 import 'package:bitcoin_cost_average/pages/settings.dart';
 import 'package:bitcoin_cost_average/models/settings_model.dart';
 import 'package:bitcoin_cost_average/models/user_model.dart';
@@ -47,7 +48,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    pages = [DashboardBitMe(), OrdersPage(), SettingsPage()];
+    pages = [DashboardBitMe(), OrdersPage(), HistoryPage(),SettingsPage()];
   }
 
   void setPage(int index) {

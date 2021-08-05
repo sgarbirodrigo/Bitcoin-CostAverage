@@ -9,6 +9,7 @@ import 'package:searchable_dropdown/searchable_dropdown.dart';
 import '../../contants.dart';
 import '../../models/settings_model.dart';
 import '../../models/user_model.dart';
+/*
 
 class BalanceWidget extends StatefulWidget {
   SettingsApp settings;
@@ -105,7 +106,8 @@ class _BalanceWidgetState extends State<BalanceWidget> {
                           );
                         },
                       );
-                      /*showDialog(
+                      */
+/*showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return Dialog(
@@ -155,7 +157,8 @@ class _BalanceWidgetState extends State<BalanceWidget> {
                             ),
                           );
                         },
-                      );*/
+                      );*//*
+
                     },
                     child: Text(
                       _priceUnit,
@@ -191,8 +194,10 @@ class _BalanceWidgetState extends State<BalanceWidget> {
                         scrollDirection: Axis.vertical,
                         itemCount: widget.user.balance.balances.length,
                         itemBuilder: (context, index) {
-                          /*print(
-                              "result: ${widget.settings.binanceTicker["${widget.user.balance.balances[index].asset}${_priceUnit}"]}");*/
+                          */
+/*print(
+                              "result: ${widget.settings.binanceTicker["${widget.user.balance.balances[index].asset}${_priceUnit}"]}");*//*
+
                           double _priceValue = 1;
                           _priceValue=widget.settings.binanceTicker["${widget.user.balance.balances[index].asset}${_priceUnit}"]??1;
                           return Slidable(
@@ -260,7 +265,8 @@ class _BalanceWidgetState extends State<BalanceWidget> {
                                 ],
                               ),
                             ),
-                            /*secondaryActions: [
+                            */
+/*secondaryActions: [
                               IconSlideAction(
                                 color: Colors.amber,
                                 iconWidget: Icon(
@@ -277,7 +283,8 @@ class _BalanceWidgetState extends State<BalanceWidget> {
                                       });
                                 },
                               )
-                            ],*/
+                            ],*//*
+
                           );
                         }),
                   )
@@ -287,11 +294,14 @@ class _BalanceWidgetState extends State<BalanceWidget> {
       ],
     );
   }
+*/
 /*
   Widget BuyOrderCard(int index) {
     return GestureDetector(
       onLongPress: () {
-        */ /*showDialog<void>(
+        *//*
+ */
+/*showDialog<void>(
             context: context,
             barrierDismissible: false, // user must tap button!
             builder: (BuildContext context) {
@@ -322,10 +332,14 @@ class _BalanceWidgetState extends State<BalanceWidget> {
                 ],
               );
             },
-          );*/ /*
+          );*//*
+ */
+/*
       },
       onTap: () {
-        */ /*Firestore.instance
+        *//*
+ */
+/*Firestore.instance
               .collection("users")
               .doc("userTest")
               .collection("orders")
@@ -333,7 +347,9 @@ class _BalanceWidgetState extends State<BalanceWidget> {
               .update({
             "active":
             !(widget.querySnapshot.documents[index].data["active"] as bool)
-          });*/ /*
+          });*//*
+ */
+/*
       },
       child: Container(
         child: Card(
@@ -351,5 +367,7 @@ class _BalanceWidgetState extends State<BalanceWidget> {
         ),
       ),
     );
-  }*/
+  }*//*
+
 }
+*/

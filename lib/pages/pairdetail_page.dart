@@ -383,7 +383,6 @@ class PairDetailPage extends StatelessWidget {
                           return HistoryItemListv2(
                             historyItem:
                             historyController.pairData_items.value[this.orderItem.pair].historyItems[historyController.pairData_items.value[this.orderItem.pair].historyItems.length - index - 1],
-                            userUid: userController.user.uid,
                           );
                         })
                         : Container(
