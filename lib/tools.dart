@@ -39,7 +39,7 @@ String returnCurrencyName(String currencyCode) {
 String returnCurrencyCorrectedNumber(String currencyCode, double value) {
   String currencySymbol = getCurrencySymbolFromCode(currencyCode);
   if (currencyCode == currencySymbol) {
-    print("$currencyCode: $value");
+    //print("$currencyCode: $value");
     double valueNoZeros = double.parse(doubleToValueString(value));
     //Decimal decimal = Decimal;
     Decimal convertedNum = Decimal.parse(valueNoZeros.toString());

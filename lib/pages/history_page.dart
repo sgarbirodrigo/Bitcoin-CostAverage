@@ -12,6 +12,8 @@ import 'package:bitcoin_cost_average/widgets/weekindicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 import '../contants.dart';
 import '../list_item/order_item_list.dart';
 import 'package:bitcoin_cost_average/controllers/history_controller.dart';
@@ -108,14 +110,47 @@ class HistoryPage extends StatelessWidget {
             child: historyController.history_items.length > 0
                 ? Obx(
                     () {
-                      return ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        itemCount: historyController.history_items.length,
-                        //physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          return HistoryItemListv2(
-                              historyItem: historyController.history_items[index]);
+                      return StickyGroupedListView<dynamic, DateTime>(
+                        elements: historyController.history_items.value,
+                        order: StickyGroupedListOrder.DESC,
+                        groupBy: (historyItem) => DateTime(
+                            historyItem.timestamp.toDate().year,
+                            historyItem.timestamp.toDate().month,
+                            historyItem.timestamp.toDate().day),
+                        groupSeparatorBuilder: (historyItem) {
+                          return Container(
+                            height: 36,
+                            decoration: BoxDecoration(
+                                //color: Colors.black.withOpacity(0.05),
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: Colors.black.withOpacity(0.5), width: 1))),
+                            padding: EdgeInsets.only(left: 16, right: 16),
+                            child: Row(
+                              children: [
+                                Text(
+                                  DateFormat("EEEE").format(historyItem.timestamp.toDate()),
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                                Expanded(
+                                  child: Container(),
+                                ),
+                                Text(
+                                  DateFormat("MMM d, yyyy").format(historyItem.timestamp.toDate()),
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400),
+                                )
+                              ],
+                            ),
+                          );
+                        },
+                        itemBuilder: (context, element) {
+                          return HistoryItemListv2(historyItem: element,hideData:true);
                         },
                       );
                     },

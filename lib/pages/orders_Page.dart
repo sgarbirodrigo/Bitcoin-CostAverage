@@ -15,9 +15,7 @@ import '../contants.dart';
 import '../list_item/order_item_list.dart';
 import 'package:bitcoin_cost_average/controllers/history_controller.dart';
 
-class OrdersPageController extends GetxController{
-
-}
+class OrdersPageController extends GetxController {}
 
 class OrdersPage extends StatelessWidget {
   var userController = Get.find<UserController>();
@@ -92,36 +90,37 @@ class OrdersPage extends StatelessWidget {
             ),
           ),
         ),
-        Container(
-          decoration: BoxDecoration(
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 10.0,
-                offset: Offset(0.0, 0.0),
-              )
-            ],
-            color: Colors.white,
-          ),
-          //height: 300,
-          child: userController.user.orders.length > 0
-              ? ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: userController.user.orders.length,
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return OrderItemList(index);
-              })
-              : Container(
-            height: 200,
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            child: Center(
-              child: Text(
-                  "Here you will be able to view all the orders that are being executed daily.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 18)),
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 10.0,
+                  offset: Offset(0.0, 0.0),
+                )
+              ],
+              color: Colors.white,
             ),
+            child: userController.user.orders.length > 0
+                ? ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: userController.user.orders.length,
+                    //physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return OrderItemList(index);
+                    })
+                : Container(
+                    height: 200,
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    child: Center(
+                      child: Text(
+                          "Here you will be able to view all the orders that are being executed daily.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 18)),
+                    ),
+                  ),
           ),
         )
       ],

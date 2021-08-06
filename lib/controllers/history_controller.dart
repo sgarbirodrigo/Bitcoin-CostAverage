@@ -129,7 +129,7 @@ class HistoryController extends GetxController with StateMixin {
     //todo save last updated price and load everytime from local
     this.pairAppreciationString.clear();
     pairData_items.value.forEach((pair, pairData) {
-      print("pair: ${pairData.pair} - accumulated: ${pairData.coinAccumulated}");
+      //print("pair: ${pairData.pair} - accumulated: ${pairData.coinAccumulated}");
       this.pairAppreciation[pair] =
           (((binanceController.tickerPrices[pair.replaceAll("/", "")] * pairData.coinAccumulated) /
                       pairData.totalExpended) -

@@ -13,8 +13,9 @@ import '../models/history_model.dart';
 class HistoryItemListv2 extends StatelessWidget {
   final HistoryItem historyItem;
   bool success;
+  bool hideData;
 
-  HistoryItemListv2({Key key, this.historyItem}) {
+  HistoryItemListv2({Key key, this.historyItem, this.hideData = false}) {
     success = historyItem.result == TransactinoResult.SUCCESS;
   }
 
@@ -38,25 +39,58 @@ class HistoryItemListv2 extends StatelessWidget {
             children: [
               Container(
                 padding: EdgeInsets.only(left: 8),
-                child: Column(
-                  children: [
-                    Text(DateFormat("EEEE").format(historyItem.timestamp.toDate()),
-                        style: TextStyle(
-                            //color: Colors.black.withOpacity(0.6),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400)),
-                    Text(DateFormat("MMM d, yyyy").format(historyItem.timestamp.toDate()),
-                        style: TextStyle(
-                            //color: Colors.black.withOpacity(0.6),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400)),
-                    Text(DateFormat("h:mm. a").format(historyItem.timestamp.toDate()),
-                        style: TextStyle(
-                            //color: Colors.black.withOpacity(0.6),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400)),
-                  ],
-                ),
+                child: this.hideData
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.start,crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(top: 0),
+                            child: Text(
+                              historyItem.response.symbol,
+                              style: TextStyle(
+                                  fontFamily: 'Arial',
+                                  fontSize: 20,
+                                  //fontWeight: FontWeight.w400,
+                                  color: Colors.black),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 0, bottom: 4),
+                            child: RichText(
+                              text: TextSpan(
+                                text:
+                                    '-${returnCurrencyCorrectedNumber(historyItem.response.symbol.split("/")[1], 10)}',
+                                style: TextStyle(
+                                    color: success ? greenAppColor : redAppColor, fontSize: 14),
+                              ),
+                            ),
+                          ),
+                          Text(DateFormat("h:mm a").format(historyItem.timestamp.toDate()),textAlign: TextAlign.left,
+                              style: TextStyle(
+                                  //color: Colors.black.withOpacity(0.6),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400)),
+                        ],
+                      )
+                    : Column(
+                        children: [
+                          Text(DateFormat("EEEE").format(historyItem.timestamp.toDate()),
+                              style: TextStyle(
+                                  //color: Colors.black.withOpacity(0.6),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400)),
+                          Text(DateFormat("MMM d, yyyy").format(historyItem.timestamp.toDate()),
+                              style: TextStyle(
+                                  //color: Colors.black.withOpacity(0.6),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400)),
+                          Text(DateFormat("h:mm. a").format(historyItem.timestamp.toDate()),
+                              style: TextStyle(
+                                  //color: Colors.black.withOpacity(0.6),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400)),
+                        ],
+                      ),
               ),
               Expanded(
                   child: Container(
@@ -94,32 +128,38 @@ class HistoryItemListv2 extends StatelessWidget {
                                               fontWeight: FontWeight.w400)),
                                     ],
                                   ),
-                                 Container(padding: EdgeInsets.only(left: 8),child:  Column(
-                                   crossAxisAlignment: CrossAxisAlignment.end,
-                                   children: [
-                                     Text("+${returnCurrencyCorrectedNumber(historyItem.response.symbol.split("/")[0],historyItem.response.filled)}",
-                                         softWrap: true,
-                                         textAlign: TextAlign.center,
-                                         style: TextStyle(
-                                             color: Colors.black.withOpacity(1),
-                                             fontSize: 14,
-                                             fontWeight: FontWeight.w400)),
-                                     Text("${returnCurrencyCorrectedNumber(historyItem.response.symbol.split("/")[1], historyItem.response.average)}",
-                                         softWrap: true,
-                                         textAlign: TextAlign.center,
-                                         style: TextStyle(
-                                             color: Colors.black.withOpacity(1),
-                                             fontSize: 14,
-                                             fontWeight: FontWeight.w400)),
-                                     Text("${returnCurrencyCorrectedNumber(historyItem.response.fee.currency, historyItem.response.fee.cost)}",
-                                         softWrap: true,
-                                         textAlign: TextAlign.center,
-                                         style: TextStyle(
-                                             color: Colors.black.withOpacity(0.6),
-                                             fontSize: 14,
-                                             fontWeight: FontWeight.w400))
-                                   ],
-                                 ),)
+                                  Container(
+                                    padding: EdgeInsets.only(left: 8),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                            "+${returnCurrencyCorrectedNumber(historyItem.response.symbol.split("/")[0], historyItem.response.filled)}",
+                                            softWrap: true,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black.withOpacity(1),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400)),
+                                        Text(
+                                            "${returnCurrencyCorrectedNumber(historyItem.response.symbol.split("/")[1], historyItem.response.average)}",
+                                            softWrap: true,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black.withOpacity(1),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400)),
+                                        Text(
+                                            "${returnCurrencyCorrectedNumber(historyItem.response.fee.currency, historyItem.response.fee.cost)}",
+                                            softWrap: true,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black.withOpacity(0.6),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400))
+                                      ],
+                                    ),
+                                  )
                                 ],
                               ),
                             )
