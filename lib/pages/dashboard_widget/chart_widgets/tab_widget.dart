@@ -35,6 +35,7 @@ class ChartTabWidget extends StatelessWidget {
                   userController.userTotalExpendingAmount.forEach((key, value) {
                     openPairs.add("$key/$value");
                   });
+
                   return GestureDetector(
                     onTap: () {
                       //widget.settings.updateBaseCoin(coins[index]);

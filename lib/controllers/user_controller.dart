@@ -147,7 +147,7 @@ class UserController extends GetxController with StateMixin {
     });
     if (this._userModel.value != null) {
       this._userModel.value.orders.forEach((String pair, OrderItem element) {
-        print("orders-> ${pair} - > active: ${element.active}");
+        //print("orders-> ${pair} - > active: ${element.active}");
         double amount = double.parse(element.amount.toString());
         if (element.active) {
           int multiplier = 0;

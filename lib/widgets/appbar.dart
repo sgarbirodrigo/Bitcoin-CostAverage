@@ -1,5 +1,6 @@
 import 'package:bitcoin_cost_average/controllers/auth_controller.dart';
 import 'package:bitcoin_cost_average/models/user_model.dart';
+import 'package:bitcoin_cost_average/pages/stock_to_flow.dart';
 import 'package:bitcoin_cost_average/purchase/paywall.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -30,7 +31,10 @@ class AppBarBitMe extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return PreferredSize(
       child: Container(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+        padding: EdgeInsets.only(top: MediaQuery
+            .of(context)
+            .padding
+            .top),
         child: Stack(children: [
           Center(
             child: Text(
@@ -39,18 +43,35 @@ class AppBarBitMe extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
           Positioned(
+            top: 0,
+            bottom: 0,
+            left: 0,
+            child: this.returnIcon
+                ? IconButton(
+              icon: Icon(
+                Icons.arrow_back_outlined,
+                color: Colors.white,
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            )
+                : Icon(null),),
+          /*Positioned(
               top: 0,
               bottom: 0,
               left: 0,
-              child: this.returnIcon
-                  ? IconButton(
-                      icon: Icon(
-                        Icons.arrow_back_outlined,
-                        color: Colors.white,
-                      ),
-                      onPressed: () => Navigator.of(context).pop(),
-                    )
-                  : Icon(null)),
+              child: IconButton(
+                icon: Icon(
+                  Icons.stacked_line_chart,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) =>StockToFlowChart()
+                    ),
+                  );
+                },
+              )),*/
           Positioned(
               top: 0,
               bottom: 0,
@@ -83,7 +104,10 @@ class AppBarBitMe extends StatelessWidget implements PreferredSizeWidget {
               )
             ]),
       ),
-      preferredSize: Size(MediaQuery.of(context).size.width, 54.0),
+      preferredSize: Size(MediaQuery
+          .of(context)
+          .size
+          .width, 54.0),
     );
   }
 }

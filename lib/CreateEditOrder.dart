@@ -53,18 +53,25 @@ class CreateEditOrderState extends State<CreateEditOrder> {
     final response = await http.get(Uri.https("api.binance.com", "api/v3/exchangeInfo"));
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
-      // then parse the JSON.
-      //print(response);
+      // Then parse the JSON.
+      // Print(response);
       List symbols = jsonDecode(response.body)["symbols"];
       listOfSymbols = Map();
       symbols.forEach((element) {
         listOfSymbols[BinanceSymbol.fromJson(element).symbol] = BinanceSymbol.fromJson(element);
       });
+
       this.pairs = List();
+
       listOfSymbols.keys.forEach((element) {
         this.pairs.add(listOfSymbols[element].mySymbol);
       });
-      onChangeCoin(this.pairs[0]);
+
+      if (widget.orderItem != null) {
+        onChangeCoin(widget.orderItem.pair);
+      } else {
+        onChangeCoin(this.pairs[0]);
+      }
       setState(() {});
     } else {
       throw Exception('Failed to load pairs');
@@ -105,7 +112,9 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                             Navigator.pop(context);
                           },
                           icon: Icon(Icons.close_sharp)),*/
-Container(width: 8,),
+                      Container(
+                        width: 8,
+                      ),
                       widget.orderItem != null
                           ? ElevatedButton(
                               onPressed: () async {
@@ -160,52 +169,55 @@ Container(width: 8,),
                           : Container(),
                       widget.orderItem == null
                           ? Expanded(
-                          child: SearchableDropdown.single(
-                            icon: null,
-                            displayClearIcon: false,
-                            selectedValueWidgetFn: (value) {
-                              return Row(
-                                children: [
-                                  Text(
-                                    value,
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                  Icon(
-                                    Icons.arrow_drop_down,
-                                    size: 36,
-                                  ),
-                                ],
-                              );
-                            },
-                            underline: Container(
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            iconSize: 36,
-                            style: TextStyle(fontSize: 22, color: Colors.black),
-                            items: this.pairs.map((String value) {
-                              //print("value-data: $value");
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                            value: _selectedPair,
-                            hint: "Select a pair",
-                            searchHint: "Select a pair",
-                            onChanged: (value) {
-                              setState(() {
-                                onChangeCoin(value);
-                              });
-                            },
-                            isExpanded: false,
-                          ))
+                              child: SearchableDropdown.single(
+                              icon: null,
+                              displayClearIcon: false,
+                              selectedValueWidgetFn: (value) {
+                                return Row(
+                                  children: [
+                                    Text(
+                                      value,
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                    Icon(
+                                      Icons.arrow_drop_down,
+                                      size: 36,
+                                    ),
+                                  ],
+                                );
+                              },
+                              underline: Container(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              iconSize: 36,
+                              style: TextStyle(fontSize: 22, color: Colors.black),
+                              items: this.pairs.map((String value) {
+                                //print("value-data: $value");
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                              value: _selectedPair,
+                              hint: "Select a pair",
+                              searchHint: "Select a pair",
+                              onChanged: (value) {
+                                setState(() {
+                                  onChangeCoin(value);
+                                });
+                              },
+                              isExpanded: false,
+                            ))
                           : Expanded(
-                        child: Container(
-                          //color: Colors.red,
-                          padding: EdgeInsets.only(top: 8, bottom: 16),
-                          child: Center(child: Text(widget.orderItem.pair, style: TextStyle(fontSize: 24)),),
-                        ),
-                      ),
+                              child: Container(
+                                //color: Colors.red,
+                                padding: EdgeInsets.only(top: 8, bottom: 16),
+                                child: Center(
+                                  child:
+                                      Text(widget.orderItem.pair, style: TextStyle(fontSize: 24)),
+                                ),
+                              ),
+                            ),
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState.validate()) {
@@ -284,12 +296,19 @@ Container(width: 8,),
                         FilteringTextInputFormatter.allow(RegExp(r"[0-9]")),
                       ],*/
                       onChanged: (value) {
-                        /*_amountController.text = value.replaceAll(",", ".");
+                        _amountController.text = value.replaceAll(",", ".");
                         if (_amountController.text.contains(".")) {
                           _amountController.text =
                               "${_amountController.text.split(".")[0]}.${_amountController.text.split(".")[1]}";
                         }
-                        _amountController.selection = TextSelection.fromPosition(
+                        if (widget.orderItem != null) {
+                          widget.orderItem.amount = double.parse(
+                            doubleToValueString(
+                              double.parse(_amountController.text ?? 0),
+                            ),
+                          );
+                        }
+                        /*_amountController.selection = TextSelection.fromPosition(
                             TextPosition(offset: _amountController.text.length));*/
                       },
                       // The validator receives the text that the user has entered.
@@ -367,12 +386,16 @@ Container(width: 8,),
     );
   }
 
-  void onChangeCoin(String value) {
-    _selectedPair = value;
-    _amountController.text = listOfSymbols[_selectedPair.toString().replaceAll("/", "")]
-        .filters[3]
-        .minNotional
-        .toString();
+  void onChangeCoin(String pair) {
+    _selectedPair = pair;
+
+    if (widget.orderItem == null) {
+      _amountController.text = listOfSymbols[_selectedPair.toString().replaceAll("/", "")]
+          .filters[3]
+          .minNotional
+          .toString();
+    }
+
     CustomNumberKeyboard.setMinimumAmount(
         listOfSymbols[_selectedPair.toString().replaceAll("/", "")].filters[3].minNotional);
   }

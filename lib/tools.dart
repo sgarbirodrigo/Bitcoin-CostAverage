@@ -5,6 +5,9 @@ import 'package:intl/intl.dart';
 
 String doubleToValueString(double amount, {int decimal = 8}) {
   int numberOfDecimals = decimal + 1;
+  if (amount == null) {
+    amount = 0;
+  }
   int integerPart = amount.truncate();
 
   if (integerPart.toString().length >= numberOfDecimals) {
@@ -36,6 +39,7 @@ String returnCurrencyName(String currencyCode) {
 String returnCurrencyCorrectedNumber(String currencyCode, double value) {
   String currencySymbol = getCurrencySymbolFromCode(currencyCode);
   if (currencyCode == currencySymbol) {
+    print("$currencyCode: $value");
     double valueNoZeros = double.parse(doubleToValueString(value));
     //Decimal decimal = Decimal;
     Decimal convertedNum = Decimal.parse(valueNoZeros.toString());
@@ -50,7 +54,7 @@ double getTruncatedNumber(double input, {int precision = 2}) =>
 
 String getAppreciationConverted(double appreciation) {
   String nullValue = "0.00%";
-  if (appreciation == null || appreciation.isNaN)  {
+  if (appreciation == null || appreciation.isNaN) {
     return nullValue;
   }
   String arrow = "";
