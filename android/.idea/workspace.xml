@@ -25,12 +25,7 @@
     <list default="true" id="1bf7b19f-08f6-4857-a32d-2a347e0ed7f0" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/../.flutter-plugins-dependencies" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/controllers/history_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/controllers/history_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/list_item/history_list_item_v2.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/list_item/history_list_item_v2.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/pages/history_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/history_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/pages/orders_Page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/orders_Page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/tools.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/tools.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

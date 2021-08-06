@@ -44,6 +44,7 @@ android {
         multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        setProperty("archivesBaseName", "BCA" + versionName + "-v" + versionCode)
     }
     signingConfigs {
         release {
@@ -58,6 +59,7 @@ android {
             signingConfig signingConfigs.release
         }
     }
+
 }
 
 flutter {
