@@ -1,7 +1,4 @@
 import 'package:bitcoin_cost_average/controllers/auth_controller.dart';
-import 'package:bitcoin_cost_average/models/user_model.dart';
-import 'package:bitcoin_cost_average/pages/stock_to_flow.dart';
-import 'package:bitcoin_cost_average/purchase/paywall.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';

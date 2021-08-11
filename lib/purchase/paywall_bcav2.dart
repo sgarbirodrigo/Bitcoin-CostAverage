@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:bitcoin_cost_average/controllers/remoteConfigController.dart';
 import 'package:bitcoin_cost_average/tools.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -25,15 +27,16 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
   int _current = 0;
   bool isPaying = false;
   bool isDebug = false;
+  var remoteConfigController = Get.find<RemoteConfigController>();
 
   @override
   Widget build(BuildContext context) {
-    var offeringDescription = isDebug
+    /*var offeringDescription = isDebug
         ? json.decode(
             '{"title":"Full Access","features":[{"title":"Buy everyday","description":"From Monday to Sunday"},{"title":"Unlimited orders","description":"Recurrent buys for your favorite investments"}]}')
-        : json.decode(widget.offering.serverDescription);
+        : json.decode(widget.offering.serverDescription);*/
 
-    List<dynamic> features = offeringDescription["features"] as List;
+    List<dynamic> features = remoteConfigController.getPaywallFeatures();
     TextStyle _linkStyle =
         TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.underline);
     return Scaffold(
@@ -201,7 +204,7 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                                             Text(
                                               isDebug
                                                   ? "R\$ 29.90/month - R\$ 309.90"
-                                                  : "${widget.offering.availablePackages[entry].product.identifier.contains("anual") ? "${getCurrencySymbolFromCode(widget.offering.availablePackages[entry].product.currencyCode)} ${(widget.offering.availablePackages[entry].product.price / 12).toStringAsFixed(2)}/month - ${getCurrencySymbolFromCode(widget.offering.availablePackages[entry].product.currencyCode)} ${(widget.offering.availablePackages[entry].product.price).toStringAsFixed(2)}" : "${getCurrencySymbolFromCode(widget.offering.availablePackages[entry].product.currencyCode)} ${(widget.offering.availablePackages[entry].product.price).toStringAsFixed(2)}/month"}",
+                                                  : "${widget.offering.availablePackages[entry].product.identifier.contains("annual") ? "${getCurrencySymbolFromCode(widget.offering.availablePackages[entry].product.currencyCode)} ${(widget.offering.availablePackages[entry].product.price / 12).toStringAsFixed(2)}/month - ${getCurrencySymbolFromCode(widget.offering.availablePackages[entry].product.currencyCode)} ${(widget.offering.availablePackages[entry].product.price).toStringAsFixed(2)}" : "${getCurrencySymbolFromCode(widget.offering.availablePackages[entry].product.currencyCode)} ${(widget.offering.availablePackages[entry].product.price).toStringAsFixed(2)}/month"}",
                                               style: TextStyle(
                                                   color: widget.offering.availablePackages[entry]
                                                           .product.identifier

@@ -5,7 +5,9 @@ import 'package:bitcoin_cost_average/contants.dart';
 import 'package:bitcoin_cost_average/controllers/binance_controller.dart';
 import 'package:bitcoin_cost_average/controllers/connectivityController.dart';
 import 'package:bitcoin_cost_average/controllers/deviceController.dart';
+import 'package:bitcoin_cost_average/controllers/remoteConfigController.dart';
 import 'package:bitcoin_cost_average/external/sql_database.dart';
+import 'package:bitcoin_cost_average/tools.dart';
 import 'package:bitcoin_cost_average/widgets/circular_progress_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info/device_info.dart';
@@ -29,22 +31,24 @@ import 'controllers/database_controller.dart';
 import 'controllers/purchase_controller.dart';
 import 'controllers/user_controller.dart';
 import 'home.dart';
-import 'package:bitcoin_cost_average/controllers/history_controller.dart';
-//1222
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-
+//The !sequence! matters
+initControllers() {
   Get.put(DeviceController());
   Get.put(BinanceController());
   Get.put(PurchaseController());
   Get.put(LocalDatabaseController(onLoad: () {
     Get.put(UserController());
   }));
-
   Get.put(AuthController());
   Get.put(ConnectivityController());
+  Get.put(RemoteConfigController());
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  initControllers();
 
   final Trace traceInit = FirebasePerformance.instance.newTrace("trace_init_performance");
   await traceInit.start();
@@ -62,15 +66,9 @@ void main() async {
       statusBarColor: Color(0xff553277),
     ));
   }
+
   //control app version
-  bool appUpdated = true;
-  try {
-    if (Platform.isAndroid || Platform.isIOS) {
-      appUpdated = await checkAppVersion();
-    }
-  } catch (e) {
-    appUpdated = true;
-  }
+  bool appUpdated = await runAppVersionCheck();
   await traceInit.putAttribute("app_update", appUpdated.toString());
 
   await traceInit.incrementMetric("local_db_init", 1);
@@ -82,26 +80,12 @@ void main() async {
   }, FirebaseCrashlytics.instance.recordError);
 }
 
-Future<bool> checkAppVersion() async {
-  PackageInfo packageInfo = await PackageInfo.fromPlatform();
-  String appName = packageInfo.appName;
-  String packageName = packageInfo.packageName;
-  String version = packageInfo.version;
-  String buildNumber = packageInfo.buildNumber;
-
-  DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-      await FirebaseFirestore.instance.collection("appConfig").doc("standard").get();
-  var data = documentSnapshot.data();
-  bool result = int.parse(buildNumber) >= int.parse(data["min_version_build"].toString());
-  return result;
-}
-
 class MyApp extends StatelessWidget {
   bool appUpdated;
   var authController = Get.find<AuthController>();
   var purchaseController = Get.find<PurchaseController>();
 
-  MyApp(this.appUpdated) {}
+  MyApp(this.appUpdated);
 
   @override
   Widget build(BuildContext context) {

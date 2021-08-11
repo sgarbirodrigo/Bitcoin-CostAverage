@@ -1,7 +1,37 @@
+import 'dart:io';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:decimal/decimal.dart';
 import 'package:intl/intl.dart';
+import 'package:package_info/package_info.dart';
+
+Future<bool> runAppVersionCheck()async {
+  //control app version
+  bool appUpdated = true;
+  try {
+    if (Platform.isAndroid || Platform.isIOS) {
+      appUpdated = await checkAppVersion();
+    }
+  } catch (e) {
+    appUpdated = true;
+  }
+  return appUpdated;
+}
+
+Future<bool> checkAppVersion() async {
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  String appName = packageInfo.appName;
+  String packageName = packageInfo.packageName;
+  String version = packageInfo.version;
+  String buildNumber = packageInfo.buildNumber;
+
+  DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+  await FirebaseFirestore.instance.collection("appConfig").doc("standard").get();
+  var data = documentSnapshot.data();
+  bool result = int.parse(buildNumber) >= int.parse(data["min_version_build"].toString());
+  return result;
+}
 
 String doubleToValueString(double amount, {int decimal = 8}) {
   int numberOfDecimals = decimal + 1;
