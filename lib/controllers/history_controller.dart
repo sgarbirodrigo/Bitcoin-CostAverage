@@ -78,7 +78,7 @@ class HistoryController extends GetxController with StateMixin {
         if (authController.isUserLogged())
           addSnapshotToSQLDB(await getHistoryQuery(authController.user.uid).get());
       } else {
-        callErrorSnackbar("Sorry :\'(", "No internet connection.");
+        callErrorSnackbar("sorry".tr,"no_connection".tr);
       }
     }
 

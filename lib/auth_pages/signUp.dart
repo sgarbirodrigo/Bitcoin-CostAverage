@@ -1,7 +1,6 @@
 import 'package:bitcoin_cost_average/controllers/auth_controller.dart';
 import 'package:bitcoin_cost_average/controllers/connectivityController.dart';
 import 'package:get/get.dart';
-import 'package:bitcoin_cost_average/external/authService.dart';
 import 'package:flutter/material.dart';
 
 import '../contants.dart';
@@ -57,12 +56,12 @@ class _SignUpState extends State<SignUp> {
               cursorColor: Theme.of(context).accentColor,
               obscureText: false,
               //style: Theme.of(context).textTheme.headline5,
-              decoration: InputDecoration(labelText: "Email"),
+              decoration: InputDecoration(labelText: "Email".tr),
               validator: (email) {
                 if (email.isEmpty) {
-                  return "Please enter an email address";
+                  return "enter_email".tr;
                 } else if (email.contains("@") == false) {
-                  return "Invalid email address";
+                  return "invalid_email";
                 } else if (errorMessage["email"].isNotEmpty) {
                   return errorMessage["email"];
                 }
@@ -80,10 +79,10 @@ class _SignUpState extends State<SignUp> {
               cursorColor: Theme.of(context).accentColor,
               obscureText: true,
               //style: Theme.of(context).textTheme.headline5,
-              decoration: InputDecoration(labelText: "Password"),
+              decoration: InputDecoration(labelText: "Password".tr),
               validator: (password) {
                 if (password.isEmpty) {
-                  return "Please enter a password";
+                  return "enter_pass".tr;
                 } else if (errorMessage["password"].isNotEmpty) {
                   return errorMessage["password"];
                 }
@@ -100,12 +99,12 @@ class _SignUpState extends State<SignUp> {
               cursorColor: Theme.of(context).accentColor,
               obscureText: true,
               //style: Theme.of(context).textTheme.headline5,
-              decoration: InputDecoration(labelText: "Rewrite Password"),
+              decoration: InputDecoration(labelText: "rewrite_pass".tr),
               validator: (rewritePassword) {
                 if (rewritePassword.isEmpty) {
-                  return "Please rewrite your password";
+                  return "please_rewrite_pass".tr;
                 } else if (passwordTextField.text != rewritePassword) {
-                  return "Password does not match";
+                  return "ass_not_match".tr;
                 } else if (errorMessage["password"].isNotEmpty) {
                   return errorMessage["password"];
                 }
@@ -134,7 +133,7 @@ class _SignUpState extends State<SignUp> {
                               Theme.of(context).scaffoldBackgroundColor),
                         ),
                       )
-                    : Text("Sign Up"),
+                    : Text("sign_up".tr),
                 onPressed: () async {
                   if (!connectivityController.isOffline()) {
                     setState(() {
@@ -155,7 +154,7 @@ class _SignUpState extends State<SignUp> {
                       authController.signUp(emailTextField.text, passwordTextField.text);
                     }
                   } else {
-                    callErrorSnackbar("Sorry :\'(", "No internet connection.");
+                    callErrorSnackbar("sorry".tr, "no_connection".tr);
                   }
                 },
               ),

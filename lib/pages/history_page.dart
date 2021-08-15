@@ -8,6 +8,7 @@ import 'package:bitcoin_cost_average/models/user_model.dart';
 import 'package:bitcoin_cost_average/pages/pairdetail_page.dart';
 import 'package:bitcoin_cost_average/external/sql_database.dart';
 import 'package:bitcoin_cost_average/tools.dart';
+import 'package:bitcoin_cost_average/widgets/header_weekselector.dart';
 import 'package:bitcoin_cost_average/widgets/weekindicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -21,7 +22,6 @@ import 'package:bitcoin_cost_average/controllers/history_controller.dart';
 class OrdersPageController extends GetxController {}
 
 class HistoryPage extends StatelessWidget {
-  var userController = Get.find<UserController>();
   var historyController = Get.find<HistoryController>();
 
   @override
@@ -29,71 +29,7 @@ class HistoryPage extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        Obx(
-          () => Container(
-            //color: Colors.grey.shade200,
-            margin: EdgeInsets.only(top: 8, bottom: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                TextButton(
-                  style: ButtonStyle(
-                    backgroundColor: ScaleLineChart.WEEK1 == userController.scaleLineChart.value
-                        ? MaterialStateProperty.all<Color>(Colors.deepPurple.withOpacity(0.2))
-                        : null,
-                  ),
-                  onPressed: () {
-                    userController.scaleLineChart.value = (ScaleLineChart.WEEK1);
-                  },
-                  child: Text("1W"),
-                ),
-                TextButton(
-                  style: ButtonStyle(
-                    backgroundColor: ScaleLineChart.WEEK2 == userController.scaleLineChart.value
-                        ? MaterialStateProperty.all<Color>(Colors.deepPurple.withOpacity(0.2))
-                        : null,
-                  ),
-                  onPressed: () {
-                    userController.scaleLineChart.value = (ScaleLineChart.WEEK2);
-                  },
-                  child: Text("2W"),
-                ),
-                TextButton(
-                  style: ButtonStyle(
-                    backgroundColor: ScaleLineChart.MONTH1 == userController.scaleLineChart.value
-                        ? MaterialStateProperty.all<Color>(Colors.deepPurple.withOpacity(0.2))
-                        : null,
-                  ),
-                  onPressed: () {
-                    userController.scaleLineChart.value = (ScaleLineChart.MONTH1);
-                  },
-                  child: Text("1M"),
-                ),
-                TextButton(
-                  style: ButtonStyle(
-                    backgroundColor: ScaleLineChart.MONTH6 == userController.scaleLineChart.value
-                        ? MaterialStateProperty.all<Color>(Colors.deepPurple.withOpacity(0.2))
-                        : null,
-                  ),
-                  onPressed: () {
-                    userController.scaleLineChart.value = (ScaleLineChart.MONTH6);
-                  },
-                  child: Text("6M"),
-                ),
-                TextButton(
-                    style: ButtonStyle(
-                      backgroundColor: ScaleLineChart.YEAR1 == userController.scaleLineChart.value
-                          ? MaterialStateProperty.all<Color>(Colors.deepPurple.withOpacity(0.2))
-                          : null,
-                    ),
-                    onPressed: () {
-                      userController.scaleLineChart.value = (ScaleLineChart.YEAR1);
-                    },
-                    child: Text("1Y"))
-              ],
-            ),
-          ),
-        ),
+        WeekHeaderSelector(),
         Expanded(
           child: Container(
             decoration: BoxDecoration(
@@ -129,7 +65,7 @@ class HistoryPage extends StatelessWidget {
                             child: Row(
                               children: [
                                 Text(
-                                  DateFormat("EEEE").format(historyItem.timestamp.toDate()),
+                                  getDateWeekDayName(historyItem.timestamp.toDate()),
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 18,
@@ -139,7 +75,11 @@ class HistoryPage extends StatelessWidget {
                                   child: Container(),
                                 ),
                                 Text(
-                                  DateFormat("MMM d, yyyy").format(historyItem.timestamp.toDate()),
+                                  "history_header_date".trParams({
+                                    'month': getLongMonthName(historyItem.timestamp.toDate()),
+                                    'day': historyItem.timestamp.toDate().day.toString(),
+                                    'year': historyItem.timestamp.toDate().year.toString(),
+                                  }),
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 18,
@@ -150,7 +90,7 @@ class HistoryPage extends StatelessWidget {
                           );
                         },
                         itemBuilder: (context, element) {
-                          return HistoryItemListv2(historyItem: element,hideData:true);
+                          return HistoryItemListv2(historyItem: element, hideData: true);
                         },
                       );
                     },
@@ -159,10 +99,8 @@ class HistoryPage extends StatelessWidget {
                     height: 200,
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                     child: Center(
-                      child: Text(
-                          "Here you will be able to view all the orders that are being executed daily.",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 18)),
+                      child: Text("history_page_empty".tr,
+                          textAlign: TextAlign.center, style: TextStyle(fontSize: 18)),
                     ),
                   ),
           ),

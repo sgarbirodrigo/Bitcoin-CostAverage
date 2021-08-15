@@ -7,6 +7,7 @@ import 'package:bitcoin_cost_average/models/user_model.dart';
 import 'package:bitcoin_cost_average/pages/pairdetail_page.dart';
 import 'package:bitcoin_cost_average/external/sql_database.dart';
 import 'package:bitcoin_cost_average/tools.dart';
+import 'package:bitcoin_cost_average/widgets/header_weekselector.dart';
 import 'package:bitcoin_cost_average/widgets/weekindicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -25,71 +26,7 @@ class OrdersPage extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        Obx(
-          () => Container(
-            //color: Colors.grey.shade200,
-            margin: EdgeInsets.only(top: 8, bottom: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                TextButton(
-                  style: ButtonStyle(
-                    backgroundColor: ScaleLineChart.WEEK1 == userController.scaleLineChart.value
-                        ? MaterialStateProperty.all<Color>(Colors.deepPurple.withOpacity(0.2))
-                        : null,
-                  ),
-                  onPressed: () {
-                    userController.scaleLineChart.value = (ScaleLineChart.WEEK1);
-                  },
-                  child: Text("1W"),
-                ),
-                TextButton(
-                  style: ButtonStyle(
-                    backgroundColor: ScaleLineChart.WEEK2 == userController.scaleLineChart.value
-                        ? MaterialStateProperty.all<Color>(Colors.deepPurple.withOpacity(0.2))
-                        : null,
-                  ),
-                  onPressed: () {
-                    userController.scaleLineChart.value = (ScaleLineChart.WEEK2);
-                  },
-                  child: Text("2W"),
-                ),
-                TextButton(
-                  style: ButtonStyle(
-                    backgroundColor: ScaleLineChart.MONTH1 == userController.scaleLineChart.value
-                        ? MaterialStateProperty.all<Color>(Colors.deepPurple.withOpacity(0.2))
-                        : null,
-                  ),
-                  onPressed: () {
-                    userController.scaleLineChart.value = (ScaleLineChart.MONTH1);
-                  },
-                  child: Text("1M"),
-                ),
-                TextButton(
-                  style: ButtonStyle(
-                    backgroundColor: ScaleLineChart.MONTH6 == userController.scaleLineChart.value
-                        ? MaterialStateProperty.all<Color>(Colors.deepPurple.withOpacity(0.2))
-                        : null,
-                  ),
-                  onPressed: () {
-                    userController.scaleLineChart.value = (ScaleLineChart.MONTH6);
-                  },
-                  child: Text("6M"),
-                ),
-                TextButton(
-                    style: ButtonStyle(
-                      backgroundColor: ScaleLineChart.YEAR1 == userController.scaleLineChart.value
-                          ? MaterialStateProperty.all<Color>(Colors.deepPurple.withOpacity(0.2))
-                          : null,
-                    ),
-                    onPressed: () {
-                      userController.scaleLineChart.value = (ScaleLineChart.YEAR1);
-                    },
-                    child: Text("1Y"))
-              ],
-            ),
-          ),
-        ),
+        WeekHeaderSelector(),
         Expanded(
           child: Container(
             decoration: BoxDecoration(
@@ -116,7 +53,7 @@ class OrdersPage extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                     child: Center(
                       child: Text(
-                          "Here you will be able to view all the orders that are being executed daily.",
+                          "order_widget_empty".tr,
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 18)),
                     ),

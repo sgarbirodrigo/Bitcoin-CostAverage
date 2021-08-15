@@ -14,7 +14,7 @@ class ConnectivityController extends GetxController {
     subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
       connectivityResult.value = result;
       if(this.isOffline()){
-        callErrorSnackbar("Sorry :\'(","No internet connection.");
+        callErrorSnackbar("sorry".tr,"no_connection".tr);
       }
     });
     _loadConnectivity();

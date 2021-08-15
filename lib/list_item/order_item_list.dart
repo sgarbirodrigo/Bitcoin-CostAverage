@@ -79,7 +79,7 @@ class OrderItemList extends StatelessWidget {
                           color: Colors.white,
                         ),
                         Text(
-                          "History",
+                          "history".tr,
                           textAlign: TextAlign.center,
                           style: TextStyle(color: Colors.white, fontSize: 16),
                         )
@@ -97,9 +97,7 @@ class OrderItemList extends StatelessWidget {
                   },
                 ),
               ]
-            : [
-                MyIconActionEdit(this.index),
-              ]);
+            : [MyIconActionEdit(this.index),]);
   }
 
   IconSlideAction MyIconActionEdit(int index) {
@@ -117,7 +115,7 @@ class OrderItemList extends StatelessWidget {
               color: Colors.white,
             ),
             Text(
-              "Edit",
+              "edit".tr,
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.white, fontSize: 16),
             )
@@ -127,12 +125,16 @@ class OrderItemList extends StatelessWidget {
       onTap: () async {
         if (!connectivityController.isOffline()) {
           await showDialog(
-            context:  Get.context,
+            context: Get.context,
             builder: (BuildContext context) {
               return KeyboardRootWidget(
-                  child: Dialog(child:  CreateEditOrder(orderItem: _orderItem,)));
+                  child: Dialog(
+                      child: CreateEditOrder(
+                orderItem: _orderItem,
+              )));
             },
-          );/*
+          );
+          /*
           await showModalBottomSheet(
             context: Get.context,
             useRootNavigator: true,
@@ -148,7 +150,7 @@ class OrderItemList extends StatelessWidget {
           );*/
           userController.refreshUserData();
         } else {
-          callErrorSnackbar("Sorry :\'(", "No internet connection.");
+          callErrorSnackbar("sorry".tr, "no_connection".tr);
         }
       },
     );
@@ -185,7 +187,7 @@ class OrderItemList extends StatelessWidget {
               height: 4,
             ),
             Text(
-              isActive ? "Pause" : "Activate",
+              isActive ? "pause".tr : "activate".tr,
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.white, fontSize: 16),
             )
@@ -202,7 +204,7 @@ class OrderItemList extends StatelessWidget {
           });
           userController.refreshUserData();
         } else {
-          callErrorSnackbar("Sorry :\'(", "No internet connection.");
+          callErrorSnackbar("sorry".tr, "no_connection".tr);
         }
       },
     );

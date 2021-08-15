@@ -78,7 +78,7 @@ class OrdersLeftColumnWidget extends StatelessWidget{
                     style: TextStyle(color: _selectedColor, fontSize: 14),
                     children: [
                       TextSpan(
-                          text: "/day",
+                          text: "/${"day".tr}",
                           style: TextStyle(color: _selectedColor, fontSize: 10))
                     ]),
               ),

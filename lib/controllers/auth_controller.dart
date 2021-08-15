@@ -72,10 +72,10 @@ class AuthController extends GetxController with StateMixin {
       }
     } else {
       if (user.isEmpty) {
-        error = "Email cannot be empty.";
+        error = "email_cant_be_empty".tr;
       }
       if (user.isEmpty) {
-        error = "Password cannot be empty.";
+        error = "pass_cant_be_empty".tr;
       }
     }
     if (error != null) {
@@ -114,16 +114,16 @@ class AuthController extends GetxController with StateMixin {
           error = e.message;
         }
       } else {
-        error = "Invalid email.";
+        error = "invalid_email".tr;
       }
     } else {
-      error = "Email cannot be empty.";
+      error = "email_cant_be_empty".tr;
     }
     if (error != null) {
       change(this, status: RxStatus.error(error));
       callSnackbar("Oops!", error);
     } else {
-      callSnackbar("Check your email!", "We\'ve sent your instructions.");
+      callSnackbar("check_email".tr, "sent_instructions".tr);
       change(this, status: RxStatus.success());
     }
     update();
@@ -157,19 +157,19 @@ class AuthController extends GetxController with StateMixin {
       } on FirebaseAuthException catch (e) {
         print("Auth error: $e");
         if (e.code == 'user-not-found') {
-          error = 'No user found for that email.';
+          error = 'no_users'.tr;
         } else if (e.code == 'wrong-password') {
-          error = 'Wrong password provided for that user.';
+          error = 'wrong_pass_user'.tr;
         } else {
           error = e.message;
         }
       }
     } else {
       if (user.isEmpty) {
-        error = "Email cannot be empty.";
+        error = "email_cant_be_empty".tr;
       }
       if (user.isEmpty) {
-        error = "Password cannot be empty.";
+        error = "pass_cant_be_empty".tr;
       }
     }
     //Get.back();

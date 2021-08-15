@@ -125,9 +125,9 @@ class UserController extends GetxController with StateMixin {
         _calculateUserStats();
 
         if (documentSnapshot.metadata.isFromCache) {
-          callErrorSnackbar("Sorry :\'(", "No internet connection.");
+          callErrorSnackbar("sorry".tr,"no_connection".tr);
         } else {
-          binanceController.loadBalance(this.user.public_key, this.user.private_key);
+          await binanceController.loadBalance(this.user.public_key, this.user.private_key);
         }
         pieChartFormattedData.value = convertUserData();
         change(null, status: RxStatus.success());

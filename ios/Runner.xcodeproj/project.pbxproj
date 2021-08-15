@@ -10,10 +10,10 @@
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		5A39F2DA26890BD30000FB68 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A39F2D926890BD30000FB68 /* StoreKit.framework */; };
-		5A3EED61265DAA8900438052 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5A3EED60265DAA8900438052 /* GoogleService-Info.plist */; };
 		5AA6559D268C8E85001DAC6A /* Configuration.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 5AA6559C268C8E85001DAC6A /* Configuration.storekit */; };
 		5AA6559F2693277C001DAC6A /* StoreKitTestCertificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = 5AA6559E2693277C001DAC6A /* StoreKitTestCertificate.cer */; };
 		5AA655A12693907F001DAC6A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5AA655A02693907F001DAC6A /* LaunchScreen.storyboard */; };
+		5ACDEDD626C5F6FF00EEB905 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5ACDEDD526C5F6FF00EEB905 /* GoogleService-Info.plist */; };
 		694F6D75F0655EE074879BF9 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E6E6E60E1E561BC92204E6E /* Pods_Runner.framework */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
@@ -40,10 +40,10 @@
 		3357A6B02530A7A0548ED835 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		5A39F2D926890BD30000FB68 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		5A3EED60265DAA8900438052 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5AA6559C268C8E85001DAC6A /* Configuration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Configuration.storekit; sourceTree = "<group>"; };
 		5AA6559E2693277C001DAC6A /* StoreKitTestCertificate.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = StoreKitTestCertificate.cer; path = ../../../../Desktop/StoreKitTestCertificate.cer; sourceTree = "<group>"; };
 		5AA655A02693907F001DAC6A /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		5ACDEDD526C5F6FF00EEB905 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5E6E6E60E1E561BC92204E6E /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -115,7 +115,7 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
-				5A3EED60265DAA8900438052 /* GoogleService-Info.plist */,
+				5ACDEDD526C5F6FF00EEB905 /* GoogleService-Info.plist */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
 				5AA655A02693907F001DAC6A /* LaunchScreen.storyboard */,
@@ -206,7 +206,7 @@
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
-				5A3EED61265DAA8900438052 /* GoogleService-Info.plist in Resources */,
+				5ACDEDD626C5F6FF00EEB905 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -362,7 +362,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 28;
+				CURRENT_PROJECT_VERSION = 50;
 				DEVELOPMENT_TEAM = 4WHDS6G8JD;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -370,8 +370,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.6.2;
-				PRODUCT_BUNDLE_IDENTIFIER = com.racooney.bitcoin_cost_average;
+				MARKETING_VERSION = 1.8.9;
+				PRODUCT_BUNDLE_IDENTIFIER = com.racooney.bitcoincostaverage;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -493,7 +493,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 28;
+				CURRENT_PROJECT_VERSION = 50;
 				DEVELOPMENT_TEAM = 4WHDS6G8JD;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -501,8 +501,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.6.2;
-				PRODUCT_BUNDLE_IDENTIFIER = com.racooney.bitcoin_cost_average;
+				MARKETING_VERSION = 1.8.9;
+				PRODUCT_BUNDLE_IDENTIFIER = com.racooney.bitcoincostaverage;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -518,7 +518,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 28;
+				CURRENT_PROJECT_VERSION = 50;
 				DEVELOPMENT_TEAM = 4WHDS6G8JD;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -526,8 +526,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.6.2;
-				PRODUCT_BUNDLE_IDENTIFIER = com.racooney.bitcoin_cost_average;
+				MARKETING_VERSION = 1.8.9;
+				PRODUCT_BUNDLE_IDENTIFIER = com.racooney.bitcoincostaverage;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;

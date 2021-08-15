@@ -1,6 +1,7 @@
 import 'package:bitcoin_cost_average/models/schedule_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 
 class WeekIndicatorEditor extends StatefulWidget {
   Schedule schedule;
@@ -78,43 +79,43 @@ class _WeekIndicatorEditorState extends State<WeekIndicatorEditor> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          getDay("M", widget.schedule.monday,
+          getDay("monday_unit".tr, widget.schedule.monday,
               (value) => setState(() => widget.schedule.monday = value)),
           Container(
             width: 1,
             color: _selectedColor,
           ),
-          getDay("T", widget.schedule.tuesday,
+          getDay("tuesday_unit".tr, widget.schedule.tuesday,
               (value) => setState(() => widget.schedule.tuesday = value)),
           Container(
             width: 1,
             color: _selectedColor,
           ),
-          getDay("W", widget.schedule.wednesday,
+          getDay("wednesday_unit".tr, widget.schedule.wednesday,
               (value) => setState(() => widget.schedule.wednesday = value)),
           Container(
             width: 1,
             color: _selectedColor,
           ),
-          getDay("T", widget.schedule.thursday,
+          getDay("thursday_unit".tr, widget.schedule.thursday,
               (value) => setState(() => widget.schedule.thursday = value)),
           Container(
             width: 1,
             color: _selectedColor,
           ),
-          getDay("F", widget.schedule.friday,
+          getDay("friday_unit".tr, widget.schedule.friday,
               (value) => setState(() => widget.schedule.friday = value)),
           Container(
             width: 1,
             color: _selectedColor,
           ),
-          getDay("S", widget.schedule.saturday,
+          getDay("saturday_unit".tr, widget.schedule.saturday,
               (value) => setState(() => widget.schedule.saturday = value)),
           Container(
             width: 1,
             color: _selectedColor,
           ),
-          getDay("S", widget.schedule.sunday,
+          getDay("sunday_unit".tr, widget.schedule.sunday,
               (value) => setState(() => widget.schedule.sunday = value)),
         ],
       ),

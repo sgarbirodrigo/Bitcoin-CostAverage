@@ -12,10 +12,9 @@ class RemoteConfigController extends GetxController {
     _remoteConfig = RemoteConfig.instance;
     _remoteConfig.setDefaults(<String, dynamic>{
       'sequence_connect_before_paywall': false,
-      'paywall_features': [
-        {"title": "Buy everyday", "description": "From Monday to Sunday"},
-        {"title": "Unlimited orders", "description": "Recurrent buys for your favorite investments"}
-      ]
+      //todo translate features
+      'paywall_features':
+          '{"en_US":[{"title": "Buy everyday", "description": "From Monday to Sunday"}, {"title": "Unlimited orders", "description": "Recurrent buys for your favorite investments"}],"pt_BR":[{"title": "Compre todos os dias", "description": "Selecione o dia da semana que você prefere comprar"}, {"title": "Compras ilimitadas", "description": "Compre as suas moedas preferidas nos melhores dias para você"}]}'
     });
   }
 
@@ -24,21 +23,24 @@ class RemoteConfigController extends GetxController {
   }
 
   List<Map<String, String>> getPaywallFeatures() {
-    String config = _remoteConfig.getValue('paywall_features').asString();
-    print("config: ${config}");
 
-    //final string1 = '{name : "Eduardo", numbers : [12, 23], country: us }';
+    Map<String, List<dynamic>> languages = Map<String, List<dynamic>>.from(json.decode(_remoteConfig.getString('paywall_features')));
+    print("language:  ${languages["pt_BR"]}");
+    print("locale: ${Get.locale}/${languages.keys} - ${languages.containsKey(Get.locale.toString())}");
 
-    // remove all quotes from the string values
-    final string2 = config.replaceAll("\"", "");
 
-    // now we add quotes to both keys and Strings values
-    final quotedString = string2.replaceAllMapped(RegExp(r'\b\w+\b'), (match) {
-      return '"${match.group(0)}"';
+    List<dynamic> selected_features;
+    if(languages.keys.contains(Get.locale.toString())){
+      selected_features = languages[Get.locale.toString()];
+    }else{
+      selected_features = languages["en_US"];
+    }
+    List<Map<String, String>> listao = new List();
+    selected_features.forEach((element) {
+      Map mapinho = Map<String, String>.from(element);
+      listao.add(mapinho);
     });
-    print("quoted: ${quotedString}");
 
-    return json.encode((config)) as List<Map<String, String>>;
-    ;
+    return listao;
   }
 }

@@ -94,7 +94,7 @@ class PriceAVGChartLinePair extends StatelessWidget {
                             children: [
                               TextSpan(
                                 text:
-                                    '${"Price: "}  ${returnCurrencyCorrectedNumber(historyController.pairData_items.value[this.pair].pair.split("/")[1], touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 0 : 1].y)}',
+                                    '${"${"Price".tr}: "}  ${returnCurrencyCorrectedNumber(historyController.pairData_items.value[this.pair].pair.split("/")[1], touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 0 : 1].y)}',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.normal,
@@ -103,7 +103,7 @@ class PriceAVGChartLinePair extends StatelessWidget {
                             ]);
 
                         LineTooltipItem _avgTooltip = LineTooltipItem(
-                          "Average: ${returnCurrencyCorrectedNumber(historyController.pairData_items.value[this.pair].pair.split("/")[1], touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 1 : 0].y)}",
+                          "${"Average".tr}: ${returnCurrencyCorrectedNumber(historyController.pairData_items.value[this.pair].pair.split("/")[1], touchedBarSpots[touchedBarSpots[0].barIndex == 0 ? 1 : 0].y)}",
                           TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.normal,
@@ -158,9 +158,11 @@ class PriceAVGChartLinePair extends StatelessWidget {
                       if (historyController.pairData_items.value[this.pair] == null) {
                         return "";
                       }
+
                       Timestamp timestamp =
                           Timestamp.fromMillisecondsSinceEpoch((value * 1000).toInt());
-                      String xTitle = "${DateFormat('MMM d').format(timestamp.toDate())}";
+                      //String xTitle = "${DateFormat('MMM d').format(timestamp.toDate())}";
+                      String xTitle = "chart_short_date_legend".trParams({'day':timestamp.toDate().day.toString(),'month':getShortMonthName(timestamp.toDate())});
                       //print("inter: ${interval} - ${60*60*24}");
                       if (getInterval() < 60 * 60 * 24) {
                         xTitle = "${DateFormat('hh:mm\nMMM d').format(timestamp.toDate())}";
@@ -172,6 +174,7 @@ class PriceAVGChartLinePair extends StatelessWidget {
                               historyController.pairData_items.value[this.pair].price_spots.last.x) {
                         return "";
                       }
+
                       return xTitle;
                     },
                   ),

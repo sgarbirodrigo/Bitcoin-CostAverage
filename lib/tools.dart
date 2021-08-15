@@ -5,8 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:decimal/decimal.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info/package_info.dart';
+import 'package:get/get.dart';
 
-Future<bool> runAppVersionCheck()async {
+Future<bool> runAppVersionCheck() async {
   //control app version
   bool appUpdated = true;
   try {
@@ -17,6 +18,83 @@ Future<bool> runAppVersionCheck()async {
     appUpdated = true;
   }
   return appUpdated;
+}
+
+String getDateWeekDayName(DateTime date) {
+  switch (date.weekday) {
+    case 1:
+      return "Monday".tr;
+    case 2:
+      return "Tuesday".tr;
+    case 3:
+      return "Wednesday".tr;
+    case 4:
+      return "Thursday".tr;
+    case 5:
+      return "Friday".tr;
+    case 6:
+      return "Saturday".tr;
+    case 7:
+      return "Sunday".tr;
+  }
+}
+
+String getShortMonthName(DateTime date) {
+  switch (date.month) {
+    case 1:
+      return 'Jan'.tr;
+    case 2:
+      return 'Feb'.tr;
+    case 3:
+      return 'Mar'.tr;
+    case 4:
+      return 'Apr'.tr;
+    case 5:
+      return 'May_short'.tr;
+    case 6:
+      return 'Jun'.tr;
+    case 7:
+      return 'Jul'.tr;
+    case 8:
+      return 'Aug'.tr;
+    case 9:
+      return 'Sep'.tr;
+    case 10:
+      return 'Oct'.tr;
+    case 11:
+      return 'Nov'.tr;
+    case 12:
+      return 'Dec'.tr;
+  }
+}
+
+String getLongMonthName(DateTime date) {
+  switch (date.month) {
+    case 1:
+      return 'January'.tr;
+    case 2:
+      return 'February'.tr;
+    case 3:
+      return 'March'.tr;
+    case 4:
+      return 'April'.tr;
+    case 5:
+      return 'Maio'.tr;
+    case 6:
+      return 'June'.tr;
+    case 7:
+      return 'July'.tr;
+    case 8:
+      return 'August'.tr;
+    case 9:
+      return 'September'.tr;
+    case 10:
+      return 'October'.tr;
+    case 11:
+      return 'November'.tr;
+    case 12:
+      return 'December'.tr;
+  }
 }
 
 Future<bool> checkAppVersion() async {
@@ -40,10 +118,14 @@ String doubleToValueString(double amount, {int decimal = 8}) {
   }
   int integerPart = amount.truncate();
 
-  if (integerPart.toString().length >= numberOfDecimals) {
+  if (integerPart
+      .toString()
+      .length >= numberOfDecimals) {
     numberOfDecimals = 0;
   } else {
-    numberOfDecimals -= integerPart.toString().length;
+    numberOfDecimals -= integerPart
+        .toString()
+        .length;
   }
 
   double finalNumber = getTruncatedNumber(amount, precision: numberOfDecimals);
@@ -58,11 +140,15 @@ double getValueVariation(double price, double avg) {
 }
 
 String getCurrencySymbolFromCode(String currencyCode) {
-  return NumberFormat.simpleCurrency(name: currencyCode).currencySymbol;
+  return NumberFormat
+      .simpleCurrency(name: currencyCode)
+      .currencySymbol;
 }
 
 String returnCurrencyName(String currencyCode) {
-  String name = NumberFormat.simpleCurrency(name: currencyCode).currencyName;
+  String name = NumberFormat
+      .simpleCurrency(name: currencyCode)
+      .currencyName;
   return name;
 }
 

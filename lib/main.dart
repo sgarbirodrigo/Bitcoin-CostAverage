@@ -8,6 +8,7 @@ import 'package:bitcoin_cost_average/controllers/deviceController.dart';
 import 'package:bitcoin_cost_average/controllers/remoteConfigController.dart';
 import 'package:bitcoin_cost_average/external/sql_database.dart';
 import 'package:bitcoin_cost_average/tools.dart';
+import 'package:bitcoin_cost_average/translation.dart';
 import 'package:bitcoin_cost_average/widgets/circular_progress_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info/device_info.dart';
@@ -21,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:package_info/package_info.dart';
 
 import 'CustomKeyboard.dart';
@@ -91,9 +93,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      locale: Locale("en", "US"),
-      title: "Bitcoin-Cost Average",
-      //translationsKeys: Messages().keys,
+      locale: Get.deviceLocale,
+      fallbackLocale: Locale('en', 'US'),
+      title: "title".tr,
+      translationsKeys: Messages().keys,
       theme: ThemeData(
         scaffoldBackgroundColor: light,
         textTheme:

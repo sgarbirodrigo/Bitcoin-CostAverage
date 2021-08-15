@@ -82,14 +82,14 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
       key: introKey,
       pages: [
         PageViewModel(
-          title: "How we work?",
+          title: "how_work".tr,
           /*body:
               "We connect to your Exchange account and automatically execute your predefined orders daily at 11PM",*/
           bodyWidget: Container(
             child: Column(
               children: [
                 Text(
-                  "We connect to your Exchange account and automatically execute your predefined orders daily at 11PM",
+                  "how_work_text".tr,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 18),
                 ),
@@ -99,7 +99,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Exchange: ",
+                        "exchange".tr,
                         style: TextStyle(fontSize: 18),
                       ),
                       Container(
@@ -138,27 +138,27 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
           decoration: pageDecoration,
         ),
         PageViewModel(
-          title: "Let\'s connect to Binance",
+          title: "lets_connect".tr,
           body:
-              "To connect with your Binance account we need you to generate API keys on Binance website.",
+          "lets_Connect_text".tr,
           image: _buildImage(
             'binance.png',
           ),
           decoration: pageDecoration,
         ),
         PageViewModel(
-          title: "Creating API key",
+          title: "creating_api".tr,
           body:
-              "After logging into your Binance account, click [API Management] in the user center drop-down box.",
+          "creating_api_text".tr,
           image: _buildImage(
             'api_1.png',
           ),
           decoration: pageDecoration,
         ),
         PageViewModel(
-          title: "Saving API key",
+          title: "saving_api".tr,
           body:
-              "After clicking [Create API], you will see API key and Secret Key, save those keys.\n\nAttention:\nCHECK \"Enable Spot & Margin Trading\"\n UNCHECK \"Enable Withdrawals\"",
+          "saving_api_text",
           image: _buildImage(
             'api_config.png',
           ),
@@ -214,11 +214,11 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               prefixIcon: Icon(Icons.public),
-                              labelText: "Api Key"),
+                              labelText: "api_key".tr),
                           onChanged: (value) {},
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter some value';
+                              return "enter_value".tr;
                             }
                             return null;
                           },
@@ -233,12 +233,12 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               prefixIcon: Icon(Icons.lock_outlined),
-                              labelText: "Secret Key"),
+                              labelText: "secret_key".tr),
                           onChanged: (value) {},
                           // The validator receives the text that the user has entered.
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter some value';
+                              return "enter_value".tr;
                             }
                             return null;
                           },
@@ -263,7 +263,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                             Container(
                               width: 16,
                             ),
-                            Text("Read QR Code")
+                            Text("readQR".tr)
                           ],
                         ),
                       ),
@@ -272,7 +272,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                       ),
                       GestureDetector(
                         child: Text(
-                          'Get your API keys.',
+                        "get_API_keys".tr,
                           style: TextStyle(
                               color: Colors.deepPurple,
                               decoration: TextDecoration.underline,
@@ -293,7 +293,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                               ? Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                                   child: Text(
-                                    "SAVE",
+                                    "save".tr,
                                     style: TextStyle(fontSize: 18),
                                   ),
                                 )
@@ -305,7 +305,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                                           padding: EdgeInsets.only(
                                               left: 32, bottom: 24, top: 24, right: 24),
                                           child: Text(
-                                            "SAVING",
+                                            "saving".tr,
                                             style: TextStyle(fontSize: 18),
                                           ),
                                         ),
@@ -328,7 +328,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                                         Padding(
                                           padding: EdgeInsets.only(
                                               left: 32, bottom: 24, top: 24, right: 16),
-                                          child: Text("SAVED", style: TextStyle(fontSize: 18)),
+                                          child: Text("saved".tr, style: TextStyle(fontSize: 18)),
                                         ),
                                         Container(
                                           height: 32,
@@ -391,7 +391,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
                                     ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
                                       backgroundColor: Colors.red,
                                       content: Text(
-                                        "API keys invalid!",
+                                      "api_invalid".tr,
                                         textAlign: TextAlign.left,
                                       ),
                                       duration: Duration(seconds: 4),

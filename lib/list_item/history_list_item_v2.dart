@@ -10,6 +10,8 @@ import 'package:intl/intl.dart';
 import '../contants.dart';
 import '../models/history_model.dart';
 
+import 'package:get/get.dart';
+
 class HistoryItemListv2 extends StatelessWidget {
   final HistoryItem historyItem;
   bool success;
@@ -41,12 +43,13 @@ class HistoryItemListv2 extends StatelessWidget {
                 padding: EdgeInsets.only(left: 8),
                 child: this.hideData
                     ? Column(
-                        mainAxisAlignment: MainAxisAlignment.start,crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
                             padding: EdgeInsets.only(top: 0),
                             child: Text(
-                              historyItem.response.symbol,
+                              historyItem.order.pair,
                               style: TextStyle(
                                   fontFamily: 'Arial',
                                   fontSize: 20,
@@ -59,13 +62,14 @@ class HistoryItemListv2 extends StatelessWidget {
                             child: RichText(
                               text: TextSpan(
                                 text:
-                                    '-${returnCurrencyCorrectedNumber(historyItem.response.symbol.split("/")[1], 10)}',
+                                    '-${returnCurrencyCorrectedNumber(historyItem.order.pair.split("/")[1], 10)}',
                                 style: TextStyle(
                                     color: success ? greenAppColor : redAppColor, fontSize: 14),
                               ),
                             ),
                           ),
-                          Text(DateFormat("h:mm a").format(historyItem.timestamp.toDate()),textAlign: TextAlign.left,
+                          Text(DateFormat("time_format".tr).format(historyItem.timestamp.toDate()),
+                              textAlign: TextAlign.left,
                               style: TextStyle(
                                   //color: Colors.black.withOpacity(0.6),
                                   fontSize: 14,
@@ -73,18 +77,24 @@ class HistoryItemListv2 extends StatelessWidget {
                         ],
                       )
                     : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(DateFormat("EEEE").format(historyItem.timestamp.toDate()),
+                          Text(getDateWeekDayName(historyItem.timestamp.toDate()),
                               style: TextStyle(
                                   //color: Colors.black.withOpacity(0.6),
                                   fontSize: 14,
                                   fontWeight: FontWeight.w400)),
-                          Text(DateFormat("MMM d, yyyy").format(historyItem.timestamp.toDate()),
+                          Text(
+                              "history_date_short".trParams({
+                                'month': getLongMonthName(historyItem.timestamp.toDate()),
+                                'day': historyItem.timestamp.toDate().day.toString(),
+                                'year': historyItem.timestamp.toDate().year.toString()
+                              }),
                               style: TextStyle(
                                   //color: Colors.black.withOpacity(0.6),
                                   fontSize: 14,
                                   fontWeight: FontWeight.w400)),
-                          Text(DateFormat("h:mm. a").format(historyItem.timestamp.toDate()),
+                          Text(DateFormat("time_format".tr).format(historyItem.timestamp.toDate()),
                               style: TextStyle(
                                   //color: Colors.black.withOpacity(0.6),
                                   fontSize: 14,
@@ -105,21 +115,21 @@ class HistoryItemListv2 extends StatelessWidget {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      Text("Bought",
+                                      Text("Bought".tr,
                                           softWrap: true,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               color: Colors.black.withOpacity(0.6),
                                               fontSize: 14,
                                               fontWeight: FontWeight.w400)),
-                                      Text("Price",
+                                      Text("Price".tr,
                                           softWrap: true,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               color: Colors.black.withOpacity(0.6),
                                               fontSize: 14,
                                               fontWeight: FontWeight.w400)),
-                                      Text("Fee",
+                                      Text("Fee".tr,
                                           softWrap: true,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(

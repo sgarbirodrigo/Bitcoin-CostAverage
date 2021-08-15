@@ -30,23 +30,23 @@ class _AuthenticationState extends State<Authentication> {
         SizedBox(
           width: 4,
         ),
-        Text("No internet connection. Try again!")
+        Text("no_connection".tr)
       ],
     ),
   );
 
   // Change Page Button Preffixs
   List<String> preffix = [
-    "Don't want to reset password? ",
-    "Need an account? ",
-    "Have an account? ",
+    "cancel_reset_password".tr,
+    "need_account".tr,
+    "have_account".tr,
   ];
 
   // Change Page Button Suffixs
   List<String> suffix = [
-    "Sign In",
-    "SignUp",
-    "Sign In",
+    "sign_in".tr,
+    "sign_up".tr,
+    "sign_in".tr,
   ];
   var authController = Get.find<AuthController>();
 
@@ -92,7 +92,7 @@ class _AuthenticationState extends State<Authentication> {
                         height: 8,
                       ),
                       CustomText(
-                        text: "Bitcoin-Cost Average",
+                        text: "title".tr,
                         color: active,
                         size: 24,
                       ),

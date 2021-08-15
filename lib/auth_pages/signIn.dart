@@ -1,5 +1,4 @@
 import 'package:bitcoin_cost_average/controllers/auth_controller.dart';
-import 'package:bitcoin_cost_average/external/authService.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -54,12 +53,12 @@ class _SignInState extends State<SignIn> {
               keyboardType: TextInputType.emailAddress,
               cursorColor: Theme.of(context).accentColor,
               obscureText: false,
-              decoration: InputDecoration(labelText: "Email"),
+              decoration: InputDecoration(labelText: "Email".tr),
               validator: (email) {
                 if (email.isEmpty) {
-                  return "Please enter an email address";
+                  return "enter_email".tr;
                 } else if (email.contains("@") == false) {
-                  return "Invalid email address";
+                  return "invalid_email".tr;
                 } else if (errorMessage["email"].isNotEmpty) {
                   return errorMessage["email"];
                 }
@@ -77,10 +76,10 @@ class _SignInState extends State<SignIn> {
               cursorColor: Theme.of(context).accentColor,
               obscureText: true,
               //style: Theme.of(context).textTheme.headline5,
-              decoration: InputDecoration(labelText: "Password"),
+              decoration: InputDecoration(labelText: "Password".tr),
               validator: (password) {
                 if (password.isEmpty) {
-                  return "Please enter a password";
+                  return "enter_pass".tr;
                 } else if (errorMessage["password"].isNotEmpty) {
                   return errorMessage["password"];
                 }
@@ -101,7 +100,7 @@ class _SignInState extends State<SignIn> {
                     curve: Curves.easeInOutCirc,
                   ),
                   child: Text(
-                    "Forgot Password?",
+                    "forgot_pass".tr,
                     style: TextStyle(color: Theme.of(context).primaryColor),
                     //style: Theme.of(context).textTheme.headline4,
                   ),
@@ -127,7 +126,7 @@ class _SignInState extends State<SignIn> {
                               Theme.of(context).scaffoldBackgroundColor),
                         ),
                       )
-                    : Text("Sign In"),
+                    : Text("sign_in".tr),
                 onPressed: () async {
                   setState(() {
                     errorMessage["email"] = "";

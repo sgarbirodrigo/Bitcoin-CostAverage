@@ -57,7 +57,7 @@ class SettingsPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Selected exchange: ",
+                          "selected_exchange".tr,
                           style: TextStyle(fontSize: 18),
                         ),
                         Container(
@@ -109,12 +109,11 @@ class SettingsPage extends StatelessWidget {
                   RichText(
                     textAlign: TextAlign.center,
                     text: TextSpan(
-                      text:
-                          'To ensure another level of security on your funds, create an account exclusively for automating your daily trades with ',
+                      text: "tip_create_exclusive_account".tr,
                       style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 18),
                       children: <TextSpan>[
                         TextSpan(
-                          text: 'Bitcoin-Cost Average',
+                          text: 'title'.tr,
                           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                         ),
                         TextSpan(text: '.'),
@@ -130,13 +129,13 @@ class SettingsPage extends StatelessWidget {
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               prefixIcon: Icon(Icons.public),
-                              labelText: "API Key"),
+                              labelText: "api_key".tr),
                           onChanged: (value) {
                             settingsController.publickey.value = value;
                           },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter some value';
+                              return 'enter_value'.tr;
                             }
                             return null;
                           },
@@ -152,14 +151,14 @@ class SettingsPage extends StatelessWidget {
                         decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             prefixIcon: Icon(Icons.lock_outlined),
-                            labelText: "Secret Key"),
+                            labelText: "secret_key".tr),
                         onChanged: (value) {
                           settingsController.privatekey.value = value;
                         },
                         // The validator receives the text that the user has entered.
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter some value';
+                            return 'enter_value'.tr;
                           }
                           return null;
                         },
@@ -183,7 +182,7 @@ class SettingsPage extends StatelessWidget {
                         Container(
                           width: 16,
                         ),
-                        Text("Read QR Code")
+                        Text("readQR".tr)
                       ],
                     ),
                   ),
@@ -192,7 +191,7 @@ class SettingsPage extends StatelessWidget {
                   ),
                   GestureDetector(
                     child: Text(
-                      'Get your API keys.',
+                      'get_API_keys'.tr,
                       style: TextStyle(
                           color: Colors.deepPurple,
                           decoration: TextDecoration.underline,
@@ -213,7 +212,7 @@ class SettingsPage extends StatelessWidget {
                           ? Padding(
                               padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                               child: Text(
-                                "SAVE",
+                                "${"save".tr}".toUpperCase(),
                                 style: TextStyle(fontSize: 18),
                               ),
                             )
@@ -225,7 +224,7 @@ class SettingsPage extends StatelessWidget {
                                       padding:
                                           EdgeInsets.only(left: 8, bottom: 8, top: 8, right: 8),
                                       child: Text(
-                                        "SAVING",
+                                        "${"saving".tr}".toUpperCase(),
                                         style: TextStyle(fontSize: 18),
                                       ),
                                     ),
@@ -245,7 +244,8 @@ class SettingsPage extends StatelessWidget {
                                     Padding(
                                       padding:
                                           EdgeInsets.only(left: 8, bottom: 8, top: 8, right: 4),
-                                      child: Text("SAVED", style: TextStyle(fontSize: 18)),
+                                      child: Text("${"saved".tr}".toUpperCase(),
+                                          style: TextStyle(fontSize: 18)),
                                     ),
                                     Container(
                                       height: 32,
@@ -295,7 +295,7 @@ class SettingsPage extends StatelessWidget {
                                 ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
                                   backgroundColor: Colors.red,
                                   content: Text(
-                                    "API keys invalid!",
+                                    "api_invalid".tr,
                                     textAlign: TextAlign.left,
                                   ),
                                   duration: Duration(seconds: 4),

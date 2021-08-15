@@ -3,21 +3,23 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>256178541206-oab8g85tr3lc9n8vsf2tv53mensmei9s.apps.googleusercontent.com</string>
+	<string>559426702570-bkm41iivlbjkotcca8k4tmgbdo4rtcvs.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.256178541206-oab8g85tr3lc9n8vsf2tv53mensmei9s</string>
+	<string>com.googleusercontent.apps.559426702570-bkm41iivlbjkotcca8k4tmgbdo4rtcvs</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>559426702570-mdt19fh79ffbgn1dkpi408a398n1ff4d.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyCg4r4kbG5kmOc8F0ryFvxscMF6F_-49H8</string>
+	<string>AIzaSyDXNeAjuRmsFhex1oGlmkKgeuzkjD4brUg</string>
 	<key>GCM_SENDER_ID</key>
-	<string>256178541206</string>
+	<string>559426702570</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.racooney.bitcoin_cost_average</string>
+	<string>com.racooney.bitcoincostaverage</string>
 	<key>PROJECT_ID</key>
-	<string>contant-buyer</string>
+	<string>bitcoin-costaverage</string>
 	<key>STORAGE_BUCKET</key>
-	<string>contant-buyer.appspot.com</string>
+	<string>bitcoin-costaverage.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:256178541206:ios:75d20028515f6ad90de8b7</string>
+	<string>1:559426702570:ios:6cbfe840d8a450d3c35b93</string>
 </dict>
 </plist>

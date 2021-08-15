@@ -35,17 +35,17 @@ extension ScaleLineExtension on ScaleLineChart {
   String toShortNameString() {
     switch (this) {
       case ScaleLineChart.WEEK1:
-        return "1W";
+        return "1W".tr;
       case ScaleLineChart.WEEK2:
-        return "2W";
+        return "2W".tr;
       case ScaleLineChart.MONTH1:
-        return "1M";
+        return "1M".tr;
       case ScaleLineChart.MONTH6:
-        return "6M";
+        return "6M".tr;
       case ScaleLineChart.YEAR1:
-        return "1Y";
+        return "1Y".tr;
       default:
-        return "1W";
+        return "1W".tr;
     }
   }
 
@@ -180,7 +180,7 @@ class PriceAVGChartLine extends StatelessWidget {
       color = Colors.grey;
       return Center(
         child: Text(
-          "Not enough data to show on the selected period.",
+          "not_enough_data".tr,
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 12),
         ),

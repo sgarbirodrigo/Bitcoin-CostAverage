@@ -36,7 +36,7 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
             '{"title":"Full Access","features":[{"title":"Buy everyday","description":"From Monday to Sunday"},{"title":"Unlimited orders","description":"Recurrent buys for your favorite investments"}]}')
         : json.decode(widget.offering.serverDescription);*/
 
-    List<dynamic> features = remoteConfigController.getPaywallFeatures();
+    List<Map<String, String>> features = remoteConfigController.getPaywallFeatures();
     TextStyle _linkStyle =
         TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.underline);
     return Scaffold(
@@ -127,7 +127,7 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                           padding: EdgeInsets.only(top: 16),
                           child: Column(
                             children: [
-                              Text("1-WEEK FREE TRIAL",
+                              Text("week_trial".tr,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontFamily: 'Arial Rounded MT Bold',
@@ -137,6 +137,7 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                                   children: Iterable<int>.generate(
                                           widget.offering.availablePackages.length)
                                       .map((entry) {
+                                        print("entry: ${widget.offering.availablePackages[entry].product.title}");
                                 return AnimatedContainer(
                                   //width: 300,
                                   margin: EdgeInsets.only(top: 16),
@@ -168,7 +169,7 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                                     style: ButtonStyle(
                                       backgroundColor: MaterialStateProperty.all(
                                         widget.offering.availablePackages[entry].product.identifier
-                                                .contains("anual")
+                                                .contains("annual")
                                             ? Colors.deepPurple
                                             : Colors.white,
                                       ),
@@ -192,7 +193,7 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                                               style: TextStyle(
                                                   color: widget.offering.availablePackages[entry]
                                                           .product.identifier
-                                                          .contains("anual")
+                                                          .contains("annual")
                                                       ? Colors.white
                                                       : Colors.deepPurple,
                                                   fontFamily: 'Arial Rounded MT Bold',
@@ -204,11 +205,11 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                                             Text(
                                               isDebug
                                                   ? "R\$ 29.90/month - R\$ 309.90"
-                                                  : "${widget.offering.availablePackages[entry].product.identifier.contains("annual") ? "${getCurrencySymbolFromCode(widget.offering.availablePackages[entry].product.currencyCode)} ${(widget.offering.availablePackages[entry].product.price / 12).toStringAsFixed(2)}/month - ${getCurrencySymbolFromCode(widget.offering.availablePackages[entry].product.currencyCode)} ${(widget.offering.availablePackages[entry].product.price).toStringAsFixed(2)}" : "${getCurrencySymbolFromCode(widget.offering.availablePackages[entry].product.currencyCode)} ${(widget.offering.availablePackages[entry].product.price).toStringAsFixed(2)}/month"}",
+                                                  : "${widget.offering.availablePackages[entry].product.identifier.contains("annual") ? "${getCurrencySymbolFromCode(widget.offering.availablePackages[entry].product.currencyCode)} ${(widget.offering.availablePackages[entry].product.price / 12).toStringAsFixed(2)}/${"month".tr} - ${getCurrencySymbolFromCode(widget.offering.availablePackages[entry].product.currencyCode)} ${(widget.offering.availablePackages[entry].product.price).toStringAsFixed(2)}" : "${getCurrencySymbolFromCode(widget.offering.availablePackages[entry].product.currencyCode)} ${(widget.offering.availablePackages[entry].product.price).toStringAsFixed(2)}/${"month".tr}"}",
                                               style: TextStyle(
                                                   color: widget.offering.availablePackages[entry]
                                                           .product.identifier
-                                                          .contains("anual")
+                                                          .contains("annual")
                                                       ? Colors.white
                                                       : Colors.deepPurple,
                                                   fontFamily: 'Arial',
@@ -229,7 +230,7 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                           padding: EdgeInsets.only(bottom: 16, top: 16),
                           child: GestureDetector(
                             child: Text(
-                              "Restore Purchase",
+                              "restore_purchase".tr,
                               style: TextStyle(fontWeight: FontWeight.normal, fontSize: 14),
                               // style: _linkStyle,
                             ),
@@ -265,17 +266,17 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                     child: RichText(
                       textAlign: TextAlign.center,
                       text: TextSpan(
-                          text: "You can cancel anytime.",
+                          text: "cancel_anytime".tr,
                           style: TextStyle(fontSize: 16, color: Colors.grey.shade800),
                           children: [
-                            TextSpan(text: "\nBy subscribing you agreed with our "),
+                            TextSpan(text: "agree_with".tr),
                             TextSpan(
-                                text: "Privacy Policy",
+                                text: "privacy_policy".tr,
                                 style: _linkStyle,
                                 recognizer: _privacyClick()),
-                            TextSpan(text: " and "),
+                            TextSpan(text: "and".tr),
                             TextSpan(
-                                text: "Terms of Use",
+                                text: "terms_of_use".tr,
                                 style: _linkStyle,
                                 recognizer: _privacyClick()),
                             TextSpan(text: ".\n\n"),

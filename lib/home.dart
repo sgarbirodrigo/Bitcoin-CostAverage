@@ -61,7 +61,7 @@ class Home extends StatelessWidget {
             return IntroductionPage();
           }
 
-          //print("isConnectigFirst: ${remoteConfigController.isConnectingFirst()} - ${userController.user.hasConnected}");
+          print("isConnectigFirst: ${remoteConfigController.isConnectingFirst()} - ${userController.user.hasConnected}");
           if (remoteConfigController.isConnectingFirst()) {
             if (!userController.user.hasConnected) {
               return ConnectToBinancePage();

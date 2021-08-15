@@ -1,5 +1,4 @@
 import 'package:bitcoin_cost_average/controllers/connectivityController.dart';
-import 'package:bitcoin_cost_average/external/authService.dart';
 import 'package:flutter/material.dart';
 import 'package:bitcoin_cost_average/controllers/auth_controller.dart';
 import 'package:get/get.dart';
@@ -46,7 +45,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           width: 4,
         ),
         Text(
-          "Email sent!",
+          "email_sent".tr,
           style: TextStyle(
             color: Color(0xFF1C2028),
           ),
@@ -71,14 +70,14 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            "Forgot Password?",
+            "forgot_pass".tr,
             style: TextStyle(fontSize: 24),
           ),
           SizedBox(
             height: 5,
           ),
           Text(
-            "To recover your password, you need to enter your registered email adress. We will sent the recovery link to your email.",
+            "forgot_pass_text".tr,
             style: TextStyle(fontSize: 16),
           ),
           SizedBox(
@@ -94,12 +93,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               cursorColor: Theme.of(context).accentColor,
               obscureText: false,
               //style: Theme.of(context).textTheme.headline5,
-              decoration: InputDecoration(labelText: "Email"),
+              decoration: InputDecoration(labelText: "Email".tr),
               validator: (email) {
                 if (email.isEmpty) {
-                  return "Please enter an email address";
+                  return "enter_email".tr;
                 } else if (email.contains("@") == false) {
-                  return "Invalid email address";
+                  return "invalid_email".tr;
                 } else if (errorMessage["email"].isNotEmpty) {
                   return errorMessage["email"];
                 }
@@ -140,7 +139,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     loading = false;
                   });
                 } else {
-                  callErrorSnackbar("Sorry :\'(", "No internet connection.");
+                  callErrorSnackbar("sorry".tr, "no_connection".tr);
                 }
               },
               child: loading
@@ -153,7 +152,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             Theme.of(context).scaffoldBackgroundColor),
                       ),
                     )
-                  : Text("Send"),
+                  : Text("Send".tr),
             ),
           ),
         ],

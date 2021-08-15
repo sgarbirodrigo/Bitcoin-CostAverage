@@ -76,11 +76,11 @@ extension MultiplierExtension on Multiplier {
   toSmallString() {
     switch (this) {
       case Multiplier.DAILY:
-        return "daily";
+        return "daily".tr;
       case Multiplier.WEEKLY:
-        return "weekly";
+        return "weekly".tr;
       case Multiplier.MONTHLY:
-        return "monthly";
+        return "monthly".tr;
     }
   }
 
@@ -142,7 +142,9 @@ class ChartWidget extends StatelessWidget {
                           Padding(
                             padding: EdgeInsets.only(top: 16),
                             child: Text(
-                              "${returnCurrencyName(userController.baseCoin.value)} Allocation",
+                              "chart_title_allocation".trParams({
+                                'coin': returnCurrencyName(userController.baseCoin.value),
+                              }),
                               style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500),
                             ),
                           ),
@@ -153,11 +155,12 @@ class ChartWidget extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               headerPrices(
-                                  "Daily Average",
+                                  "daily_average_expense".tr,
                                   "~${returnCurrencyCorrectedNumber(userController.baseCoin.value, userController.userTotalExpendingAmount[userController.baseCoin.value] != null ? (userController.userTotalExpendingAmount[userController.baseCoin.value] / 7) : 0.0)}",
-                                  "The average amount of ${userController.baseCoin.value} you are allocating daily on the coins shown below"),
+                                  "daily_average_expense_tip"
+                                      .trParams({'coin': userController.baseCoin.value})),
                               headerPrices(
-                                  "Weekly",
+                                  "weekly_expense".tr,
                                   returnCurrencyCorrectedNumber(
                                       userController.baseCoin.value,
                                       userController.userTotalExpendingAmount[
@@ -166,9 +169,10 @@ class ChartWidget extends StatelessWidget {
                                           ? (userController.userTotalExpendingAmount[
                                               userController.baseCoin.value])
                                           : 0.0),
-                                  "The total amount you are allocating weekly on the coins shown below"),
+                                  "weekly_expense_tip"
+                                      .trParams({'coin': userController.baseCoin.value})),
                               headerPrices(
-                                  "Monthly",
+                                  "monthly_expense".tr,
                                   returnCurrencyCorrectedNumber(
                                       userController.baseCoin.value,
                                       userController.userTotalExpendingAmount[
@@ -178,7 +182,9 @@ class ChartWidget extends StatelessWidget {
                                                   userController.baseCoin.value] *
                                               4)
                                           : 0.0),
-                                  "The total amount you are allocating on the coins shown below considering four weeks")
+                                  "monthly_expense_tip"
+                                      .trParams({'coin': userController.baseCoin.value})
+                                  )
                             ],
                           ),
                           Container(
@@ -252,7 +258,7 @@ class ChartWidget extends StatelessWidget {
                                     //mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        "Trading",
+                                        "trading".tr,
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             //fontFamily: 'Arial',
@@ -385,7 +391,7 @@ class ChartWidget extends StatelessWidget {
                                                             color: Colors.black,
                                                             fontWeight: FontWeight.bold),
                                                       ),
-                                                      TextSpan(text: ' for '),
+                                                      TextSpan(text: ' ${'for'.tr} '),
                                                       TextSpan(
                                                         text:
                                                             '${data[index].pair.toString().split("/")[0]}',

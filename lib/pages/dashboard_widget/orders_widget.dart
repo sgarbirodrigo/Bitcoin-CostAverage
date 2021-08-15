@@ -49,8 +49,7 @@ class OrdersWidget extends StatelessWidget {
                       height: 200,
                       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                       child: Center(
-                        child: Text(
-                            "Here you will be able to view all the orders that are being executed daily.",
+                        child: Text("order_widget_empty".tr,
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 18)),
                       ),

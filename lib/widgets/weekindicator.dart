@@ -1,6 +1,7 @@
 import 'package:bitcoin_cost_average/models/schedule_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 
 import '../contants.dart';
 
@@ -71,7 +72,7 @@ class WeekIndicator extends StatelessWidget {
               ),*/
               ),
               child: Text(
-                "M",
+                "monday_unit".tr,
                 textAlign: TextAlign.center,
                 style: schedule != null
                     ? (schedule.monday
@@ -96,7 +97,7 @@ class WeekIndicator extends StatelessWidget {
                       : _notSelectedColor)
                   : _notSelectedColor,
               child: Text(
-                "T",
+                "tuesday_unit".tr,
                 textAlign: TextAlign.center,
                 style: schedule != null
                     ? (schedule.tuesday
@@ -121,7 +122,7 @@ class WeekIndicator extends StatelessWidget {
                       : _notSelectedColor)
                   : _notSelectedColor,
               child: Text(
-                "W",
+                "wednesday_unit".tr,
                 textAlign: TextAlign.center,
                 style: schedule != null
                     ? (schedule.wednesday
@@ -146,7 +147,7 @@ class WeekIndicator extends StatelessWidget {
                       : _notSelectedColor)
                   : _notSelectedColor,
               child: Text(
-                "T",
+                "thursday_unit".tr,
                 textAlign: TextAlign.center,
                 style: schedule != null
                     ? (schedule.thursday
@@ -171,7 +172,7 @@ class WeekIndicator extends StatelessWidget {
                       : _notSelectedColor)
                   : _notSelectedColor,
               child: Text(
-                "F",
+                "friday_unit".tr,
                 textAlign: TextAlign.center,
                 style: schedule != null
                     ? (schedule.friday
@@ -196,7 +197,7 @@ class WeekIndicator extends StatelessWidget {
                       : _notSelectedColor)
                   : _notSelectedColor,
               child: Text(
-                "S",
+                "saturday_unit".tr,
                 textAlign: TextAlign.center,
                 style: schedule != null
                     ? (schedule.saturday
@@ -226,7 +227,7 @@ class WeekIndicator extends StatelessWidget {
                       bottomRight: Radius.circular(8))*/
               ),
               child: Text(
-                "S",
+                "sunday_unit".tr,
                 textAlign: TextAlign.center,
                 style: schedule != null
                     ? (schedule.sunday

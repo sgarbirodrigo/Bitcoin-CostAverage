@@ -26,28 +26,28 @@ class MyBottomNavigationBar extends StatelessWidget {
                 },
                 items: [
                   TitledNavigationBarItem(
-                    title: Text('Home'),
+                    title: Text('Home'.tr),
                     icon: Icon(
                       Icons.home,
                       color: Colors.grey,
                     ),
                   ),
                   TitledNavigationBarItem(
-                    title: Text('Orders'),
+                    title: Text('Orders'.tr),
                     icon: Icon(
                       Icons.list_alt_sharp,
                       color: Colors.grey,
                     ),
                   ),
                   TitledNavigationBarItem(
-                    title: Text('History'),
+                    title: Text('History'.tr),
                     icon: Icon(
                       Icons.history_toggle_off,
                       color: Colors.grey,
                     ),
                   ),
                   TitledNavigationBarItem(
-                    title: Text('Settings'),
+                    title: Text('Settings'.tr),
                     icon: Icon(
                       Icons.settings_outlined,
                       color: Colors.grey,
@@ -173,7 +173,7 @@ class _TitledBottomNavigationBarState extends State<TitledBottomNavigationBar> {
                       );
                       userController.refreshUserData();
                     } else {
-                      callErrorSnackbar("Sorry :\'(", "No internet connection.");
+                      callErrorSnackbar("sorry".tr, "no_connection".tr);
                     }
                   },
                   child: Icon(

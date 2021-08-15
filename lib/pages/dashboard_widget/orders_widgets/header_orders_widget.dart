@@ -20,7 +20,7 @@ class OrdersHeaderWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Active Orders",
+                  "active_orders".tr,
                   style: TextStyle(
                     //fontFamily: 'Arial Rounded MT Bold',
                     fontSize: 24,
@@ -36,7 +36,7 @@ class OrdersHeaderWidget extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "Executed on the selected days",
+                  "active_orders_subtitle".tr,
                   style: TextStyle(
                     //fontFamily: 'Arial',
                     fontSize: 12,

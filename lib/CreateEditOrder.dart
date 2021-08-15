@@ -105,6 +105,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       /*IconButton(
@@ -124,17 +125,17 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                                   // user must tap button!
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: Text('Delete order'),
+                                      title: Text('delete_order'.tr),
                                       content: SingleChildScrollView(
                                         child: Column(
                                           children: <Widget>[
-                                            Text('Are you sure you want to delete this order?'),
+                                            Text('delete_order_confirmation'.tr),
                                           ],
                                         ),
                                       ),
                                       actions: <Widget>[
                                         TextButton(
-                                          child: Text('Confirm'),
+                                          child: Text('Confirm'.tr),
                                           onPressed: () {
                                             FirebaseFirestore.instance
                                                 .collection("users")
@@ -148,7 +149,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                                           },
                                         ),
                                         TextButton(
-                                          child: Text('Cancel'),
+                                          child: Text('Cancel'.tr),
                                           onPressed: () {
                                             Navigator.of(context).pop("canceled");
                                           },
@@ -199,8 +200,8 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                                 );
                               }).toList(),
                               value: _selectedPair,
-                              hint: "Select a pair",
-                              searchHint: "Select a pair",
+                              hint: "select_pair".tr,
+                              searchHint: "select_pair".tr,
                               onChanged: (value) {
                                 setState(() {
                                   onChangeCoin(value);
@@ -214,7 +215,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                                 padding: EdgeInsets.only(top: 8, bottom: 16),
                                 child: Center(
                                   child:
-                                      Text(widget.orderItem.pair, style: TextStyle(fontSize: 24)),
+                                      Text(widget.orderItem.pair, style: TextStyle(fontSize: 18)),
                                 ),
                               ),
                             ),
@@ -252,7 +253,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                             }
                           }
                         },
-                        child: Text(widget.orderItem == null ? "CREATE" : "UPDATE"),
+                        child: Text(widget.orderItem == null ? "CREATE".tr : "UPDATE".tr),
                       ),
                       Container(
                         width: 12,
@@ -281,7 +282,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                             style: TextStyle(color: Theme.of(context).primaryColor),
                           ),
                           //hintText: "Amount",
-                          labelText: "Amount to invest",
+                          labelText: "amount_invest".tr,
                           focusedBorder: OutlineInputBorder(
                             borderSide:
                                 BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
@@ -315,7 +316,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                       validator: (value) {
                         try {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter some value';
+                            return 'enter_value'.tr;
                           }
                           if (validatePairString(_selectedPair)) {
                             double valueDouble = double.parse(value.replaceAll(",", "."));
@@ -325,7 +326,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                                     .minNotional
                                     .toString());
                             if (valueDouble < minDouble) {
-                              return 'Must be bigger than the minimum amount';
+                              return 'must_be_bigger_than_minimum';
                             }
                           }
                           _selectedAmount = double.parse(value.replaceAll(",", "."));
@@ -341,8 +342,8 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                   ),
                   Text(
                     validatePairString(_selectedPair)
-                        ? "Minimum amount: ${listOfSymbols[_selectedPair.toString().replaceAll("/", "")].filters[3].minNotional.toString()} ${_selectedPair.split("/")[1]}"
-                        : "Minimum Amount: ...",
+                        ? "${'minimum_amount'.tr}: ${listOfSymbols[_selectedPair.toString().replaceAll("/", "")].filters[3].minNotional.toString()} ${_selectedPair.split("/")[1]}"
+                        : "${'minimum_amount'.tr}: ...",
                     style: TextStyle(color: Colors.black),
                   ),
                   Container(
@@ -360,8 +361,8 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                     padding: EdgeInsets.only(top: 16, bottom: 16),
                     child: Text(
                       double.parse(_amountController.text) >= 0 && validatePairString(_selectedPair)
-                          ? "Weekly expense: ${returnCurrencyCorrectedNumber(_selectedPair.split("/")[1], double.parse(_amountController.text) * this.schedule.getMultiplier())}"
-                          : "Weekly expense: ...",
+                          ? "${'weekly_expense_total'.tr}: ${returnCurrencyCorrectedNumber(_selectedPair.split("/")[1], double.parse(_amountController.text) * this.schedule.getMultiplier())}"
+                          : "${'weekly_expense_total'.tr}: ...",
                       style: TextStyle(color: Colors.black),
                     ),
                   ),
@@ -378,7 +379,7 @@ class CreateEditOrderState extends State<CreateEditOrder> {
                     Container(
                       height: 16,
                     ),
-                    Text(widget.orderItem != null ? "Loading..." : "Loading available pairs...")
+                    Text(widget.orderItem != null ? "Loading...".tr : "loading_available_pairs".tr)
                   ],
                 ),
               ),

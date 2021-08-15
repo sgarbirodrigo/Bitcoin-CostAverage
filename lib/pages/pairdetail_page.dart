@@ -67,7 +67,7 @@ class PairDetailPage extends StatelessWidget {
                               fontFamily: 'Arial Rounded MT Bold'),
                         ),
                         Tooltip(
-                            message: 'Price',
+                            message: 'Price'.tr,
                             child: Text(
                               "${returnCurrencyCorrectedNumber(this.orderItem.pair.split("/")[1], getPairPrice(this.orderItem.pair))}",
                               style: TextStyle(
@@ -82,7 +82,7 @@ class PairDetailPage extends StatelessWidget {
                       child: Container(),
                     ),
                     Obx(() => Tooltip(
-                          message: 'Profit/Loss',
+                          message: 'profit_loss'.tr,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
@@ -132,14 +132,15 @@ class PairDetailPage extends StatelessWidget {
                         color: Colors.grey.shade50,
                       ),*/
                           // height: 30,
-                          child: historyController.pairData_items.value[this.orderItem.pair] != null &&
-                                  historyController.pairData_items.value[this.orderItem.pair]
-                                          .price_spots.length >
-                                      0
-                              ? PriceAVGChartLinePair(this.orderItem.pair)
-                              : Container(
-                                  height: 200,
-                                ),
+                          child:
+                              historyController.pairData_items.value[this.orderItem.pair] != null &&
+                                      historyController.pairData_items.value[this.orderItem.pair]
+                                              .price_spots.length >
+                                          0
+                                  ? PriceAVGChartLinePair(this.orderItem.pair)
+                                  : Container(
+                                      height: 200,
+                                    ),
                         )),
                     /*Row( mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -160,48 +161,30 @@ class PairDetailPage extends StatelessWidget {
                                   ),
                                 ],
                               ),*/
-                    Obx(()=>Card(
-                      color: Color(0xff825CC5).withOpacity(0.7),
-                      elevation: 2,
-                      margin: EdgeInsets.only(top: 8, left: 8, right: 8, bottom: 8),
-                      child: Container(
-                        padding: EdgeInsets.only(top: 8, bottom: 8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Expanded(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Text(
-                                      "Invested",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    Text(
-                                      historyController.pairData_items.value[this.orderItem.pair] != null
-                                          ? "${returnCurrencyCorrectedNumber(this.orderItem.pair.split("/")[1], historyController.pairData_items.value[this.orderItem.pair].totalExpended)}"
-                                          : "...",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                )),
-                            Expanded(
-                              child: Column(
+                    Obx(
+                      () => Card(
+                        color: Color(0xff825CC5).withOpacity(0.7),
+                        elevation: 2,
+                        margin: EdgeInsets.only(top: 8, left: 8, right: 8, bottom: 8),
+                        child: Container(
+                          padding: EdgeInsets.only(top: 8, bottom: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                  child: Column(
+                                mainAxisSize: MainAxisSize.max,
                                 children: [
                                   Text(
-                                    "Market Value",
+                                    "invested".tr,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(color: Colors.white),
                                   ),
                                   Text(
-                                    historyController.pairData_items.value[this.orderItem.pair] != null
-                                        ? "${returnCurrencyCorrectedNumber(this.orderItem.pair.split("/")[1], (getPairPrice(this.orderItem.pair) *historyController.pairData_items.value[this.orderItem.pair].coinAccumulated))}"
+                                    historyController.pairData_items.value[this.orderItem.pair] !=
+                                            null
+                                        ? "${returnCurrencyCorrectedNumber(this.orderItem.pair.split("/")[1], historyController.pairData_items.value[this.orderItem.pair].totalExpended)}"
                                         : "...",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
@@ -210,9 +193,30 @@ class PairDetailPage extends StatelessWidget {
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ],
-                              ),
-                            )
-                            /*Container(
+                              )),
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      "market_value".tr,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    Text(
+                                      historyController.pairData_items.value[this.orderItem.pair] !=
+                                              null
+                                          ? "${returnCurrencyCorrectedNumber(this.orderItem.pair.split("/")[1], (getPairPrice(this.orderItem.pair) * historyController.pairData_items.value[this.orderItem.pair].coinAccumulated))}"
+                                          : "...",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              )
+                              /*Container(
                                             color:
                                                 Colors.white.withOpacity(0.8),
                                             child: Expanded(
@@ -254,10 +258,11 @@ class PairDetailPage extends StatelessWidget {
                                               ),
                                             ),
                                           )*/
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),),
+                    ),
                     Obx(() => Card(
                           color: Colors.white,
                           elevation: 2,
@@ -277,7 +282,7 @@ class PairDetailPage extends StatelessWidget {
                                   onPressed: () {
                                     userController.scaleLineChart.value = (ScaleLineChart.WEEK1);
                                   },
-                                  child: Text("1W")),
+                                  child: Text("1W".tr)),
                               TextButton(
                                 style: ButtonStyle(
                                   backgroundColor:
@@ -289,7 +294,7 @@ class PairDetailPage extends StatelessWidget {
                                 onPressed: () {
                                   userController.scaleLineChart.value = (ScaleLineChart.WEEK2);
                                 },
-                                child: Text("2W"),
+                                child: Text("2W".tr),
                               ),
                               TextButton(
                                 style: ButtonStyle(
@@ -302,7 +307,7 @@ class PairDetailPage extends StatelessWidget {
                                 onPressed: () {
                                   userController.scaleLineChart.value = (ScaleLineChart.MONTH1);
                                 },
-                                child: Text("1M"),
+                                child: Text("1M".tr),
                               ),
                               TextButton(
                                 style: ButtonStyle(
@@ -315,7 +320,7 @@ class PairDetailPage extends StatelessWidget {
                                 onPressed: () {
                                   userController.scaleLineChart.value = (ScaleLineChart.MONTH6);
                                 },
-                                child: Text("6M"),
+                                child: Text("6M".tr),
                               ),
                               TextButton(
                                   style: ButtonStyle(
@@ -328,7 +333,7 @@ class PairDetailPage extends StatelessWidget {
                                   onPressed: () {
                                     userController.scaleLineChart.value = (ScaleLineChart.YEAR1);
                                   },
-                                  child: Text("1Y"))
+                                  child: Text("1Y".tr))
                             ],
                           ),
                         )),
@@ -371,37 +376,44 @@ class PairDetailPage extends StatelessWidget {
                       )
                       */
               Expanded(
-                  child: Obx(()=>Card(
-                    clipBehavior: Clip.antiAlias,
-                    margin: EdgeInsets.only(bottom: 0, left: 8, right: 8, top: 0),
-                    elevation: 2,
-                    child: historyController.pairData_items.value[this.orderItem.pair] != null
-                        ? ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        itemCount: historyController.pairData_items.value[this.orderItem.pair].historyItems.length,
-                        itemBuilder: (context, index) {
-                          return HistoryItemListv2(
-                            historyItem:
-                            historyController.pairData_items.value[this.orderItem.pair].historyItems[historyController.pairData_items.value[this.orderItem.pair].historyItems.length - index - 1],
-                          );
-                        })
-                        : Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color: Colors.black.withOpacity(0.2),
-                                width: 0.5,
-                              ),
-                            )),
-                        child: Center(
-                          child: Text(
-                            "You have no acquisitions on the selected period.",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 12),
-                          ),
-                        )),
-                  )))
+                  child: Obx(() => Card(
+                        clipBehavior: Clip.antiAlias,
+                        margin: EdgeInsets.only(bottom: 0, left: 8, right: 8, top: 0),
+                        elevation: 2,
+                        child: historyController.pairData_items.value[this.orderItem.pair] != null
+                            ? ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                itemCount: historyController
+                                    .pairData_items.value[this.orderItem.pair].historyItems.length,
+                                itemBuilder: (context, index) {
+                                  return HistoryItemListv2(
+                                    historyItem: historyController.pairData_items
+                                        .value[this.orderItem.pair].historyItems[historyController
+                                            .pairData_items
+                                            .value[this.orderItem.pair]
+                                            .historyItems
+                                            .length -
+                                        index -
+                                        1],
+                                  );
+                                })
+                            : Container(
+                                padding: EdgeInsets.symmetric(horizontal: 16),
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                  bottom: BorderSide(
+                                    color: Colors.black.withOpacity(0.2),
+                                    width: 0.5,
+                                  ),
+                                )),
+                                child: Center(
+                                  child: Text(
+                                    "no_acquisitions_over_period".tr,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                )),
+                      )))
             ],
           )),
     );

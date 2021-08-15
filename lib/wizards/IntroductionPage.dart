@@ -9,7 +9,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../models/user_model.dart';
 
 class IntroductionPage extends StatefulWidget {
-
   IntroductionPage();
 
   @override
@@ -21,6 +20,7 @@ class IntroductionPage extends StatefulWidget {
 class _IntroductionPageState extends State<IntroductionPage> {
   final introKey = GlobalKey<IntroductionScreenState>();
   var userController = Get.find<UserController>();
+
   Widget _buildImage(String assetName, [double width = 256]) {
     return Image.asset('assets/images/introduction/$assetName', width: width);
   }
@@ -44,56 +44,51 @@ class _IntroductionPageState extends State<IntroductionPage> {
         onPressed: () {
           updateUser();
         },
-        child: Text("Skip"),
+        child: Text("skip".tr),
       ),
       key: introKey,
       pages: [
         PageViewModel(
-          title: "Welcome",
-          body:
-              "Bitcoin Cost Average strategy consists in investing a fixed amount of money on regular time interval.",
+          title: "welcome".tr,
+          body: "welcome_text".tr,
           image: _buildImage('logo.png'),
           decoration: pageDecoration,
         ),
         PageViewModel(
-          title: "Practical Example",
-          body:
-              "It\'s January 1st, 2018, and John and Alice decides to purchase \$5,000 worth of Bitcoin.",
+          title: "practical_example".tr,
+          body: "practical_example_text".tr,
           image: _buildImage('bag.png'),
           decoration: pageDecoration,
         ),
         PageViewModel(
-          title: "One time buy",
-          body:
-              "John decides to purchase today. The Bitcoin price at the time was \$13,800 per coin, which means that John now owns 0.362 BTC.",
+          title: "one_time_buy".tr,
+          body: "one_time_buy_text".tr,
           image: _buildImage('john.png'),
           decoration: pageDecoration,
         ),
         PageViewModel(
-          title: "Cost Averaging",
-          body:
-              "Alice decides she wants to purchase \$500 every month, for 10 months. 10 months later, Alice owns 0.61 BTC. ",
+          title: "cost_averaging".tr,
+          body: "cost_averaging_text".tr,
           image: _buildImage('anna.png'),
           decoration: pageDecoration,
         ),
         PageViewModel(
-          title: "In the end...",
-          body:
-              "Alice has almost TWICE as much as John, even though they invested the same amount!",
+          title: "in_the_end".tr,
+          body: "in_the_end_text".tr,
           image: _buildImage(
             'result.png',
           ),
           decoration: pageDecoration,
         ),
       ],
-      done:
-          const Text("Connect", style: TextStyle(fontWeight: FontWeight.w600)),
+      done: Text("connect".tr, style: TextStyle(fontWeight: FontWeight.w600)),
       onDone: () {
         updateUser();
       },
     );
   }
-  void updateUser(){
+
+  void updateUser() {
     FirebaseFirestore.instance
         .collection("users")
         .doc(userController.user.uid)
