@@ -7,6 +7,7 @@ import 'package:bitcoin_cost_average/controllers/connectivityController.dart';
 import 'package:bitcoin_cost_average/controllers/deviceController.dart';
 import 'package:bitcoin_cost_average/controllers/remoteConfigController.dart';
 import 'package:bitcoin_cost_average/external/sql_database.dart';
+import 'package:bitcoin_cost_average/pages/stock_to_flow.dart';
 import 'package:bitcoin_cost_average/tools.dart';
 import 'package:bitcoin_cost_average/translation.dart';
 import 'package:bitcoin_cost_average/widgets/circular_progress_indicator.dart';
@@ -45,6 +46,7 @@ initControllers() {
   Get.put(AuthController());
   Get.put(ConnectivityController());
   Get.put(RemoteConfigController());
+  Get.put(S2F());
 }
 
 void main() async {
@@ -100,7 +102,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         scaffoldBackgroundColor: light,
         textTheme:
-            GoogleFonts.mulishTextTheme(Theme.of(context).textTheme).apply(bodyColor: Colors.black),
+        GoogleFonts.mulishTextTheme(Theme
+            .of(context)
+            .textTheme).apply(bodyColor: Colors.black),
         pageTransitionsTheme: PageTransitionsTheme(builders: {
           TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
           TargetPlatform.android: CupertinoPageTransitionsBuilder(),
@@ -109,7 +113,7 @@ class MyApp extends StatelessWidget {
       ),
       initialBinding: AuthBinding(),
       home: authController.obx(
-        (_controller) {
+            (_controller) {
           if (!this.appUpdated) {
             return Scaffold(
               body: Container(
@@ -128,7 +132,7 @@ class MyApp extends StatelessWidget {
             Get.find<UserController>().loadUserData(authController.user.uid);
             purchaseController.setUser(authController.user.uid);
             return purchaseController.obx(
-              (_purchaserController) {
+                  (_purchaserController) {
                 return Home();
               },
               onLoading: CircularProgressIndicatorMy(

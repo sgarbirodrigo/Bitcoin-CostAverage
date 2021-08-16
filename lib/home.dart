@@ -45,7 +45,6 @@ class Home extends StatelessWidget {
   var userController = Get.find<UserController>();
   var deviceController = Get.find<DeviceController>();
   var remoteConfigController = Get.find<RemoteConfigController>();
-
   //var homeController = Get.put(HomeController());
   var connectivityController = Get.find<ConnectivityController>();
 

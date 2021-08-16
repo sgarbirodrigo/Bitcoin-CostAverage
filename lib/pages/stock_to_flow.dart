@@ -1,6 +1,68 @@
+import 'dart:math';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
+
+class S2F {
+  int reward = 50;
+  int total_btc = 0;
+  int halving = 0;
+  int days_per_year = 365;
+  int years_per_halving = 4;
+  int blocks_per_halving = 210000;
+  Duration years_per_block;
+  int blocks_per_day;
+  double sat = 1 / 100000000;
+  List<int> history = [];
+  DateTime start_time = DateTime(2009, 1, 3);
+  DateTime end_time = DateTime(2030, 1, 3);
+  List time = [];
+  List halving_time = [];
+  List prices = [];
+
+  void init() {
+    print("1");
+    this.years_per_block =
+        Duration(days: (this.days_per_year * this.years_per_halving) ~/ this.blocks_per_halving);
+    print("2");
+    this.blocks_per_day = this.blocks_per_halving ~/ (this.days_per_year * this.years_per_halving);
+    print("3");
+    while (this.start_time.isBefore(this.end_time) && reward > 0) {
+      for (int i = 0; i < blocks_per_halving; i++) {
+        total_btc += reward;
+        history.add(total_btc);
+        start_time = start_time.add(years_per_block);
+        time.add(start_time);
+      }
+      print("4");
+      halving_time.add(start_time);
+      print("5");
+      reward = (((reward / 2) / sat) * sat).toInt();
+      print("6");
+      halving += 1;
+    }
+    print("7");
+    this.prices = _s2f(history);
+    print("tamanho dos precos: ${this.prices.length}");
+
+    print('half data: ${this.prices[this.prices.length~/2]}');
+  }
+
+
+
+  List<double> _s2f(List history) {
+    List<double> result = [];
+    for (int i = blocks_per_day; i < history.length; i++) {
+      int stock = history[i - blocks_per_day];
+      int stock2 = history[i];
+      double flow = ((stock2 - stock) * 10000).toDouble();
+      result.add(pow(stock2 / flow, 3.5) * 10000);
+    }
+    return result;
+  }
+}
 
 class StockToFlowChart extends StatefulWidget {
   @override
