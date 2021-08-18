@@ -1,5 +1,5 @@
 name: bitcoin_cost_average
-description: Intend to let you by fractions of cryptocurrencies daily
+description: Intend to let you buy fractions of cryptocurrencies daily
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.

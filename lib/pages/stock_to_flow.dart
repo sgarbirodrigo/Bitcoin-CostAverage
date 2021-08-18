@@ -23,12 +23,9 @@ class S2F {
   List prices = [];
 
   void init() {
-    print("1");
     this.years_per_block =
         Duration(days: (this.days_per_year * this.years_per_halving) ~/ this.blocks_per_halving);
-    print("2");
     this.blocks_per_day = this.blocks_per_halving ~/ (this.days_per_year * this.years_per_halving);
-    print("3");
     while (this.start_time.isBefore(this.end_time) && reward > 0) {
       for (int i = 0; i < blocks_per_halving; i++) {
         total_btc += reward;
@@ -36,17 +33,12 @@ class S2F {
         start_time = start_time.add(years_per_block);
         time.add(start_time);
       }
-      print("4");
       halving_time.add(start_time);
-      print("5");
       reward = (((reward / 2) / sat) * sat).toInt();
-      print("6");
       halving += 1;
     }
-    print("7");
     this.prices = _s2f(history);
     print("tamanho dos precos: ${this.prices.length}");
-
     print('half data: ${this.prices[this.prices.length~/2]}');
   }
 
