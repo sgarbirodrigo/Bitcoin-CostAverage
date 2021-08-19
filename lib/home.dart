@@ -8,6 +8,7 @@ import 'package:bitcoin_cost_average/pages/history_page.dart';
 import 'package:bitcoin_cost_average/pages/paywall.dart';
 import 'package:bitcoin_cost_average/pages/settings.dart';
 import 'package:bitcoin_cost_average/models/settings_model.dart';
+import 'package:bitcoin_cost_average/pages/settings_v2.dart';
 import 'package:bitcoin_cost_average/widgets/bottomnavigation_bar.dart';
 import 'package:bitcoin_cost_average/widgets/circular_progress_indicator.dart';
 import 'package:bitcoin_cost_average/widgets/appbar.dart';
@@ -30,7 +31,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    pages = [DashboardBitMe(), OrdersPage(), HistoryPage(), SettingsPage()];
+    pages = [DashboardBitMe(), OrdersPage(), HistoryPage(), SettingsV2Page()];
   }
 
   void setPage(int index) {
@@ -59,8 +60,14 @@ class Home extends StatelessWidget {
           if (!userController.user.hasIntroduced) {
             return IntroductionPage();
           }
+/*
 
-          print("isConnectigFirst: ${remoteConfigController.isConnectingFirst()} - ${userController.user.hasConnected}");
+          if (!userController.user.hasConnected) {
+            return ConnectToBinancePage();
+          }
+*/
+
+          //print("isConnectigFirst: ${remoteConfigController.isConnectingFirst()} - ${userController.user.hasConnected}");
           if (remoteConfigController.isConnectingFirst()) {
             if (!userController.user.hasConnected) {
               return ConnectToBinancePage();

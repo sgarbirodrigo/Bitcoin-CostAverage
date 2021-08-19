@@ -66,9 +66,22 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
     return IntroductionScreen(
       showNextButton: false,
       globalBackgroundColor: Colors.white,
-      showSkipButton: false,
+      showSkipButton: true,
+      skip: TextButton(
+        onPressed: () {
+          updateUser();
+        },
+        child: Text("skip".tr),
+      ),
       //freeze: this.index==4,
-      showDoneButton: false,
+      showDoneButton: true,
+      done: TextButton(
+        onPressed: () {
+          updateUser();
+        },
+        child: Text("skip".tr),
+      ),
+      onDone: (){},
       dotsDecorator: DotsDecorator(
           size: const Size.square(12.0),
           activeSize: const Size(36.0, 12.0),
@@ -158,7 +171,7 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
         PageViewModel(
           title: "saving_api".tr,
           body:
-          "saving_api_text",
+          "saving_api_text".tr,
           image: _buildImage(
             'api_config.png',
           ),
@@ -420,5 +433,14 @@ class _ConnectToBinancePageState extends State<ConnectToBinancePage> {
         ),
       ],
     );
+  }
+  void updateUser() {
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(userController.user.uid)
+        .update({"hasConnected": true}).then((value) {
+      //Navigator.of(context).pop();
+      userController.refreshUserData();
+    });
   }
 }

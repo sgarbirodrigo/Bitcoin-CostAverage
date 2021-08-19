@@ -62,7 +62,7 @@ class HistoryItemListv2 extends StatelessWidget {
                             child: RichText(
                               text: TextSpan(
                                 text:
-                                    '-${returnCurrencyCorrectedNumber(historyItem.order.pair.split("/")[1], 10)}',
+                                    '-${returnCurrencyCorrectedNumber(historyItem.order.pair.split("/")[1], historyItem.order.amount)}',
                                 style: TextStyle(
                                     color: success ? greenAppColor : redAppColor, fontSize: 14),
                               ),

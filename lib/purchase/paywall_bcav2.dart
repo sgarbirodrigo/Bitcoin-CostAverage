@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:bitcoin_cost_average/controllers/remoteConfigController.dart';
+import 'package:bitcoin_cost_average/controllers/user_controller.dart';
 import 'package:bitcoin_cost_average/tools.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/gestures.dart';
@@ -28,6 +29,7 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
   bool isPaying = false;
   bool isDebug = false;
   var remoteConfigController = Get.find<RemoteConfigController>();
+  //var userController = Get.find<UserController>();
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +86,8 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                                   },
                                   carouselController: buttonCarouselController,
                                   options: CarouselOptions(
-                                      autoPlay: true,autoPlayInterval: Duration(seconds: 6),
+                                      autoPlay: true,
+                                      autoPlayInterval: Duration(seconds: 6),
                                       //autoPlayAnimationDuration: Duration(seconds: 5),
                                       enlargeCenterPage: false,
                                       viewportFraction: 1,
@@ -137,7 +140,8 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                                   children: Iterable<int>.generate(
                                           widget.offering.availablePackages.length)
                                       .map((entry) {
-                                        print("entry: ${widget.offering.availablePackages[entry].product.title}");
+                                print(
+                                    "entry: ${widget.offering.availablePackages[entry].product.title}");
                                 return AnimatedContainer(
                                   //width: 300,
                                   margin: EdgeInsets.only(top: 16),
@@ -155,6 +159,7 @@ class _PaywallMy_v2State extends State<PaywallMy_v2> {
                                           print("purchaser info: $purchaserInfo");
                                           setState(() => this.isPaying = false);
                                         }
+                                        //Navigator.pop(context);
                                       } on PlatformException catch (e) {
                                         var errorCode = PurchasesErrorHelper.getErrorCode(e);
                                         if (errorCode !=

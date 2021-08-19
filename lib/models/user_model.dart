@@ -38,7 +38,7 @@ class UserData {
     hasIntroduced = jsonx['hasIntroduced'] ?? false;
     hasConnected = jsonx['hasConnected'] ?? false;
 
-    hasRunFirstWizzardOrder = jsonx['hasRunFirstWizzardOrder'] ?? false;
+    hasRunFirstWizzardOrder = jsonx['hasRunFirstWizardOrder'] ?? false;
     lastUpdateTimestamp = jsonx['lastUpdateTimestamp'];
     active = jsonx['active'];
     public_key = jsonx['public_key'];

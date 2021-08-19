@@ -189,7 +189,7 @@ class ChartWidget extends StatelessWidget {
                           ),
                           Container(
                             padding: EdgeInsets.only(top: 16),
-                            height: MediaQuery.of(context).size.width * 0.7,
+                            height: MediaQuery.of(context).size.width * 0.75,
                             child: Stack(children: [
                               Center(
                                 child: PieChart(
