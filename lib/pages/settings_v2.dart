@@ -187,6 +187,57 @@ class SettingsV2Page extends StatelessWidget {
                         );
                       },
                     ),
+                    Container(
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom:
+                              BorderSide(color: Colors.black.withOpacity(0.3), width: 1))),
+                      child: ListTile(
+                        title: Text("Exchange:"),
+                        subtitle: Text("Binance"),
+                        trailing: Container(
+                          height: 32,
+                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                          //width: 86,
+                          decoration: BoxDecoration(
+                              color: userController.isUserConnectedToExchange()
+                                  ? greenAppColor
+                                  : redAppColor,
+                              borderRadius: BorderRadius.all(Radius.circular(12))),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                userController.isUserConnectedToExchange()
+                                    ? "CONNECTED".tr
+                                    : "DISCONNECTED".tr,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              Container(
+                                width: 8,
+                              ),
+                              Icon(
+                                userController.isUserConnectedToExchange()
+                                    ? Icons.done:Icons.keyboard_arrow_right,
+                                color: Colors.white,
+                                size: 12,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      /* userController.user.private_key.isNotEmpty &&
+                              userController.user.public_key.isNotEmpty
+                              ? Icon(
+                            Icons.check,
+                            color: greenAppColor,
+                          )
+                              : Icon(
+                            Icons.warning,
+                            color: redAppColor,
+                          )*/
+                    )
                   ],
                 ),
               ),

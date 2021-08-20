@@ -104,7 +104,7 @@ class _SignUpState extends State<SignUp> {
                 if (rewritePassword.isEmpty) {
                   return "please_rewrite_pass".tr;
                 } else if (passwordTextField.text != rewritePassword) {
-                  return "ass_not_match".tr;
+                  return "pass_not_match".tr;
                 } else if (errorMessage["password"].isNotEmpty) {
                   return errorMessage["password"];
                 }
