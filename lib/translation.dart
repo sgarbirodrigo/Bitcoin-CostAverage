@@ -171,6 +171,9 @@ class Messages extends Translations {
           "in_the_end":"In the end...",
           "in_the_end_text":"Alice has almost TWICE as much as John, even though they invested the same amount!",
           "connect":"Connect",
+          "x_days_left":"Free trial - @days_left days left",
+          "DISCONNECTED":"DISCONNECTED",
+          "CONNECTED":"CONNECTED",
         },
         'pt_BR': {
           'chart_title_allocation': "Alocação de @coin",
@@ -339,6 +342,9 @@ class Messages extends Translations {
           "in_the_end":"No final...",
           "in_the_end_text":"Maria tem quase o DOBRO que João, mesmo tendo investido a mesma quantidade!",
           "connect":"Conectar",
+          "x_days_left":"Teste Gratis - @days_left dia restante",
+          "DISCONNECTED":"DESCONECTADO",
+          "CONNECTED":"CONECTADO",
         }
       };
 }

@@ -99,7 +99,7 @@ class HistoryPage extends StatelessWidget {
                     height: 200,
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                     child: Center(
-                      child: Text("history_page_empty".tr,
+                      child: Text("history_empty".tr,
                           textAlign: TextAlign.center, style: TextStyle(fontSize: 18)),
                     ),
                   ),

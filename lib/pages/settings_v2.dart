@@ -1,22 +1,57 @@
 import 'package:bitcoin_cost_average/contants.dart';
+import 'package:bitcoin_cost_average/controllers/purchase_controller.dart';
 import 'package:bitcoin_cost_average/controllers/user_controller.dart';
 import 'package:bitcoin_cost_average/pages/plans/basic_plan.dart';
 import 'package:bitcoin_cost_average/pages/settings.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:purchases_flutter/entitlement_info_wrapper.dart';
 
 class SettingsV2Page extends StatelessWidget {
   CarouselController buttonCarouselController = CarouselController();
   var userController = Get.find<UserController>();
+  var purchaseController = Get.find<PurchaseController>();
+
+
 
   @override
   Widget build(BuildContext context) {
+
+    //print("${purchaseController.purchaserInfo.entitlements.active["Premium"].productIdentifier.split("_")[1]}");
     return SafeArea(
       child: Column(
         children: [
           Container(
-            height: 24,
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+            color: Colors.deepPurple,
+            child: Column(
+              children: [
+                Text(
+                  purchaseController.purchaserInfo.entitlements.active["Premium"].identifier
+                      .toUpperCase(),
+                  style: TextStyle(color: Colors.white, fontSize: 28),
+                ),
+                Text(
+                  purchaseController.purchaserInfo.entitlements.active["Premium"].productIdentifier.split("_")[1].tr.toUpperCase(),
+                  style: TextStyle(color: Color(0xffFFD400), fontSize: 18),
+                ),
+                Container(
+                  height: 32,
+                ),
+                purchaseController.purchaserInfo.entitlements.active["Premium"].periodType ==
+                        PeriodType.trial
+                    ? Text(
+                        "x_days_left".trParams({"days_left":DateTime.parse(purchaseController.purchaserInfo.entitlements.active["Premium"].expirationDate).difference(DateTime.now()).inDays.toString()}),
+                        style: TextStyle(color: Colors.white, fontSize: 12),
+                      )
+                    : Container(),
+                Text(
+                  userController.user.email,
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ],
+            ),
           ),
           /*userController.user.active
               ? Container(
@@ -82,13 +117,10 @@ class SettingsV2Page extends StatelessWidget {
             "sgarbi.rodrigo@gmail.com",
             style: TextStyle(fontSize: 18),
           ),*/
-          Container(
-            height: 8,
-          ),
           Expanded(
             child: Card(
               elevation: 1,
-              margin: EdgeInsets.only(left: 0, right: 0, top: 8, bottom: 0),
+              margin: EdgeInsets.only(left: 0, right: 0, bottom: 0),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(0),
               ),
@@ -102,19 +134,50 @@ class SettingsV2Page extends StatelessWidget {
                                 bottom:
                                     BorderSide(color: Colors.black.withOpacity(0.3), width: 1))),
                         child: ListTile(
-                          title: Text("Connection with your exchange"),
+                          title: Text("Exchange:"),
                           subtitle: Text("Binance"),
-                          trailing: userController.user.private_key.isNotEmpty &&
-                                  userController.user.public_key.isNotEmpty
-                              ? Icon(
-                                  Icons.check,
-                                  color: greenAppColor,
-                                )
-                              : Icon(
-                                  Icons.warning,
-                                  color: redAppColor,
+                          trailing: Container(
+                            height: 32,
+                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                            //width: 86,
+                            decoration: BoxDecoration(
+                                color: userController.isUserConnectedToExchange()
+                                    ? greenAppColor
+                                    : redAppColor,
+                                borderRadius: BorderRadius.all(Radius.circular(12))),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  userController.isUserConnectedToExchange()
+                                      ? "CONNECTED".tr
+                                      : "DISCONNECTED".tr,
+                                  style: TextStyle(color: Colors.white),
                                 ),
+                                Container(
+                                  width: 8,
+                                ),
+                                Icon(
+                                  userController.isUserConnectedToExchange()
+                                      ? Icons.done:Icons.keyboard_arrow_right,
+                                  color: Colors.white,
+                                  size: 12,
+                                )
+                              ],
+                            ),
+                          ),
                         ),
+                        /* userController.user.private_key.isNotEmpty &&
+                              userController.user.public_key.isNotEmpty
+                              ? Icon(
+                            Icons.check,
+                            color: greenAppColor,
+                          )
+                              : Icon(
+                            Icons.warning,
+                            color: redAppColor,
+                          )*/
                       ),
                       onTap: () {
                         Navigator.of(context).push(

@@ -113,6 +113,15 @@ class UserController extends GetxController with StateMixin {
     return scale;
   }
 
+  bool isUserConnectedToExchange(){
+    if(this.user.private_key.isNotEmpty &&
+        this.user.public_key.isNotEmpty){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
   void loadUserData(String userId) async {
     change(null, status: RxStatus.loading());
     return FirebaseFirestore.instance
