@@ -13,39 +13,53 @@ class SettingsV2Page extends StatelessWidget {
   var userController = Get.find<UserController>();
   var purchaseController = Get.find<PurchaseController>();
 
-
-
   @override
   Widget build(BuildContext context) {
-
     //print("${purchaseController.purchaserInfo.entitlements.active["Premium"].productIdentifier.split("_")[1]}");
     return SafeArea(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 32),
             color: Colors.deepPurple,
             child: Column(
               children: [
-                Text(
-                  purchaseController.purchaserInfo.entitlements.active["Premium"].identifier
-                      .toUpperCase(),
-                  style: TextStyle(color: Colors.white, fontSize: 28),
-                ),
-                Text(
-                  purchaseController.purchaserInfo.entitlements.active["Premium"].productIdentifier.split("_")[1].tr.toUpperCase(),
-                  style: TextStyle(color: Color(0xffFFD400), fontSize: 18),
-                ),
-                Container(
-                  height: 32,
-                ),
-                purchaseController.purchaserInfo.entitlements.active["Premium"].periodType ==
-                        PeriodType.trial
-                    ? Text(
-                        "x_days_left".trParams({"days_left":DateTime.parse(purchaseController.purchaserInfo.entitlements.active["Premium"].expirationDate).difference(DateTime.now()).inDays.toString()}),
-                        style: TextStyle(color: Colors.white, fontSize: 12),
-                      )
-                    : Container(),
+                purchaseController.purchaserInfo.entitlements.active.length>0?Column(
+                  children: [
+                    Text(
+                      purchaseController.purchaserInfo.entitlements.active["Premium"].identifier
+                          .toUpperCase(),
+                      style: TextStyle(color: Colors.white, fontSize: 28),
+                    ),
+                    Text(
+                      purchaseController
+                          .purchaserInfo.entitlements.active["Premium"].productIdentifier
+                          .split("_")[1]
+                          .tr
+                          .toUpperCase(),
+                      style: TextStyle(color: Color(0xffFFD400), fontSize: 18),
+                    ),
+                    Container(
+                      height: 32,
+                    ),
+                    purchaseController.purchaserInfo.entitlements.active["Premium"].periodType ==
+                            PeriodType.trial
+                        ? Text(
+                            "x_days_left".trParams({
+                              "days_left": DateTime.parse(purchaseController
+                                      .purchaserInfo.entitlements.active["Premium"].expirationDate)
+                                  .difference(DateTime.now())
+                                  .inDays
+                                  .toString()
+                            }),
+                            style: TextStyle(color: Colors.white, fontSize: 12),
+                          )
+                        : Container(),
+                  ],
+                ):Container(child: Text("Free Trial",
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                ),),
                 Text(
                   userController.user.email,
                   style: TextStyle(color: Colors.white, fontSize: 16),
@@ -160,7 +174,8 @@ class SettingsV2Page extends StatelessWidget {
                                 ),
                                 Icon(
                                   userController.isUserConnectedToExchange()
-                                      ? Icons.done:Icons.keyboard_arrow_right,
+                                      ? Icons.done
+                                      : Icons.keyboard_arrow_right,
                                   color: Colors.white,
                                   size: 12,
                                 )
@@ -187,11 +202,10 @@ class SettingsV2Page extends StatelessWidget {
                         );
                       },
                     ),
-                    Container(
+                    /*Container(
                       decoration: BoxDecoration(
                           border: Border(
-                              bottom:
-                              BorderSide(color: Colors.black.withOpacity(0.3), width: 1))),
+                              bottom: BorderSide(color: Colors.black.withOpacity(0.3), width: 1))),
                       child: ListTile(
                         title: Text("Exchange:"),
                         subtitle: Text("Binance"),
@@ -219,7 +233,8 @@ class SettingsV2Page extends StatelessWidget {
                               ),
                               Icon(
                                 userController.isUserConnectedToExchange()
-                                    ? Icons.done:Icons.keyboard_arrow_right,
+                                    ? Icons.done
+                                    : Icons.keyboard_arrow_right,
                                 color: Colors.white,
                                 size: 12,
                               )
@@ -227,7 +242,7 @@ class SettingsV2Page extends StatelessWidget {
                           ),
                         ),
                       ),
-                      /* userController.user.private_key.isNotEmpty &&
+                      *//* userController.user.private_key.isNotEmpty &&
                               userController.user.public_key.isNotEmpty
                               ? Icon(
                             Icons.check,
@@ -236,8 +251,8 @@ class SettingsV2Page extends StatelessWidget {
                               : Icon(
                             Icons.warning,
                             color: redAppColor,
-                          )*/
-                    )
+                          )*//*
+                    )*/
                   ],
                 ),
               ),

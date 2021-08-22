@@ -68,7 +68,7 @@ class Home extends StatelessWidget {
 */
 
           //print("isConnectigFirst: ${remoteConfigController.isConnectingFirst()} - ${userController.user.hasConnected}");
-          if (remoteConfigController.isConnectingFirst()) {
+          /*if (remoteConfigController.isConnectingFirst()) {
             if (!userController.user.hasConnected) {
               return ConnectToBinancePage();
             }
@@ -82,7 +82,7 @@ class Home extends StatelessWidget {
             if (!userController.user.hasConnected) {
               return ConnectToBinancePage();
             }
-          }
+          }*/
 
           Get.put(HomeController());
           return Scaffold(
