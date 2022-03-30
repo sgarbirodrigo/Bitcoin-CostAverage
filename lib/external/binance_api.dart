@@ -31,7 +31,7 @@ Future<bool> areUserKeysSavedCorrect(UserManager user) async {
   }
 }*/
 Future<bool> areUserKeysNewCorrect(String private_key,String public_key) async {
-  int timeStamp = DateTime.now().millisecondsSinceEpoch;
+  /*int timeStamp = DateTime.now().millisecondsSinceEpoch;
   Map<String, dynamic> parameters = Map();
   parameters["recvWindow"] = "5000";
   parameters["timestamp"] = timeStamp.toString();
@@ -44,12 +44,28 @@ Future<bool> areUserKeysNewCorrect(String private_key,String public_key) async {
   parameters["signature"] = signature;
   Uri url = Uri.https("api.binance.com", "api/v3/account", parameters);
   http.Response response = await http.get(url, headers: {"X-MBX-APIKEY": public_key});
+  print("ok: ${jsonDecode(response.body)["msg"]}");
   if (response.statusCode >= 200 && response.statusCode < 300) {
     return true;
   } else {
     print(jsonDecode(response.body)["msg"]);
     return false;
+  }*/
+  if(private_key.isEmpty || public_key.isEmpty){
+    return false;
   }
+  /*if(private_key.contains(" ") || public_key.contains(" ")){
+    return false;
+  }*/
+  final validCharacters = RegExp(r'^[a-zA-Z0-9]+$');
+  if(!validCharacters.hasMatch(public_key) || !validCharacters.hasMatch(private_key)){
+    return false;
+  }
+  return true;
+
+
+
+
 }
 
 /*

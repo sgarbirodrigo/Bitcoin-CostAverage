@@ -205,9 +205,7 @@ class ExchangeSettingsPageState extends State<ExchangeSettingsPage> {
                               prefixIcon: Icon(Icons.public),
                               labelText: "api_key".tr),
                           onChanged: (value) {
-                            setState(() {
-                              publickey_controller.text = value;
-                            });
+                            //publickey_controller.text = value;
                           },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -229,9 +227,7 @@ class ExchangeSettingsPageState extends State<ExchangeSettingsPage> {
                               prefixIcon: Icon(Icons.lock_outlined),
                               labelText: "secret_key".tr),
                           onChanged: (value) {
-                            setState(() {
-                              privatekey_controller.text = value;
-                            });
+                            //privatekey_controller.text = value;
                           },
                           // The validator receives the text that the user has entered.
                           validator: (value) {
