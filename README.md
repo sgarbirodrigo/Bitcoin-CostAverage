@@ -7,10 +7,11 @@
 ![GitHub forks](https://img.shields.io/github/forks/iuricode/README-template?style=for-the-badge)
 ![Bitbucket open issues](https://img.shields.io/bitbucket/issues/iuricode/README-template?style=for-the-badge)
 ![Bitbucket open pull requests](https://img.shields.io/bitbucket/pr-raw/iuricode/README-template?style=for-the-badge)
-
-<img src="https://play-lh.googleusercontent.com/I_Bc-6nCQugnAc8cKp4bchY3qFTyrQtFDS5bCyhMMZl9Y8bz210S_YULVNwKM8JL83g=w3360-h1940" width="128px" alt="screenshot1">
-<img src="https://play-lh.googleusercontent.com/QCkbySR1Bfq42JwTl-U9_zPmaXPY34IxIt1kyj8eLqIl-IkqqwTDW7X1WuV-0Km6FG-C=w3360-h1940" width="128px" alt="screenshot1">
-<img src="https://play-lh.googleusercontent.com/X4fePjB7hKerzqZBWuRCczuzmU8cc2bXcgsCLP_40QRqSkgEWYv1pkED7F3__IyE5x0=w3360-h1940" width="128px" alt="screenshot1">
+<div>
+<img src="https://play-lh.googleusercontent.com/I_Bc-6nCQugnAc8cKp4bchY3qFTyrQtFDS5bCyhMMZl9Y8bz210S_YULVNwKM8JL83g=w3360-h1940" width="256px" alt="screenshot1">
+<img src="https://play-lh.googleusercontent.com/QCkbySR1Bfq42JwTl-U9_zPmaXPY34IxIt1kyj8eLqIl-IkqqwTDW7X1WuV-0Km6FG-C=w3360-h1940" width="256px" alt="screenshot1">
+<img src="https://play-lh.googleusercontent.com/X4fePjB7hKerzqZBWuRCczuzmU8cc2bXcgsCLP_40QRqSkgEWYv1pkED7F3__IyE5x0=w3360-h1940" width="256px" alt="screenshot1">
+  </div>
 
 > Cost averaging is a simple technique that entails investing a fixed amount of money in the same fund, stock or CRYPTOCURRENCY at regular intervals over a long period of time.
 
