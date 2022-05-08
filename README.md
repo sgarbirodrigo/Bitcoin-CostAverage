@@ -25,6 +25,6 @@ The project is still under development and future updates may include:
 - [ ] Add all exchanges possibles
 
 ### Backend
-The backend server was stopped due to high resource consumption to execute all the requests. Only the android app is running at the moment, but it is not able to execute orders automatically.
+The backend server was stopped due to high resource consumption to execute all the requests with public app running for free. Only the android app is running at the moment, but it is not able to execute orders automatically.
 
 https://play.google.com/store/apps/details?id=com.racooney.bitcoin_cost_average
