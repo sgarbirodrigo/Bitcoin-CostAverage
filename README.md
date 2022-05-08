@@ -19,7 +19,7 @@ The main idea on this project is to be able to cost average on any well known ex
 
 The project is still under development and future updates may include:
 
-- [ ] Upload to Apple Store
+- [-] Upload to Apple Store (Currently unavailable due to Apple guideline 3.1.5 (Cryptocurrencies))
 - [ ] Turn into a web version
 - [ ] Find a way not to store users keys online
 - [ ] Add all exchanges possibles
